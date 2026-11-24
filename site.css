@@ -218,6 +218,8 @@ html.js .rv.seen{opacity:1;transform:none}
 .assess legend{padding:0;margin-bottom:14px;font-family:var(--disp);font-weight:600;font-size:20px;letter-spacing:-.015em;display:flex;align-items:baseline;gap:12px}
 .assess legend span{font-family:var(--mono);font-size:12px;letter-spacing:.1em;color:var(--sales)}
 .opts{display:flex;flex-wrap:wrap;gap:10px}
+.opts.stack{flex-direction:column;gap:8px}
+.opts.stack .opt{width:100%;min-height:54px;padding:13px 18px;text-align:left;line-height:1.35}
 .optgroups{display:flex;flex-direction:column;gap:20px}
 .optgl{margin:0 0 9px;display:flex;align-items:center;gap:9px;font-family:var(--mono);font-weight:500;font-size:11.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--mute)}
 .optgl::before{content:"";width:9px;height:9px;border-radius:50%;background:var(--c);flex:none}

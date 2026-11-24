@@ -209,31 +209,28 @@
     const APPS = GROUPS.flatMap(([, g, names]) => names.map(n => [n, g]));
     const SELLS = ['Software', 'Services', 'Both'];
     const SIZES = ['1 to 10', '11 to 50', '51 to 200', 'Over 200'];
-    // what we would build first, in their words: software, then services
-    const STUCK = [
-      ['The sales to delivery handoff',
-        'A closed deal that provisions the account, assigns onboarding and tells the customer what happens next.',
-        'A closed deal that staffs the project from who has capacity and books the kickoff.'],
-      ['Customer onboarding',
-        'An onboarding plan per account, with the ones that stall flagged before the customer goes quiet.',
-        'A kickoff pack built from the signed scope, with owners and dates already set.'],
-      ['Reporting and forecasting',
-        "One weekly report, written for you from every team's data, with the numbers that moved explained.",
-        'One weekly report across projects, margin and pipeline, written for you from every team\'s data.'],
-      ['Renewals and accounts at risk',
-        'Usage, tickets and invoices in one risk score, with the outreach drafted for any account that slips.',
-        'Delivery health, invoices and sentiment in one view, with the check-in drafted before a client goes quiet.'],
-      ['Quotes, contracts and invoicing',
-        'A quote that becomes a contract, then an invoice, without anyone retyping it.',
-        'Scope to quote to invoice from one record, with time and expenses already attached.'],
-      ['Manual data entry between tools',
-        'One intake that fills your CRM, your tracker and your billing at once.',
-        'One intake that fills your CRM, your project tracker and your billing at once.']
+    // the problem an owner would actually name, and what we would build first: software, then services
+    const PROBLEMS = [
+      ['We cannot see how the business is doing without someone building the report',
+        "One place that answers how the business is doing, built from your product, CRM and billing data, with the week's changes explained.",
+        "One place that answers how the business is doing, built from your projects, pipeline and invoices, with the week's changes explained."],
+      ['Growing means hiring more people, so the work costs more than it should',
+        'The onboarding and support work that grows with customers, handled by the system, so the next hundred accounts do not need the next five hires.',
+        'The setup, status and invoicing work that grows with clients, handled by the system, so more work stops meaning more admin.'],
+      ['Work slips when someone is busy, on holiday or leaves',
+        'Every handoff written down and run by the system, from signed deal to live account, so nothing waits on one person remembering.',
+        'Every handoff written down and run by the system, from signed deal to delivered project, so nothing waits on one person remembering.'],
+      ['We hear about problems after they have already cost us',
+        'Usage, tickets and invoices in one risk score, with the outreach drafted for any account that starts to slip.',
+        'Delivery health, budget and client sentiment in one view, with the check-in drafted before a project or a client goes quiet.'],
+      ['We pay for a lot of tools and still do a lot by hand',
+        'The copying between your CRM, your product and your billing removed, starting with the handoff that costs you the most hours.',
+        'The copying between your CRM, your project tracker and your billing removed, starting with the handoff that costs you the most hours.']
     ];
-    const picked = new Set(); let sells = -1, size = -1, stuck = -1;
+    const picked = new Set(); let sells = -1, size = -1, problem = -1;
     const box = el('assess'), go = el('showMap'), hint = el('hint');
     const mk = (host, label, on) => { const b = document.createElement('button'); b.type = 'button'; b.className = 'opt'; b.textContent = label; b.setAttribute('aria-pressed', 'false'); b.addEventListener('click', () => on(b)); host.appendChild(b); return b; };
-    const ready = () => { const ok = picked.size >= 3 && sells >= 0 && size >= 0 && stuck >= 0; go.disabled = !ok;
+    const ready = () => { const ok = picked.size >= 3 && sells >= 0 && size >= 0 && problem >= 0; go.disabled = !ok;
       hint.textContent = ok ? `${picked.size} apps selected.` : picked.size < 3 ? 'Pick at least 3 apps to see your map.' : 'Answer all four to see your map.'; };
     // one row per team, so the picker looks the way the sprawl happened
     let n = 0;
@@ -245,7 +242,7 @@
       el('optApps').appendChild(wrap);
     });
     const one = (host, labels, set) => { const bs = labels.map((l, i) => mk(host, l, () => { set(i); bs.forEach((x, k) => x.setAttribute('aria-pressed', k === i)); ready(); })); return bs; };
-    one(el('optSells'), SELLS, i => { sells = i; }); one(el('optSize'), SIZES, i => { size = i; }); one(el('optStuck'), STUCK.map(s => s[0]), i => { stuck = i; });
+    one(el('optSells'), SELLS, i => { sells = i; }); one(el('optSize'), SIZES, i => { size = i; }); one(el('optStuck'), PROBLEMS.map(p => p[0]), i => { problem = i; });
     go.addEventListener('click', () => {
       const mine = [...picked].sort((a, b) => a - b).map(i => APPS[i]), n = mine.length;
       el('rHead').textContent = `${n} apps today. 1 system.`;
@@ -253,7 +250,7 @@
       el('rBefore').textContent = n * (n - 1) / 2;
       el('rAfter').textContent = '1';
       el('rAfterT').textContent = 'system that connects them all';
-      el('rFirst').textContent = STUCK[stuck][sells === 1 ? 2 : 1];   // services get their own wording
+      el('rFirst').textContent = PROBLEMS[problem][sells === 1 ? 2 : 1];   // services get their own wording
       el('rFirstL').textContent = `The first thing we would build for a B2B ${['software company', 'services company', 'software and services company'][sells]}`;
       el('cPeople').value = [4, 12, 40, 100][size]; cost();
       box.classList.add('done'); el('sent').hidden = true;
@@ -278,7 +275,7 @@
         const r = await fetch('https://api.web3forms.com/submit', { method: 'POST', headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
           body: JSON.stringify({ access_key: FORM_KEY, subject: 'New assessment from pileusops.com', from_name: 'Pileus Ops website', email: el('email').value.trim(),
             sells: SELLS[sells] || '', apps: mine.join(', '), app_count: mine.length, team_size: SIZES[size] || '',
-          stuck_on: (STUCK[stuck] || [''])[0], first_build: el('rFirst').textContent,
+          problem: (PROBLEMS[problem] || [''])[0], first_build: el('rFirst').textContent,
             handoffs_today: el('rBefore').textContent, yearly_cost_of_manual_work: el('cOut').textContent,
             cost_inputs: `${el('cPeople').value} people, ${el('cHours').value} hours a week, $${el('cRate').value} an hour` }) });
         const j = await r.json().catch(() => ({}));

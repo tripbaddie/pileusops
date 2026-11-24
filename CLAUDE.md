@@ -77,7 +77,9 @@ Four questions, all in `app.js` under `if (el('assess'))`:
 1. What do you sell: `SELLS`. Software, Services or Both.
 2. Which apps do you run: `GROUPS`, 31 apps in six teams. Each team gets a coloured dot from the brand palette, so the picker looks the way the sprawl happened. `APPS` is the flattened list the rest of the code uses.
 3. How many people: `SIZES`, which also sets the headcount the cost calculator starts from.
-4. Where work gets stuck: `STUCK`. Each entry is `[label, what we build for software, what we build for services]`, and the result picks the wording that matches question 1.
+4. Which of these sounds most like your company: `PROBLEMS`. Each entry is `[the problem in the owner's words, what we build for software, what we build for services]`, and the result picks the wording that matches question 1.
+
+Question 4 names a business problem an owner would recognise, not a specific broken process. Asking someone to diagnose the bottleneck puts the work on them, and the real problem is usually broader than one handoff. Keep any new option at that level.
 
 The options are written for B2B software and services companies. Keep them that way: no retail, manufacturing or field-service tools.
 
