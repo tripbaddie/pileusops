@@ -80,9 +80,9 @@
     const FUNCS = [
       { g: 'mkt', name: 'Marketing',
         reports: [
-          { t: 'Leads by source', act: 'New leads are routed to the right rep by source.', k: '312', c: 'leads this month', bars: [['Email', 100, '118'], ['Webinar', 78, '92'], ['Search', 55, '65'], ['Social', 31, '37']] },
-          { t: 'Funnel', act: 'Leads that stall get a follow-up after 3 days.', k: '4.2%', c: 'visitor to lead', bars: [['Visitors', 100, '7,430'], ['Leads', 42, '312'], ['Qualified', 24, '96'], ['Customers', 11, '21']] },
-          { t: 'Cost per lead', act: 'You get an alert when cost rises 15%.', k: '$61', c: 'down $8 this month', line: [82, 78, 80, 74, 70, 71, 66, 61] }
+          { t: 'Leads by source', act: 'A routing workflow that sends each new lead to the right rep by source.', k: '312', c: 'leads this month', bars: [['Email', 100, '118'], ['Webinar', 78, '92'], ['Search', 55, '65'], ['Social', 31, '37']] },
+          { t: 'Funnel', act: 'A follow-up workflow that chases any lead still sitting after 3 days.', k: '4.2%', c: 'visitor to lead', bars: [['Visitors', 100, '7,430'], ['Leads', 42, '312'], ['Qualified', 24, '96'], ['Customers', 11, '21']] },
+          { t: 'Cost per lead', act: 'A spend alert that tells you the day cost per lead rises 15%.', k: '$61', c: 'down $8 this month', line: [82, 78, 80, 74, 70, 71, 66, 61] }
         ],
         daily: { head: '14 new leads, and paid search needs a look.', nums: [['14', 'New leads', '+3', 1], ['4.2%', 'Conversion', '+0.4 pt', 1], ['$61', 'Cost per lead', '-$8', 1]],
           what: ['Most new leads came from the March webinar replay.', 'Paid search spend rose 12% with no change in leads.', 'Eleven leads were scored and routed to sales overnight.'],
@@ -95,9 +95,9 @@
         ] },
       { g: 'sales', name: 'Sales',
         reports: [
-          { t: 'Pipeline by stage', act: 'Stalled deals are flagged to their owner each morning.', k: '$1.24M', c: 'open pipeline', bars: [['Discovery', 100, '$480K'], ['Proposal', 71, '$340K'], ['Contract', 58, '$280K'], ['Verbal', 29, '$140K']] },
-          { t: 'Follow-ups due', act: 'Each follow-up is drafted and waiting.', k: '17', c: 'due today', rows: [['Northwind Supply', '12 days quiet'], ['Harbor & Pine', '10 days quiet'], ['Juniper Labs', 'Proposal opened']] },
-          { t: 'Win rate', act: 'Lost-deal reasons are logged without asking reps.', k: '31%', c: 'up 4 points this quarter', line: [24, 26, 25, 27, 29, 28, 30, 31] }
+          { t: 'Pipeline by stage', act: 'A stalled-deal workflow that flags each one to its owner every morning.', k: '$1.24M', c: 'open pipeline', bars: [['Discovery', 100, '$480K'], ['Proposal', 71, '$340K'], ['Contract', 58, '$280K'], ['Verbal', 29, '$140K']] },
+          { t: 'Follow-ups due', act: 'A follow-up drafter that writes each one and holds it for your send.', k: '17', c: 'due today', rows: [['Northwind Supply', '12 days quiet'], ['Harbor & Pine', '10 days quiet'], ['Juniper Labs', 'Proposal opened']] },
+          { t: 'Win rate', act: 'A win-loss tracker that records why each deal went the way it did, without asking reps.', k: '31%', c: 'up 4 points this quarter', line: [24, 26, 25, 27, 29, 28, 30, 31] }
         ],
         daily: { head: 'Two deals moved to contract. One is stuck in legal.', nums: [['6', 'Deals moved', '+2', 1], ['$84K', 'New pipeline', '+$21K', 1], ['17', 'Follow-ups due', '+5', 0]],
           what: ['Two deals moved to contract.', 'One deal has sat in legal review for 9 days.', 'Three inbound leads were qualified and assigned overnight.'],
@@ -110,9 +110,9 @@
         ] },
       { g: 'prod', name: 'Product',
         reports: [
-          { t: 'Where users drop off', act: 'Users who stall get a help guide the same day.', k: '37%', c: 'leave at "Connect your data"', bars: [['Sign up', 100, '100%'], ['Set up', 81, '81%'], ['Connect data', 51, '51%'], ['First report', 44, '44%']] },
-          { t: 'Feature use', act: 'Unused features are flagged for a tip or for removal.', k: '6%', c: 'opened custom reports', bars: [['Dashboards', 100, '92%'], ['Exports', 63, '58%'], ['Alerts', 37, '34%'], ['Custom reports', 7, '6%']] },
-          { t: 'Top requests', act: 'Requests are grouped and sent to product weekly.', k: '22', c: 'asks for bulk editing', rows: [['Bulk editing', '22 requests'], ['Faster onboarding', '17 requests'], ['Slack alerts', '9 requests']] }
+          { t: 'Where users drop off', act: 'A drop-off workflow that sends a help guide to anyone who stalls.', k: '37%', c: 'leave at "Connect your data"', bars: [['Sign up', 100, '100%'], ['Set up', 81, '81%'], ['Connect data', 51, '51%'], ['First report', 44, '44%']] },
+          { t: 'Feature use', act: 'A usage monitor that flags unused features for a tip or for removal.', k: '6%', c: 'opened custom reports', bars: [['Dashboards', 100, '92%'], ['Exports', 63, '58%'], ['Alerts', 37, '34%'], ['Custom reports', 7, '6%']] },
+          { t: 'Top requests', act: 'A request grouper that bundles them by theme and sends product one brief a week.', k: '22', c: 'asks for bulk editing', rows: [['Bulk editing', '22 requests'], ['Faster onboarding', '17 requests'], ['Slack alerts', '9 requests']] }
         ],
         daily: { head: 'Onboarding completion fell after Tuesday\'s release.', nums: [['1,284', 'Active users', '+2%', 1], ['63%', 'Onboarding done', '-4 pt', 0], ['9', 'New feedback', '+3', 1]],
           what: ['Drop-off rose at "Connect your data" after Tuesday\'s release.', 'Exports were used by 40% more accounts.', 'Nine pieces of feedback were tagged and grouped.'],
@@ -125,9 +125,9 @@
         ] },
       { g: 'ops', name: 'Operations',
         reports: [
-          { t: 'Team capacity', act: 'New work goes to whoever has room.', k: '91%', c: 'of hours booked', bars: [['Delivery', 100, '112%'], ['Support', 76, '85%'], ['Design', 70, '78%'], ['Onboarding', 58, '65%']] },
-          { t: 'Projects on track', act: 'A late project triggers a drafted client update.', k: '18 of 22', c: 'on schedule', donut: [82, 'on schedule'] },
-          { t: 'Handoffs waiting', act: 'Each waiting handoff gets a reminder on day 2.', k: '3', c: 'none older than 2 days', rows: [['Acme Co.', 'Client files'], ['Northwind Supply', 'Kickoff date'], ['Juniper Labs', 'Signed scope']] }
+          { t: 'Team capacity', act: 'A capacity workflow that routes new work to whoever has room.', k: '91%', c: 'of hours booked', bars: [['Delivery', 100, '112%'], ['Support', 76, '85%'], ['Design', 70, '78%'], ['Onboarding', 58, '65%']] },
+          { t: 'Projects on track', act: 'A slippage workflow that drafts the client update the day a project runs late.', k: '18 of 22', c: 'on schedule', donut: [82, 'on schedule'] },
+          { t: 'Handoffs waiting', act: 'A handoff tracker that reminds the owner on day 2.', k: '3', c: 'none older than 2 days', rows: [['Acme Co.', 'Client files'], ['Northwind Supply', 'Kickoff date'], ['Juniper Labs', 'Signed scope']] }
         ],
         daily: { head: 'Delivery is booked past full through March.', nums: [['18 of 22', 'Projects on track', '-1', 0], ['91%', 'Hours booked', '+3 pt', 1], ['3', 'Handoffs waiting', '0', 1]],
           what: ['Two kickoffs were staffed by who has capacity.', 'The Acme project slipped two days waiting on client files.', 'This week\'s status report was written and sent.'],
@@ -140,9 +140,9 @@
         ] },
       { g: 'fin', name: 'Finance',
         reports: [
-          { t: 'Money owed to you', act: 'Reminders go out at 7, 14 and 30 days.', k: '$86K', c: 'outstanding', bars: [['Not yet due', 100, '$52K'], ['1 to 30 days', 31, '$16K'], ['31 to 60 days', 23, '$12K'], ['Over 60 days', 12, '$6K']] },
-          { t: 'Cash collected', act: 'Failed payments are retried, then flagged.', k: '$212K', c: 'this month', line: [140, 152, 149, 168, 181, 176, 198, 212] },
-          { t: 'Software spend', act: 'Unused tools are listed for cancellation each month.', k: '$14.2K', c: 'a month across 34 tools', bars: [['Sales', 100, '$4.6K'], ['Marketing', 74, '$3.4K'], ['Operations', 70, '$3.2K'], ['Other', 65, '$3.0K']] }
+          { t: 'Money owed to you', act: 'A collections workflow that sends reminders at 7, 14 and 30 days.', k: '$86K', c: 'outstanding', bars: [['Not yet due', 100, '$52K'], ['1 to 30 days', 31, '$16K'], ['31 to 60 days', 23, '$12K'], ['Over 60 days', 12, '$6K']] },
+          { t: 'Cash collected', act: 'A payment recovery workflow that retries a failed charge, then flags it.', k: '$212K', c: 'this month', line: [140, 152, 149, 168, 181, 176, 198, 212] },
+          { t: 'Software spend', act: 'A license monitor that lists unused tools for cancellation each month.', k: '$14.2K', c: 'a month across 34 tools', bars: [['Sales', 100, '$4.6K'], ['Marketing', 74, '$3.4K'], ['Operations', 70, '$3.2K'], ['Other', 65, '$3.0K']] }
         ],
         daily: { head: 'Two invoices are waiting for your approval.', nums: [['$42K', 'Invoiced', '+$9K', 1], ['$31K', 'Collected', '+$4K', 1], ['$18K', 'Overdue', '+$6K', 0]],
           what: ['Four invoices were drafted from signed contracts.', 'One payment failed and was retried successfully.', 'Three payment reminders went out.'],
@@ -155,9 +155,9 @@
         ] },
       { g: 'cs', name: 'Customer success',
         reports: [
-          { t: 'Account health', act: 'An at-risk account gets a check-in drafted.', k: '9', c: 'accounts at risk', donut: [88, 'healthy'] },
-          { t: 'Tickets by topic', act: 'Repeat topics become help articles.', k: '23', c: 'opened yesterday', bars: [['Onboarding', 100, '9'], ['Billing', 56, '5'], ['Reports', 56, '5'], ['Other', 44, '4']] },
-          { t: 'Renewals in 90 days', act: 'Renewal plans start 90 days out.', k: '$310K', c: 'across 14 accounts', rows: [['Harbor & Pine', 'No login in 30 days'], ['Acme Co.', 'Usage down 40%'], ['Juniper Labs', 'Healthy']] }
+          { t: 'Account health', act: 'A risk workflow that drafts a check-in the moment an account slips.', k: '9', c: 'accounts at risk', donut: [88, 'healthy'] },
+          { t: 'Tickets by topic', act: 'A help-article workflow that turns repeat topics into published answers.', k: '23', c: 'opened yesterday', bars: [['Onboarding', 100, '9'], ['Billing', 56, '5'], ['Reports', 56, '5'], ['Other', 44, '4']] },
+          { t: 'Renewals in 90 days', act: 'A renewal workflow that starts the plan 90 days out.', k: '$310K', c: 'across 14 accounts', rows: [['Harbor & Pine', 'No login in 30 days'], ['Acme Co.', 'Usage down 40%'], ['Juniper Labs', 'Healthy']] }
         ],
         daily: { head: 'Usage dropped at two accounts that renew next month.', nums: [['23', 'Tickets opened', '-4', 1], ['12 min', 'First reply', '-3 min', 1], ['9', 'Accounts at risk', '+2', 0]],
           what: ['Nineteen tickets were answered with account history.', 'Usage dropped at two accounts renewing next month.', 'Three onboarding plans were written for new customers.'],
@@ -176,7 +176,7 @@
     const report = (r, c) => `<div class="card rep" style="--c:${c}"><small>${r.t}</small><b>${r.k}</b><span class="cap">${r.c}</span>` +
       (r.bars ? `<ul class="viz-bars">${r.bars.map(([l, w, v]) => `<li><span>${l}</span><i><u style="width:${w}%"></u></i><em>${v}</em></li>`).join('')}</ul>` : '') +
       (r.rows ? `<ul class="viz-rows">${r.rows.map(([a, b]) => `<li><span>${a}</span><em>${b}</em></li>`).join('')}</ul>` : '') +
-      (r.line ? spark(r.line, c) : '') + (r.donut ? donut(r.donut[0], r.donut[1], c) : '') + `<p class="do"><small>Action</small>${r.act}</p></div>`;
+      (r.line ? spark(r.line, c) : '') + (r.donut ? donut(r.donut[0], r.donut[1], c) : '') + `<p class="do"><small>What we build</small>${r.act}</p></div>`;
     const today = new Date().toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
     const daily = f => { const d = f.daily, c = C[f.g];
       return `<div class="dr" style="--c:${c}"><div class="drh">${glyph(f.g, c)}<b>${f.name} daily report</b><span>${today} · covers yesterday</span></div><h3>${d.head}</h3>` +

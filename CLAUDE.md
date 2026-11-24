@@ -67,6 +67,7 @@ Check desktop and a phone width (390px) before pushing.
 - Never say which tools a client keeps and which get replaced. The line is: we can work with existing tools, or replace any of them with a custom solution.
 - Staying on after launch is optional. Do not imply the client must keep us.
 - Examples must show the insight and the action taken, not the insight alone.
+- Name the thing we would build, then say what it does: "A routing workflow that sends each new lead to the right rep by source." A platform, a tool or a workflow, never a bare outcome with no object in it. This holds for the report cards on How it works and the result of the assessment.
 - We do not do hardware. The client's existing provider keeps that.
 
 ## Known gaps
