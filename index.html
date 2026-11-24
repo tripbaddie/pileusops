@@ -7,6 +7,13 @@
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA0MCA0MCI+PHBhdGggZD0iTTE0LjAwIDE5SDE2LjQwTDE1LjY4IDM3LjVIMTIuODB6IiBmaWxsPSIjOEYyQkZGIi8+PHBhdGggZD0iTTE2LjQwIDE5SDE4LjgwTDE4LjU2IDM3LjVIMTUuNjh6IiBmaWxsPSIjMEEzQkZGIi8+PHBhdGggZD0iTTE4LjgwIDE5SDIxLjIwTDIxLjQ0IDM3LjVIMTguNTZ6IiBmaWxsPSIjRkZDNDAwIi8+PHBhdGggZD0iTTIxLjIwIDE5SDIzLjYwTDI0LjMyIDM3LjVIMjEuNDR6IiBmaWxsPSIjMDBCMDUwIi8+PHBhdGggZD0iTTIzLjYwIDE5SDI2LjAwTDI3LjIwIDM3LjVIMjQuMzJ6IiBmaWxsPSIjRkYyQjJCIi8+PHBhdGggZD0iTTIuNSAxOS41YTE3LjUgMTcuNSAwIDAgMSAzNSAwYzAgMS4xLS45IDItMiAyaC0zMWMtMS4xIDAtMi0uOS0yLTJ6IiBmaWxsPSIjMEIxMjIwIi8+PGNpcmNsZSBjeD0iMTIuNSIgY3k9IjEyLjUiIHI9IjIuMyIgZmlsbD0iI0Y3RjdGNCIvPjxjaXJjbGUgY3g9IjIxLjUiIGN5PSI4LjIiIHI9IjIuNyIgZmlsbD0iI0Y3RjdGNCIvPjxjaXJjbGUgY3g9IjI5LjUiIGN5PSIxNCIgcj0iMS45IiBmaWxsPSIjRjdGN0Y0Ii8+PC9zdmc+">
 <link rel="canonical" href="https://pileusops.com/">
 <meta property="og:type" content="website">
+<meta property="og:site_name" content="Pileus Ops">
+<meta property="og:image" content="https://pileusops.com/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Pileus Ops. Turn the apps you already run into one AI system you control.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://pileusops.com/og.png">
 <meta property="og:url" content="https://pileusops.com/">
 <meta property="og:title" content="Pileus Ops | Operations for the AI era">
 <meta property="og:description" content="Pileus Ops is operations for the AI era. We turn the apps you already run into one AI system you control.">
@@ -586,8 +593,8 @@ html.js .rv.seen{opacity:1;transform:none}
     <h2 class="rv">Your tools multiplied. Nobody connected them.</h2>
     <div class="grid g3">
       <div class="card stat rv"><b>118</b><p>apps in the average company</p><small>BetterCloud, State of SaaS 2026</small></div>
-      <div class="card stat rv"><b>46%</b><p>of paid software licenses go unused</p><small>Zylo, SaaS Management Index 2026</small></div>
-      <div class="card stat rv"><b>36</b><p>possible handoffs between just 9 apps</p><small>The math: every app paired with every other</small></div>
+      <div class="card stat rv"><b>36%</b><p>of paid software licenses go unused</p><small>Zylo, SaaS Management Index 2026</small></div>
+      <div class="card stat rv"><b>45</b><p>possible handoffs between just 10 apps</p><small>The math: every app paired with every other</small></div>
     </div>
     <p class="close rv">Each team bought what it needed. The work between teams still runs on copy and paste.</p>
   </div>
@@ -819,10 +826,11 @@ html.js .rv.seen{opacity:1;transform:none}
         </div>
         <div class="first"><small>The first thing we would build</small><p id="rFirst"></p></div>
         <form class="send" id="send">
-          <input type="email" id="email" placeholder="you@company.com" aria-label="Work email" required>
-          <button class="cta" type="submit">Email me the full report</button>
+          <input type="email" id="email" placeholder="you@company.com" aria-label="Work email" autocomplete="email" required>
+          <input type="checkbox" id="botcheck" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;opacity:0">
+          <button class="cta" type="submit" id="sendBtn">Email me the full report</button>
         </form>
-        <p class="sent" id="sent" hidden>Preview only. On the live site this sends your report.</p>
+        <p class="sent" id="sent" role="status" hidden></p>
         <button class="again" id="again" type="button">Start over</button>
       </div>
     </div>
@@ -1303,7 +1311,28 @@ if (!still && matchMedia('(hover: hover)').matches){
   function cost(){ const p = Math.max(0, +el('cPeople').value || 0), h = Math.max(0, +el('cHours').value || 0), r = Math.max(0, +el('cRate').value || 0);
     el('cOut').textContent = money(p * h * r * 50); el('cHow').textContent = `${p} people x ${h} hours x ${money(r)} x 50 working weeks. These are your numbers, so change any of them.`; }
   ['cPeople', 'cHours', 'cRate'].forEach(id => el(id).addEventListener('input', cost));
-  el('send').addEventListener('submit', e => { e.preventDefault(); el('sent').hidden = false; });
+  // The email form posts to Web3Forms, which forwards each submission to the team inbox.
+  // FORM_KEY is a Web3Forms access key. It is safe to keep in public code. Leave it empty to switch the form off.
+  const FORM_KEY = '';
+  const say = t => { const n = el('sent'); n.textContent = t; n.hidden = false; };
+  el('send').addEventListener('submit', async e => {
+    e.preventDefault();
+    if (el('botcheck').checked) return;
+    if (!FORM_KEY){ say('Thanks. Emailed reports are coming soon. Your full result is on this page.'); return; }
+    const btn = el('sendBtn'), label = btn.textContent, mine = [...picked].sort((a, b) => a - b).map(i => APPS[i][0]);
+    btn.disabled = true; btn.textContent = 'Sending';
+    try {
+      const r = await fetch('https://api.web3forms.com/submit', { method: 'POST', headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+        body: JSON.stringify({ access_key: FORM_KEY, subject: 'New assessment from pileusops.com', from_name: 'Pileus Ops website', email: el('email').value.trim(),
+          apps: mine.join(', '), app_count: mine.length, team_size: SIZES[size] || '', stuck_on: (STUCK[stuck] || [''])[0], first_build: (STUCK[stuck] || ['', ''])[1],
+          handoffs_today: el('rBefore').textContent, yearly_cost_of_manual_work: el('cOut').textContent,
+          cost_inputs: `${el('cPeople').value} people, ${el('cHours').value} hours a week, $${el('cRate').value} an hour` }) });
+      const j = await r.json().catch(() => ({}));
+      if (!r.ok || j.success === false) throw new Error(j.message || 'send failed');
+      say('Thanks. We have your results and will email your full report shortly.'); el('send').reset();
+    } catch (err) { say('That did not send. Please try again in a moment.'); }
+    btn.disabled = false; btn.textContent = label;
+  });
   el('again').addEventListener('click', () => { box.classList.remove('done'); });
 })();
 </script>

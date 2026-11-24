@@ -45,7 +45,17 @@ Open `index.html` in a browser, or run `python3 -m http.server` in this folder a
 
 ## Known gaps
 
-- The email field on the assessment result does not send anything yet. It shows "Preview only." A static site needs a form service for this.
+- The assessment email form posts to Web3Forms, which forwards each submission to the team inbox. It needs an access key in `FORM_KEY` (second script block). While `FORM_KEY` is empty the form shows a "coming soon" note and sends nothing.
+- The form delivers the lead and their answers to the team. It does not email the visitor a report automatically. Someone has to send it.
 - The four advisor cards on About have no names, and their descriptions are placeholders.
 - Demo data on How it works and the example answers on Home are invented for illustration.
-- Two outside statistics on Home (BetterCloud, Zylo) should be verified before launch.
+
+## Sources for the statistics on Home
+
+- 118 apps in the average company: BetterCloud, State of SaaS 2026.
+- 36% of paid licenses unused: Zylo, 2026 SaaS Management Index.
+- 45 handoffs between 10 apps is arithmetic: every app paired with every other.
+
+## Link preview
+
+`og.png` (1200 by 630) is the image shown when the site is shared. Regenerate it if the headline or logo changes.
