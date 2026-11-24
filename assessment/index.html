@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Free assessment | Pileus Ops</title>
+<meta name="description" content="Map your company in two minutes. See how many handoffs run between your apps today, what the manual work costs you, and what we would build first.">
+<link rel="canonical" href="https://pileusops.com/assessment/">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Pileus Ops">
+<meta property="og:url" content="https://pileusops.com/assessment/">
+<meta property="og:title" content="Free assessment | Pileus Ops">
+<meta property="og:description" content="Map your company in two minutes. See how many handoffs run between your apps today, what the manual work costs you, and what we would build first.">
+<meta property="og:image" content="https://pileusops.com/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Pileus Ops. Turn the apps you already run into one AI system you control.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://pileusops.com/og.png">
+<script>document.documentElement.classList.add("js")</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Funnel+Display:wght@500;600;700&family=Funnel+Sans:wght@400;500;600&family=Geist+Mono:wght@500&display=swap">
+<link rel="stylesheet" href="/site.css">
+</head>
+<body>
+<div class="bar">
+  <header class="top">
+    <a class="brand" href="/" aria-label="Pileus Ops">
+      <svg aria-hidden="true" width="38" height="38" viewBox="0 0 40 40"><path d="M14.00 19H16.40L15.68 37.5H12.80z" fill="#8F2BFF"/><path d="M16.40 19H18.80L18.56 37.5H15.68z" fill="#0A3BFF"/><path d="M18.80 19H21.20L21.44 37.5H18.56z" fill="#FFC400"/><path d="M21.20 19H23.60L24.32 37.5H21.44z" fill="#00B050"/><path d="M23.60 19H26.00L27.20 37.5H24.32z" fill="#FF2B2B"/><path d="M2.5 19.5a17.5 17.5 0 0 1 35 0c0 1.1-.9 2-2 2h-31c-1.1 0-2-.9-2-2z" fill="#0B1220"/><circle cx="12.5" cy="12.5" r="2.3" fill="#F7F7F4"/><circle cx="21.5" cy="8.2" r="2.7" fill="#F7F7F4"/><circle cx="29.5" cy="14" r="1.9" fill="#F7F7F4"/></svg>
+      <span>pileus <span class="ops">ops</span></span></a>
+    <span class="tag">Operations for the AI era</span>
+    <nav class="nav" aria-label="Page"><a href="/how-it-works/">How it works</a><a href="/about/">About</a><a class="go" href="/assessment/" aria-current="page">Start your assessment</a></nav>
+  </header>
+</div>
+<section class="band phead">
+  <div class="in">
+    <p class="eyebrow">The assessment</p>
+    <h1 class="h1">Map your company in 2 minutes.</h1>
+    <p class="sub">No call needed. Your result shows on screen.</p>
+    <div class="assess" id="assess">
+      <div class="form">
+        <fieldset><legend><span>01</span>Which of these do you run?</legend><div class="opts" id="optApps"></div></fieldset>
+        <fieldset><legend><span>02</span>How big is your team?</legend><div class="opts" id="optSize"></div></fieldset>
+        <fieldset><legend><span>03</span>Where does work get stuck most?</legend><div class="opts" id="optStuck"></div></fieldset>
+        <button class="cta" id="showMap" type="button" disabled>Show my map
+          <svg aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 8h11M9 4l4 4-4 4"/></svg></button>
+        <p class="hint" id="hint">Pick at least 3 apps and answer both questions.</p>
+      </div>
+      <div class="result" id="result" aria-live="polite">
+        <p class="eyebrow">Your map</p>
+        <h3 id="rHead"></h3>
+        <div class="rcols">
+          <div class="rcol"><h4>Your apps</h4><div class="srcs" id="rApps"></div></div>
+          <div class="rcol"><h4>Keep or replace</h4><p class="rnote">Your call. We can connect the tools you want to keep, and replace the ones holding you back with a custom build.</p></div>
+        </div>
+        <div class="rfacts">
+          <div class="rfact"><b id="rBefore"></b><p>possible handoffs between your apps today</p></div>
+          <div class="rfact"><b id="rAfter"></b><p id="rAfterT"></p></div>
+        </div>
+        <div class="cost">
+          <h4>What this costs you today</h4>
+          <div class="costrow">
+            <label>People who move information between tools<input type="number" id="cPeople" min="1" step="1" value="10" inputmode="numeric"></label>
+            <label>Hours a week each spends on it<input type="number" id="cHours" min="0" step="0.5" value="3" inputmode="decimal"></label>
+            <label>Cost of an hour, in dollars<input type="number" id="cRate" min="0" step="5" value="50" inputmode="numeric"></label>
+          </div>
+          <p class="costout"><b id="cOut"></b><span>a year spent moving information by hand</span></p>
+          <p class="note" id="cHow"></p>
+        </div>
+        <div class="first"><small>The first thing we would build</small><p id="rFirst"></p></div>
+        <form class="send" id="send">
+          <input type="email" id="email" placeholder="you@company.com" aria-label="Work email" autocomplete="email" required>
+          <input type="checkbox" id="botcheck" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;opacity:0">
+          <button class="cta" type="submit" id="sendBtn">Email me the full report</button>
+        </form>
+        <p class="sent" id="sent" role="status" hidden></p>
+        <button class="again" id="again" type="button">Start over</button>
+      </div>
+    </div>
+    <div class="grid g3 gets">
+      <div><h3>Your map, right away</h3><p>How your apps fit together, and how many handoffs disappear.</p></div>
+      <div><h3>A full report by email</h3><p>The detail behind your map, ready to share with your team.</p></div>
+      <div><h3>A place to start</h3><p>The first thing we would build, based on where your work gets stuck.</p></div>
+    </div>
+  </div>
+</section>
+<footer class="foot">
+  <div class="in">
+    <a class="brand" href="/" aria-label="Pileus Ops home"><svg aria-hidden="true" width="34" height="34" viewBox="0 0 40 40"><path d="M14.00 19H16.40L15.68 37.5H12.80z" fill="#8F2BFF"/><path d="M16.40 19H18.80L18.56 37.5H15.68z" fill="#0A3BFF"/><path d="M18.80 19H21.20L21.44 37.5H18.56z" fill="#FFC400"/><path d="M21.20 19H23.60L24.32 37.5H21.44z" fill="#00B050"/><path d="M23.60 19H26.00L27.20 37.5H24.32z" fill="#FF2B2B"/><path d="M2.5 19.5a17.5 17.5 0 0 1 35 0c0 1.1-.9 2-2 2h-31c-1.1 0-2-.9-2-2z" fill="#0B1220"/><circle cx="12.5" cy="12.5" r="2.3" fill="#F7F7F4"/><circle cx="21.5" cy="8.2" r="2.7" fill="#F7F7F4"/><circle cx="29.5" cy="14" r="1.9" fill="#F7F7F4"/></svg> <span>pileus <span class="ops">ops</span></span></a>
+    <p class="line">Most of what runs a company is underneath.</p>
+    <nav aria-label="Footer"><a href="/how-it-works/">How it works</a><a href="/assessment/" aria-current="page">Assessment</a><a href="/about/">About</a></nav>
+    <small>Operations for the AI era · 2026</small>
+  </div>
+</footer>
+<script src="/brand.js"></script>
+<script src="/app.js"></script>
+</body>
+</html>
