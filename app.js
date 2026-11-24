@@ -199,12 +199,12 @@
     // ---- the assessment: pick your apps, answer two questions, see your own map
     // the apps a B2B software or services company actually runs, grouped the way they were bought: team by team
     const GROUPS = [
-      ['Marketing', 'mkt', ['Email marketing', 'Website or CMS', 'Forms and landing pages', 'Ads and SEO', 'Webinars and events']],
-      ['Sales', 'sales', ['CRM', 'Proposals and quotes', 'E-signature', 'Outbound sequences', 'Lead and intent data']],
-      ['Product', 'prod', ['Issue tracker', 'Product analytics', 'Code and releases', 'Customer feedback']],
-      ['Delivery and internal', 'ops', ['Project tracker', 'Time tracking', 'Scheduling and resourcing', 'Docs and knowledge base', 'Spreadsheets', 'Team chat', 'HR and hiring']],
-      ['Finance', 'fin', ['Invoicing and billing', 'Subscriptions and payments', 'Accounting', 'Expenses', 'Payroll', 'Reporting and dashboards']],
-      ['Customer', 'cs', ['Help desk', 'Customer success', 'Onboarding checklists', 'Surveys and feedback']]
+      ['Marketing', 'mkt', ['Email and marketing automation', 'Website or CMS', 'Landing pages and forms', 'Ad platforms', 'Webinar and event platform']],
+      ['Sales', 'sales', ['CRM', 'Sales engagement and outbound', 'Proposals and quoting', 'E-signature', 'Lead and intent data']],
+      ['Product', 'prod', ['Issue and sprint tracker', 'Product analytics', 'Code repository', 'Feedback and roadmap']],
+      ['Delivery and internal', 'ops', ['Project management', 'Time tracking', 'Resource scheduling', 'Knowledge base or wiki', 'Spreadsheets', 'Team chat', 'HR system']],
+      ['Finance', 'fin', ['Accounting', 'Billing and invoicing', 'Payments and subscriptions', 'Expense management', 'Payroll', 'BI and dashboards']],
+      ['Customer', 'cs', ['Help desk', 'Customer success platform', 'Customer onboarding', 'Surveys and NPS']]
     ];
     const APPS = GROUPS.flatMap(([, g, names]) => names.map(n => [n, g]));
     const SELLS = ['Software', 'Services', 'Both'];

@@ -82,7 +82,7 @@ Check desktop and a phone width (390px) before pushing.
 Four questions, all in `app.js` under `if (el('assess'))`:
 
 1. What do you sell: `SELLS`. Software, Services or Both.
-2. Which apps do you run: `GROUPS`, 31 apps in six teams. Each team gets a coloured dot from the brand palette, so the picker looks the way the sprawl happened. `APPS` is the flattened list the rest of the code uses.
+2. Which apps do you run: `GROUPS`, 31 apps in six teams. Each option is the name of a software category a B2B company would recognise buying, a platform or a tool, not an activity. "Billing and invoicing", not "we send invoices". Each team gets a coloured dot from the brand palette, so the picker looks the way the sprawl happened. `APPS` is the flattened list the rest of the code uses.
 3. How many people: `SIZES`, which also sets the headcount the cost calculator starts from.
 4. Which of these sounds most like your company: `PROBLEMS`. Each entry is `[the problem in the owner's words, what we build for software, what we build for services]`, and the result picks the wording that matches question 1.
 
