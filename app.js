@@ -197,18 +197,55 @@
 
   if (el('assess')){   // assessment page only
     // ---- the assessment: pick your apps, answer two questions, see your own map
-    const APPS = [['CRM', 'sales'], ['Email marketing', 'mkt'], ['Billing', 'fin'], ['Help desk', 'cs'], ['Project tracker', 'ops'], ['Payroll', 'fin'], ['Team chat', 'ops'], ['Product analytics', 'prod'],
-      ['Spreadsheets', 'ops'], ['Forms', 'mkt'], ['Scheduling', 'ops'], ['Reporting', 'fin'], ['Proposals', 'sales'], ['E-signature', 'sales'], ['Onboarding checklists', 'cs'], ['Surveys', 'cs']];
+    // the apps a B2B software or services company actually runs, grouped the way they were bought: team by team
+    const GROUPS = [
+      ['Marketing', 'mkt', ['Email marketing', 'Website or CMS', 'Forms and landing pages', 'Ads and SEO', 'Webinars and events']],
+      ['Sales', 'sales', ['CRM', 'Proposals and quotes', 'E-signature', 'Outbound sequences', 'Lead and intent data']],
+      ['Product', 'prod', ['Issue tracker', 'Product analytics', 'Code and releases', 'Customer feedback']],
+      ['Delivery and internal', 'ops', ['Project tracker', 'Time tracking', 'Scheduling and resourcing', 'Docs and knowledge base', 'Spreadsheets', 'Team chat', 'HR and hiring']],
+      ['Finance', 'fin', ['Invoicing and billing', 'Subscriptions and payments', 'Accounting', 'Expenses', 'Payroll', 'Reporting and dashboards']],
+      ['Customer', 'cs', ['Help desk', 'Customer success', 'Onboarding checklists', 'Surveys and feedback']]
+    ];
+    const APPS = GROUPS.flatMap(([, g, names]) => names.map(n => [n, g]));
+    const SELLS = ['Software', 'Services', 'Both'];
     const SIZES = ['1 to 10', '11 to 50', '51 to 200', 'Over 200'];
-    const STUCK = [['Handoffs between teams', 'A sales-to-delivery handoff that staffs and schedules itself.'], ['Reporting', 'One weekly report, written for you from every team\'s data.'],
-      ['Manual data entry', 'One intake that fills your CRM, tracker and billing at once.'], ['Customer follow-up', 'Renewal and at-risk alerts, with the reply already drafted.']];
-    const picked = new Set(); let size = -1, stuck = -1;
+    // what we would build first, in their words: software, then services
+    const STUCK = [
+      ['The sales to delivery handoff',
+        'A closed deal that provisions the account, assigns onboarding and tells the customer what happens next.',
+        'A closed deal that staffs the project from who has capacity and books the kickoff.'],
+      ['Customer onboarding',
+        'An onboarding plan per account, with the ones that stall flagged before the customer goes quiet.',
+        'A kickoff pack built from the signed scope, with owners and dates already set.'],
+      ['Reporting and forecasting',
+        "One weekly report, written for you from every team's data, with the numbers that moved explained.",
+        'One weekly report across projects, margin and pipeline, written for you from every team\'s data.'],
+      ['Renewals and accounts at risk',
+        'Usage, tickets and invoices in one risk score, with the outreach drafted for any account that slips.',
+        'Delivery health, invoices and sentiment in one view, with the check-in drafted before a client goes quiet.'],
+      ['Quotes, contracts and invoicing',
+        'A quote that becomes a contract, then an invoice, without anyone retyping it.',
+        'Scope to quote to invoice from one record, with time and expenses already attached.'],
+      ['Manual data entry between tools',
+        'One intake that fills your CRM, your tracker and your billing at once.',
+        'One intake that fills your CRM, your project tracker and your billing at once.']
+    ];
+    const picked = new Set(); let sells = -1, size = -1, stuck = -1;
     const box = el('assess'), go = el('showMap'), hint = el('hint');
     const mk = (host, label, on) => { const b = document.createElement('button'); b.type = 'button'; b.className = 'opt'; b.textContent = label; b.setAttribute('aria-pressed', 'false'); b.addEventListener('click', () => on(b)); host.appendChild(b); return b; };
-    const ready = () => { const ok = picked.size >= 3 && size >= 0 && stuck >= 0; go.disabled = !ok; hint.textContent = ok ? `${picked.size} apps selected.` : 'Pick at least 3 apps and answer both questions.'; };
-    APPS.forEach((a, i) => mk(el('optApps'), a[0], b => { picked.has(i) ? picked.delete(i) : picked.add(i); b.setAttribute('aria-pressed', picked.has(i)); ready(); }));
+    const ready = () => { const ok = picked.size >= 3 && sells >= 0 && size >= 0 && stuck >= 0; go.disabled = !ok;
+      hint.textContent = ok ? `${picked.size} apps selected.` : picked.size < 3 ? 'Pick at least 3 apps to see your map.' : 'Answer all four to see your map.'; };
+    // one row per team, so the picker looks the way the sprawl happened
+    let n = 0;
+    GROUPS.forEach(([label, g, names]) => {
+      const wrap = document.createElement('div'); wrap.className = 'optg'; wrap.style.setProperty('--c', C[g]);
+      const h = document.createElement('p'); h.className = 'optgl'; h.textContent = label; wrap.appendChild(h);
+      const row = document.createElement('div'); row.className = 'opts'; wrap.appendChild(row);
+      names.forEach(() => { const i = n++; mk(row, APPS[i][0], b => { picked.has(i) ? picked.delete(i) : picked.add(i); b.setAttribute('aria-pressed', picked.has(i)); ready(); }); });
+      el('optApps').appendChild(wrap);
+    });
     const one = (host, labels, set) => { const bs = labels.map((l, i) => mk(host, l, () => { set(i); bs.forEach((x, k) => x.setAttribute('aria-pressed', k === i)); ready(); })); return bs; };
-    one(el('optSize'), SIZES, i => { size = i; }); one(el('optStuck'), STUCK.map(s => s[0]), i => { stuck = i; });
+    one(el('optSells'), SELLS, i => { sells = i; }); one(el('optSize'), SIZES, i => { size = i; }); one(el('optStuck'), STUCK.map(s => s[0]), i => { stuck = i; });
     go.addEventListener('click', () => {
       const mine = [...picked].sort((a, b) => a - b).map(i => APPS[i]), n = mine.length;
       el('rHead').textContent = `${n} apps today. 1 system.`;
@@ -216,7 +253,8 @@
       el('rBefore').textContent = n * (n - 1) / 2;
       el('rAfter').textContent = '1';
       el('rAfterT').textContent = 'system that connects them all';
-      el('rFirst').textContent = STUCK[stuck][1];
+      el('rFirst').textContent = STUCK[stuck][sells === 1 ? 2 : 1];   // services get their own wording
+      el('rFirstL').textContent = `The first thing we would build for a B2B ${['software company', 'services company', 'software and services company'][sells]}`;
       el('cPeople').value = [4, 12, 40, 100][size]; cost();
       box.classList.add('done'); el('sent').hidden = true;
       box.scrollIntoView({ behavior: calm ? 'auto' : 'smooth', block: 'nearest' });
@@ -239,7 +277,8 @@
       try {
         const r = await fetch('https://api.web3forms.com/submit', { method: 'POST', headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
           body: JSON.stringify({ access_key: FORM_KEY, subject: 'New assessment from pileusops.com', from_name: 'Pileus Ops website', email: el('email').value.trim(),
-            apps: mine.join(', '), app_count: mine.length, team_size: SIZES[size] || '', stuck_on: (STUCK[stuck] || [''])[0], first_build: (STUCK[stuck] || ['', ''])[1],
+            sells: SELLS[sells] || '', apps: mine.join(', '), app_count: mine.length, team_size: SIZES[size] || '',
+          stuck_on: (STUCK[stuck] || [''])[0], first_build: el('rFirst').textContent,
             handoffs_today: el('rBefore').textContent, yearly_cost_of_manual_work: el('cOut').textContent,
             cost_inputs: `${el('cPeople').value} people, ${el('cHours').value} hours a week, $${el('cRate').value} an hour` }) });
         const j = await r.json().catch(() => ({}));

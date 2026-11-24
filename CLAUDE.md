@@ -70,6 +70,17 @@ Check desktop and a phone width (390px) before pushing.
 - The four advisor cards on About have no names, and their descriptions are placeholders.
 - Demo data on How it works and the example answers on Home are invented for illustration.
 
+## The assessment
+
+Four questions, all in `app.js` under `if (el('assess'))`:
+
+1. What do you sell: `SELLS`. Software, Services or Both.
+2. Which apps do you run: `GROUPS`, 31 apps in six teams. Each team gets a coloured dot from the brand palette, so the picker looks the way the sprawl happened. `APPS` is the flattened list the rest of the code uses.
+3. How many people: `SIZES`, which also sets the headcount the cost calculator starts from.
+4. Where work gets stuck: `STUCK`. Each entry is `[label, what we build for software, what we build for services]`, and the result picks the wording that matches question 1.
+
+The options are written for B2B software and services companies. Keep them that way: no retail, manufacturing or field-service tools.
+
 ## Sources for the statistics on Home
 
 - 118 apps in the average company: BetterCloud, State of SaaS 2026.

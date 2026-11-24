@@ -41,12 +41,13 @@
     <p class="sub">No call needed. Your result shows on screen.</p>
     <div class="assess" id="assess">
       <div class="form">
-        <fieldset><legend><span>01</span>Which of these do you run?</legend><div class="opts" id="optApps"></div></fieldset>
-        <fieldset><legend><span>02</span>How big is your team?</legend><div class="opts" id="optSize"></div></fieldset>
-        <fieldset><legend><span>03</span>Where does work get stuck most?</legend><div class="opts" id="optStuck"></div></fieldset>
+        <fieldset><legend><span>01</span>What do you sell?</legend><div class="opts" id="optSells"></div></fieldset>
+        <fieldset><legend><span>02</span>Which of these do you run?</legend><div class="optgroups" id="optApps"></div></fieldset>
+        <fieldset><legend><span>03</span>How many people work there?</legend><div class="opts" id="optSize"></div></fieldset>
+        <fieldset><legend><span>04</span>Where does work get stuck most?</legend><div class="opts" id="optStuck"></div></fieldset>
         <button class="cta" id="showMap" type="button" disabled>Show my map
           <svg aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 8h11M9 4l4 4-4 4"/></svg></button>
-        <p class="hint" id="hint">Pick at least 3 apps and answer both questions.</p>
+        <p class="hint" id="hint">Answer all four to see your map.</p>
       </div>
       <div class="result" id="result" aria-live="polite">
         <p class="eyebrow">Your map</p>
@@ -69,7 +70,7 @@
           <p class="costout"><b id="cOut"></b><span>a year spent moving information by hand</span></p>
           <p class="note" id="cHow"></p>
         </div>
-        <div class="first"><small>The first thing we would build</small><p id="rFirst"></p></div>
+        <div class="first"><small id="rFirstL">The first thing we would build</small><p id="rFirst"></p></div>
         <form class="send" id="send">
           <input type="email" id="email" placeholder="you@company.com" aria-label="Work email" autocomplete="email" required>
           <input type="checkbox" id="botcheck" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;opacity:0">
