@@ -40,6 +40,12 @@ Add a new page by copying an existing one, changing the head and body, adding it
 
 The site used to be one file with `#hash` addresses. `app.js` still redirects those old links to the right page.
 
+## After changing a script or a style
+
+Run `./bump`. It stamps `?v=<timestamp>` onto every page's CSS and JS link, so returning
+visitors get the new file instead of the copy their browser cached. Skip it and your change
+is live but invisible to anyone who has already seen the site.
+
 ## To preview a change
 
 Run `python3 -m http.server` in this folder and visit http://localhost:8000. Opening a file directly also works, but the `/` links will not.
@@ -78,6 +84,10 @@ Four questions, all in `app.js` under `if (el('assess'))`:
 2. Which apps do you run: `GROUPS`, 31 apps in six teams. Each team gets a coloured dot from the brand palette, so the picker looks the way the sprawl happened. `APPS` is the flattened list the rest of the code uses.
 3. How many people: `SIZES`, which also sets the headcount the cost calculator starts from.
 4. Which of these sounds most like your company: `PROBLEMS`. Each entry is `[the problem in the owner's words, what we build for software, what we build for services]`, and the result picks the wording that matches question 1.
+
+Each of those answers names the thing we would build, a platform, a tool or a workflow, then
+says what it does. "A company dashboard that...", "An onboarding workflow that...". Not a
+description of an outcome with no object in it.
 
 Question 4 names a business problem an owner would recognise, not a specific broken process. Asking someone to diagnose the bottleneck puts the work on them, and the real problem is usually broader than one handoff. Keep any new option at that level.
 

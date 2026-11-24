@@ -212,20 +212,20 @@
     // the problem an owner would actually name, and what we would build first: software, then services
     const PROBLEMS = [
       ['We cannot see how the business is doing without someone building the report',
-        "One place that answers how the business is doing, built from your product, CRM and billing data, with the week's changes explained.",
-        "One place that answers how the business is doing, built from your projects, pipeline and invoices, with the week's changes explained."],
+        'A company dashboard fed by your product, CRM and billing data, plus the weekly summary that explains what moved and what to do about it.',
+        'A company dashboard fed by your projects, pipeline and invoices, plus the weekly summary that explains what moved and what to do about it.'],
       ['Growing means hiring more people, so the work costs more than it should',
-        'The onboarding and support work that grows with customers, handled by the system, so the next hundred accounts do not need the next five hires.',
-        'The setup, status and invoicing work that grows with clients, handled by the system, so more work stops meaning more admin.'],
+        'An onboarding workflow that provisions each new account, tracks where it stalls and nudges the customer, so the next hundred accounts do not need the next five hires.',
+        'A project setup workflow that builds the plan, staffs it from who has capacity and raises the invoices, so more clients stop meaning more admin.'],
       ['Work slips when someone is busy, on holiday or leaves',
-        'Every handoff written down and run by the system, from signed deal to live account, so nothing waits on one person remembering.',
-        'Every handoff written down and run by the system, from signed deal to delivered project, so nothing waits on one person remembering.'],
+        'A handoff workflow from signed deal to live account, every step owned, timed and visible, so nothing waits on one person remembering.',
+        'A handoff workflow from signed deal to delivered project, every step owned, timed and visible, so nothing waits on one person remembering.'],
       ['We hear about problems after they have already cost us',
-        'Usage, tickets and invoices in one risk score, with the outreach drafted for any account that starts to slip.',
-        'Delivery health, budget and client sentiment in one view, with the check-in drafted before a project or a client goes quiet.'],
+        'An early warning tool that scores every account on usage, tickets and invoices, and drafts the outreach the moment one slips.',
+        'An early warning tool that scores every project on budget, schedule and client sentiment, and drafts the check-in the moment one slips.'],
       ['We pay for a lot of tools and still do a lot by hand',
-        'The copying between your CRM, your product and your billing removed, starting with the handoff that costs you the most hours.',
-        'The copying between your CRM, your project tracker and your billing removed, starting with the handoff that costs you the most hours.']
+        'A single intake that writes into your CRM, your product and your billing at once, starting with the handoff that costs you the most hours.',
+        'A single intake that writes into your CRM, your project tracker and your billing at once, starting with the handoff that costs you the most hours.']
     ];
     const picked = new Set(); let sells = -1, size = -1, problem = -1;
     const box = el('assess'), go = el('showMap'), hint = el('hint');
