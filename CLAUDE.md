@@ -110,28 +110,26 @@ On success the visitor gets a tentative `.ics` hold, not an invite. The copy say
 
 ## Case studies
 
-`/case-studies/` has two examples, each with the same parts in the same order: three numbers, what changed for the person in charge, the team it stands in for, the software it stands in for, what it is connected to, and what stays with the person running it. The table styles are the `.cstab` rules and the outcome rows are the `.csout` rules, both at the end of `site.css`.
+`/case-studies/` has two examples, each with the same parts in the same order: three numbers, what we built, what changed for the person in charge, and what it stands in for. The styles are the `.csh`, `.csout` and `.cslist` rules at the end of `site.css`.
 
-The outcomes come before the headcount on purpose. The founder's note on the first draft was that it counted roles and tools but had no outcomes. Each example answers the same five in the same order: executive function, reporting, visibility, time to decision, time to result. Every line describes how the system really runs. None is a measured before and after. The hours in them are estimates the founder asked for on 25 Nov 2026, worked out as follows, and the note under "What both show" says they are estimates:
+Keep it a case study, not an analysis. The founder's ruling on the detailed draft (25 Nov 2026): say what we did at a high level and what came of it, and do not go deep into data or specifics that a reader could read too much into, get confused by or get lost in. So:
 
-- Report built by hand: about 1.5 hours a day, seven days, for the travel app's four sources (10 hours a week), and about 2.5 hours each weekday for the sales platform's nine (12 hours a week).
-- Review time: a 10 minute read of the morning report for both. About 40 minutes a day in total for the travel app founder, and a little over an hour each weekday for the sales platform CEO, who reviews about 30 comment drafts a day on top of posts and outreach.
-- The trade: the FTE total times 40 hours (160 and 200 a week) against the review time across the week (about 5 and 6 hours).
+- No tables of roles with a figure against each, no per-agent descriptions, no vendor names, no lists of connected tools, no day-by-day numbers.
+- "What we built" is three cards. Each names the thing, then says what it does.
+- "What changed" answers the same five in the same order, a headline and one or two short sentences each: executive function, reporting, visibility, time to decision, time to result. The founder asked for these five by name, because the first draft counted roles and tools and had no outcomes.
+- "What it stands in for" is two plain lists: job titles and kinds of software. Kinds only, never product names.
+- At most one line of results per example.
 
-If an FTE total changes, the trade line changes with it. Replace any of these with a measured number as soon as the founder has one, and do not add results such as replies, sign-ups or revenue unless they are real.
+Never name either company. Both are companies the founder runs, so the page opens by saying we built this inside our own companies first. They are described as "AI travel planning app" and "AI sales platform". Do not present them as outside clients. Do not name the companies, their people, their customers, their vendors, or anything narrow enough to identify them, on the page or in this file.
 
-Both examples are companies the founder runs, so the page opens by saying we built this inside our own companies first. They are described, not named: "AI travel planning app" and "AI sales platform". Do not present them as outside clients, and do not name the companies, their people or their customers unless the founder asks.
+Where the numbers come from:
 
-- The travel app's "What it has produced since September" numbers are real, pulled on 25 Nov 2026: 1,585 rows in the outreach tracker (first rows dated 23 Sep), three write-ups on one review site (18 Oct and 4 Nov) that came from an outreach pitch, 73 rows in the sample trips table and 182 in the shows table. The Tuesday in "Time to decision" is the outreach run of 24 Nov 2026 (820 channels screened, 31 Instagram and 19 YouTube profiles checked, 15 drafts, "about 15 min" on that run's own list). The Google citation example is from the same run. Refresh these from the source before changing them.
-- The travel app's sign-ups, plans and revenue are left off: the app is early and those numbers are small. That was a drafting call, not the founder's ruling, so ask her before adding them.
-- The sales platform's Visibility, Time to decision and press desk lines describe its three tracker pages as they were on 25 Nov 2026. Its won and replied counts were not readable from outside that account, so the example has no results block yet.
-- The nine in ten link scanner line comes from the travel app's daily report, which removes scanner visits from its visitor count. The same-day concert travel line is from 19 Oct 2026, when that set of agents was created.
-- The agent counts come from each company's list of scheduled tasks as of 25 Nov 2026: 16 for the travel app, 18 for the sales platform.
-- The roles and FTE figures are estimates from the work each agent carries a week, not measured hours. The note under "What both show" says so. Keep that note if the numbers change.
-- The three numbers at the top of each example, the two rows in the summary card at the top of the page and the "Together" row of each team table must agree.
-- The "kinds of software" number is the count of rows in that example's software table.
-- Each line in a team table names the agent, then says what it does, the same rule as the rest of the site.
-- "Connected to" shows integrations as proof. It is not a list of tools a client would keep, so do not copy the pattern into the assessment result.
+- Agents: each company's list of scheduled tasks as of 25 Nov 2026, 16 and 18.
+- Roles: an estimate from the work each agent carries a week, about 4 and about 5. The numbers in the summary card at the top of the page must match.
+- Hours of attention: an estimate the founder asked for, about 5 and 6 a week, from a 10 minute read of the morning report plus the daily review of what the agents prepared.
+- The note under "What both show" says roles and hours are estimates. Keep it.
+- The travel app's results line is real, pulled on 25 Nov 2026 from its outreach tracker, its published pages and its coverage log. Refresh it from the source before changing it. Its sign-ups and revenue are left off because the app is early; ask the founder before adding them.
+- The sales platform has no results line yet. Add one only from real numbers the founder supplies.
 
 ## Pricing
 
