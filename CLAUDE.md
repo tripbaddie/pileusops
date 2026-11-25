@@ -88,7 +88,7 @@ Check desktop and a phone width (390px) before pushing.
 
 `/call/` offers a day, then a free time, then a short form. All of it is in `app.js` under `if (el('book'))`, and the whole thing is driven by the `CAL` object at the top of that block:
 
-- `minutes` is the length of the call, and the step between times.
+- `minutes` is the length of the call, and the step between times. It is 15. The Why fifteen minutes section on that page argues for the length, so change the copy too if this changes.
 - `tz` is the timezone the hours are written in. Everything else converts from it.
 - `hours` is keyed 0 Sunday to 6 Saturday, with ranges on a 24 hour clock.
 - `lead` is the hours of notice before the earliest time a visitor can pick.

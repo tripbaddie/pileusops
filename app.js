@@ -307,7 +307,7 @@
   if (el('book')){
     // Your availability. Change it here and the page follows.
     const CAL = {
-      minutes: 30,            // how long the call runs
+      minutes: 15,            // how long the call runs, and the step between times
       tz: 'America/Detroit',  // the timezone the hours below are written in
       hours: {                // 0 Sunday to 6 Saturday. 24 hour clock, in the timezone above
         1: [['09:00', '12:00'], ['13:00', '16:00']],
