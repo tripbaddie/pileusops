@@ -681,9 +681,10 @@ html.js .rv.seen{opacity:1;transform:none}
 .rp.hand{background:#FFE0E0;color:#A31212}
 .rp.rep{padding:2.5px 10px;border:1.5px solid var(--ink)}
 .rmap{margin-top:32px}
-.rmaph{display:flex;flex-wrap:wrap;gap:10px 24px;align-items:center;justify-content:space-between;margin-bottom:16px}
+.rmaph{display:flex;flex-wrap:wrap;gap:12px 24px;align-items:flex-end;justify-content:space-between;margin-bottom:16px}
 .result .rmaph h3{font-size:22px;max-width:none}
 .rleg{display:flex;flex-wrap:wrap;gap:8px}
+.rhow{margin:6px 0 0;max-width:62ch;font-size:15.5px;color:var(--mute)}
 .rstages{display:flex;flex-wrap:wrap;gap:10px}
 .rst{flex:1 1 150px;min-width:0;display:flex;flex-direction:column;gap:14px;padding:16px;border-radius:18px;background:var(--bg)}
 .rst .n{display:block;font-family:var(--mono);font-size:12px;letter-spacing:.1em;color:var(--sales)}
@@ -693,12 +694,12 @@ html.js .rv.seen{opacity:1;transform:none}
 .rapps li::before{content:"";flex:none;width:10px;height:10px;margin-top:4px;border-radius:3px;background:var(--c)}
 .rapps li.none{display:block;padding:7px 10px;border-radius:10px;border:1px dashed var(--mute);color:var(--mute)}
 .rapps li.none::before{display:none}
-.rapps .rp.rep{margin-top:4px;padding:1px 8px;font-size:11.5px}
 .rho{margin-top:auto;padding:10px 12px;border-radius:12px;font-size:13px;font-weight:600;line-height:1.3}
-.rho small{display:block;margin-bottom:2px;font-family:var(--mono);font-weight:500;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase}
+.rho b{display:block;margin-bottom:4px;font-size:14px;line-height:1.25;color:var(--ink)}
+.rho small{display:block;margin-bottom:4px;font-family:var(--mono);font-weight:500;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase}
 .rho.ok{background:#fff;color:#06603A}
 .rho.hand{background:#FFE0E0;color:#A31212;border:1px dashed #A31212}
-.rho.end{background:#fff;color:var(--mute)}
+.rho.last{background:#fff;color:var(--mute)}
 .rund{display:flex;flex-wrap:wrap;gap:12px 28px;align-items:center;margin-top:10px;padding:18px 20px;border-radius:18px;background:var(--ink);color:#fff}
 .rund>div{flex:1 1 200px;min-width:0}
 .rund small{display:block;font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:#C9CCD3}

@@ -268,13 +268,16 @@
     // ---- the result: the visitor's own map, what it cannot answer, what it costs and what we would build
     // every app sits at one stage of the path a customer takes, or underneath all of them
     const STAGES = svc => [
-      ['Lead', ['Email and marketing automation', 'Website or CMS', 'Landing pages and forms', 'Ad platforms', 'Webinar and event platform', 'Lead and intent data']],
-      ['Deal', ['CRM', 'Sales engagement and outbound', 'Proposals and quoting']],
-      ['Signed', ['E-signature']],
-      [svc ? 'Delivered' : 'Live', ['Customer onboarding', 'Project management', 'Time tracking', 'Resource scheduling', 'Issue and sprint tracker', 'Product analytics', 'Code repository', 'Feedback and roadmap']],
-      ['Billed', ['Billing and invoicing', 'Payments and subscriptions', 'Accounting', 'Expense management']],
-      ['Supported', ['Help desk', 'Customer success platform', 'Surveys and NPS']]
+      ['Leads', ['Email and marketing automation', 'Website or CMS', 'Landing pages and forms', 'Ad platforms', 'Webinar and event platform', 'Lead and intent data']],
+      ['Deals', ['CRM', 'Sales engagement and outbound', 'Proposals and quoting']],
+      ['Contract', ['E-signature']],
+      [svc ? 'Delivery' : 'Onboarding', ['Customer onboarding', 'Project management', 'Time tracking', 'Resource scheduling', 'Issue and sprint tracker', 'Product analytics', 'Code repository', 'Feedback and roadmap']],
+      ['Billing', ['Billing and invoicing', 'Payments and subscriptions', 'Accounting', 'Expense management']],
+      ['Support', ['Help desk', 'Customer success platform', 'Surveys and NPS']]
     ];
+    // what has to happen after each stage, said the way an owner would say it. The sixth is the report underneath them all
+    const STEPS = svc => ['A new lead reaches sales', 'The deal goes out to be signed', svc ? 'The new project gets set up' : 'The new customer gets set up',
+      svc ? 'The work gets billed' : 'The customer gets billed', 'Support sees what the customer bought', 'Everything gets pulled into a report'];
     const UNDER = ['BI and dashboards', 'Spreadsheets', 'Team chat', 'Knowledge base or wiki', 'HR system', 'Payroll'];
     // a question no single app can answer: [the question, [[what one app holds, the apps that could hold it]...], closing line]
     const QUESTIONS = (svc, n) => ({
@@ -309,9 +312,9 @@
       const names = mine.map(a => a[0]), has = new Set(names), team = Object.fromEntries(mine);
       const H = x => has.has(x), own = (xs, max) => xs.filter(H).slice(0, max || 9);
       const svc = sells === 1, kind = ['software', 'services', 'software and services'][sells];
-      const stages = STAGES(svc), under = own(UNDER);
+      const stages = STAGES(svc), steps = STEPS(svc), under = own(UNDER), low = t => t.charAt(0).toLowerCase() + t.slice(1);
 
-      // the six handoffs: [usually connected?, why it probably is not]
+      // the six steps between stages: [probably automatic?, why it probably is not]
       const leads = stages[0][1].some(H), bills = H('Billing and invoicing') || H('Accounting') || (svc && H('Payments and subscriptions'));
       const HO = [
         [leads && H('CRM'), leads ? 'No CRM for leads to land in.' : 'Nothing you picked brings in leads.'],
@@ -343,23 +346,22 @@
           : ['An account health app', 'Scores every account on usage, tickets and payments, and drafts the outreach the moment one slips.', swap(['Customer success platform', 'Surveys and NPS']), [5]],
         intake: () => ['A single intake app', `Takes each new customer once and writes it into ${reads(['CRM', 'Billing and invoicing', 'Payments and subscriptions', 'Accounting', 'Project management', 'Help desk'], 3)}, so nobody types the same details twice.`,
           swap(['Landing pages and forms', 'Proposals and quoting']), [1, 2]],
-        handoff: () => ['A handoff tracker', `Follows every deal from signed to ${svc ? 'delivered' : 'live'}. Each step is owned, timed and visible, so nothing waits on one person remembering.`,
+        handoff: () => [svc ? 'A new project tracker' : 'A new customer tracker', `Follows every deal from signed to ${svc ? 'delivered' : 'live'}. Each step is owned, timed and visible, so nothing waits on one person remembering.`,
           [...swap(['Customer onboarding']), ...also(['Spreadsheets', 'Knowledge base or wiki'], 'the checklists kept in')], [3]]
       };
       const builds = FIRST[problem].map(id => BUILD[id]());
 
       // headline, and their own answers played back
-      el('rHead').textContent = `${n} apps. 6 handoffs. ${k === 0 ? 'On paper, all of them connect.' : k === 6 ? 'All 6 probably run by hand.' : k === 1 ? '1 of them probably runs by hand.' : k + ' of them probably run by hand.'}`;
+      el('rHead').textContent = `${n} apps. ${k === 0 ? 'On paper, all 6 steps between them run on their own.' : k === 6 ? 'All 6 steps between them are probably done by hand.' : k + ' of the 6 steps between them ' + (k === 1 ? 'is' : 'are') + ' probably done by hand.'}`;
       el('rTold').innerHTML = `<em>What you told us</em><span>B2B ${kind}</span><span>${SIZES[size]} people</span><span class="p">${PROBLEMS[problem][0]}</span>`;
 
       // the map
-      const app = x => `<li style="--c:${C[team[x]]}"><span>${x}${rep.has(x) ? '<br><span class="rp rep">Could replace</span>' : ''}</span></li>`;
+      const app = x => `<li style="--c:${C[team[x]]}"><span>${x}</span></li>`;
       el('rStages').innerHTML = stages.map(([name, apps], i) => { const a = own(apps), ok = i < 5 && HO[i][0];
-        const ho = i === 5 ? '<div class="rho end"><small>Then</small>Renewal starts the loop again</div>'
-          : `<div class="rho ${ok ? 'ok' : 'hand'}"><small>Handoff ${i + 1} to ${stages[i + 1][0]}</small>${ok ? 'Usually connected' : 'Probably by hand. ' + HO[i][1]}</div>`;
+        const ho = i === 5 ? '<div class="rho last"><small>Next</small><b>Renewal</b>The loop starts again</div>'
+          : `<div class="rho ${ok ? 'ok' : 'hand'}"><small>Next</small><b>${steps[i]}</b>${ok ? 'Probably automatic' : 'Probably done by hand. ' + HO[i][1]}</div>`;
         return `<div class="rst"><div><span class="n">0${i + 1}</span><b class="t">${name}</b></div><ul class="rapps">${a.length ? a.map(app).join('') : '<li class="none">No tool picked</li>'}</ul>${ho}</div>`; }).join('');
-      const urep = under.filter(x => rep.has(x));
-      el('rUnder').innerHTML = `<div><small>Handoff 6, underneath all of it</small><b>Reporting</b></div><p>${under.length ? list(under) + (under.length > 1 ? ' sit' : ' sits') + ' underneath all six stages.' : 'Nothing you picked sits underneath the six stages.'} ${HO[5][0] ? '' : HO[5][1]}${urep.length ? ' ' + list(urep) + ' could be replaced.' : ''}</p><span class="rp ${HO[5][0] ? 'ok' : 'hand'}">${HO[5][0] ? 'Usually connected' : 'By hand today'}</span>`;
+      el('rUnder').innerHTML = `<div><small>Underneath all of it</small><b>Reporting</b></div><p>${under.length ? list(under) + (under.length > 1 ? ' sit' : ' sits') + ' underneath all six stages.' : 'Nothing you picked sits underneath the six stages.'} ${HO[5][0] ? '' : HO[5][1]}</p><span class="rp ${HO[5][0] ? 'ok' : 'hand'}">${HO[5][0] ? 'Probably automatic' : 'Done by hand today'}</span>`;
 
       // up to three questions their apps cannot answer, the one behind their problem first
       const Q = QUESTIONS(svc, n);
@@ -376,7 +378,7 @@
 
       // what we would build, and what each could replace
       el('rBuilds').innerHTML = builds.map(([title, does, reps, closes], i) => { const c = closes.filter(h => byHand.includes(h));
-        const tags = (i ? [] : ['Answers the problem you picked', 'First workflow live in 2 to 3 weeks']).concat(c.length ? [`Closes handoff${c.length > 1 ? 's' : ''} ${list(c)}`] : []);
+        const tags = (i ? [] : ['Answers the problem you picked', 'First workflow live in 2 to 3 weeks']).concat(c.map(h => 'Fixes: ' + low(steps[h - 1])));
         return `<div class="rb${i ? '' : ' top'}"><b>${i + 1}</b><div class="w"><h4>${title}</h4><p>${does}</p></div><div class="x"><div class="rr"><small>${reps.length ? 'Could replace' : 'Fills a gap'}</small>${reps.length ? cap(list(reps)) : 'Nothing you picked does this today.'}</div><div class="tags">${tags.map(t => `<span class="rp t">${t}</span>`).join('')}</div></div></div>`; }).join('');
       const open = names.filter(x => !rep.has(x));
       el('rMore').hidden = !open.length;
@@ -390,13 +392,13 @@
       costWhat = cWhat; cost();
 
       // the close: the report by email when forms are on, the call when they are not
-      const start = byHand.length ? `we start at handoff ${byHand[0]}` : 'we walk through your map';
+      const start = byHand.length ? `we start where ${low(steps[byHand[0] - 1])}` : 'we walk through your map';
       el('rCloseA').hidden = el('rCloseB').hidden = !LIVE; el('rCloseC').hidden = LIVE;
       el('rCall').innerHTML = `Or <a href="/call/">book 15 minutes</a> and ${start} with you.`;
       el('rCallOnly').textContent = `Fifteen minutes. ${cap(start)} and tell you what we would build first.`;
 
       shown = { sells: SELLS[sells], apps: names.join(', '), app_count: n, team_size: SIZES[size], problem: PROBLEMS[problem][0],
-        handoffs_probably_by_hand: byHand.join(', ') || 'none', questions: qs.map(x => x.q).join(' | '),
+        steps_probably_done_by_hand: byHand.map(h => steps[h - 1]).join(' | ') || 'none', questions: qs.map(x => x.q).join(' | '),
         builds: builds.map(([t, , r], i) => `${i + 1}. ${t}${r.length ? ' (could replace ' + list(r) + ')' : ''}`).join(' | '), still_open: open.join(', ') };
       box.classList.add('done'); el('sent').hidden = true;
       box.scrollIntoView({ behavior: calm ? 'auto' : 'smooth', block: 'start' });
