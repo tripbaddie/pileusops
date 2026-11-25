@@ -16,9 +16,9 @@ The value is in the connections. Support can answer a customer because it can se
 
 How each page carries it:
 
-- **Home:** the apps you already run become one system you control. A Proof section links to the two case studies.
+- **Home:** the apps you already run become one system you control. A Proof section links to the case studies.
 - **How it works:** one system, seen from each team's seat. The demo switches teams, not systems.
-- **Case studies:** two companies, each run as one system. See its own section below.
+- **Case studies:** examples of a company run as one system. See its own section below.
 - **Pricing:** every build is a piece of the same system, from the first one.
 - **Assessment:** the three builds in the result work as one system: each card says how it connects to the others, and a picture under them shows the one record they share.
 - **About:** the story of how companies ended up undesigned, and that we run our own this way first.
@@ -133,7 +133,7 @@ On success the visitor gets a tentative `.ics` hold, not an invite. The copy say
 
 ## Case studies
 
-`/case-studies/` has two examples. The styles are the `.csh`, `.csmap`, `.csout` and `.cslist` rules at the end of `site.css`.
+`/case-studies/` has two examples. Never count them in the copy: the founder rejected "Two companies already run this way" (25 Nov 2026) because it reads as if we have only ever worked with two companies. Headlines, descriptions and links say "companies", "examples" or "the case studies", never "two" or "both". The styles are the `.csh`, `.csmap`, `.csout` and `.cslist` rules at the end of `site.css`.
 
 ### What the page has to sell
 
