@@ -218,7 +218,7 @@
   }
 
   if (el('assess')){   // assessment page only
-    // ---- the assessment: pick your apps, answer two questions, see your own map
+    // ---- the assessment: four answers in, the visitor's own map out
     // the apps a B2B software or services company actually runs, grouped the way they were bought: team by team
     const GROUPS = [
       ['Marketing', 'mkt', ['Email and marketing automation', 'Website or CMS', 'Landing pages and forms', 'Ad platforms', 'Webinar and event platform']],
@@ -265,42 +265,165 @@
     });
     const one = (host, labels, set) => { const bs = labels.map((l, i) => mk(host, l, () => { set(i); bs.forEach((x, k) => x.setAttribute('aria-pressed', k === i)); ready(); })); return bs; };
     one(el('optSells'), SELLS, i => { sells = i; }); one(el('optSize'), SIZES, i => { size = i; }); one(el('optStuck'), PROBLEMS.map(p => p[0]), i => { problem = i; });
+    // ---- the result: the visitor's own map, what it cannot answer, what it costs and what we would build
+    // every app sits at one stage of the path a customer takes, or underneath all of them
+    const STAGES = svc => [
+      ['Lead', ['Email and marketing automation', 'Website or CMS', 'Landing pages and forms', 'Ad platforms', 'Webinar and event platform', 'Lead and intent data']],
+      ['Deal', ['CRM', 'Sales engagement and outbound', 'Proposals and quoting']],
+      ['Signed', ['E-signature']],
+      [svc ? 'Delivered' : 'Live', ['Customer onboarding', 'Project management', 'Time tracking', 'Resource scheduling', 'Issue and sprint tracker', 'Product analytics', 'Code repository', 'Feedback and roadmap']],
+      ['Billed', ['Billing and invoicing', 'Payments and subscriptions', 'Accounting', 'Expense management']],
+      ['Supported', ['Help desk', 'Customer success platform', 'Surveys and NPS']]
+    ];
+    const UNDER = ['BI and dashboards', 'Spreadsheets', 'Team chat', 'Knowledge base or wiki', 'HR system', 'Payroll'];
+    // a question no single app can answer: [the question, [[what one app holds, the apps that could hold it]...], closing line]
+    const QUESTIONS = (svc, n) => ({
+      biz: ['How is the business doing this week?', [['the pipeline is in', ['CRM']], ['revenue is in', ['Payments and subscriptions', 'Billing and invoicing', 'Accounting']],
+        svc ? ['delivery is in', ['Project management', 'Time tracking']] : ['usage is in', ['Product analytics']], ['support is in', ['Help desk', 'Customer success platform']]]],
+      risk: svc ? ['Which clients are at risk?', [['budget and hours are in', ['Time tracking', 'Project management']], ['complaints are in', ['Help desk', 'Surveys and NPS']], ['invoices are in', ['Billing and invoicing', 'Accounting', 'Payments and subscriptions']]]]
+        : ['Which customers are at risk?', [['usage is in', ['Product analytics']], ['complaints are in', ['Help desk', 'Surveys and NPS']], ['renewals are in', ['Payments and subscriptions', 'Billing and invoicing', 'CRM']]]],
+      channel: ['Which channel brings customers who stay?', [['spend is in', ['Ad platforms', 'Email and marketing automation', 'Webinar and event platform']], ['the deal is in', ['CRM']], ['whether they stayed is in', ['Payments and subscriptions', 'Billing and invoicing', 'Accounting']]]],
+      capacity: [svc ? 'Can we take on the next ten clients without hiring?' : 'Can we take on the next hundred customers without hiring?',
+        [['what is coming is in', ['CRM']], ['the workload is in', ['Customer onboarding', 'Project management', 'Resource scheduling', 'Help desk']], ['your people are in', ['HR system', 'Payroll', 'Time tracking']]]],
+      profit: [svc ? 'Which clients make us money?' : 'Which customers make us money?', [['revenue is in', ['Billing and invoicing', 'Payments and subscriptions', 'Accounting']], ['the hours spent are in', ['Time tracking', 'Project management', 'Help desk']]]],
+      slip: ['What is waiting on someone right now?', [['deals are in', ['CRM']], ['delivery work is in', ['Project management', 'Customer onboarding', 'Issue and sprint tracker']], ['tickets are in', ['Help desk']], ['the reminders are in', ['Team chat']]], 'Nobody sees one list of what is stuck.'],
+      tools: ['Which tools do we pay for and barely use?', [['the bills are in', ['Accounting', 'Expense management']], ['your people are in', ['HR system', 'Payroll']]], `Who logs in is locked inside each of your ${n} apps.`]
+    });
+    const ASKS = ['biz', 'capacity', 'slip', 'risk', 'tools'];                 // the question behind each problem
+    const FIRST = [['dash', 'onboard', 'health'], ['onboard', 'dash', 'health'], ['handoff', 'dash', 'health'], ['health', 'dash', 'onboard'], ['intake', 'dash', 'onboard']];
+    // the cost calculator starts from the problem they picked: [heading, who does it, what the year was spent on, hours a week, people by team size]
+    const COSTS = [
+      ['Building the report by hand.', 'People who build or chase reports', 'building reports by hand', 4, [1, 3, 8, 20]],
+      ['Work that grows with every customer.', 'People doing work a workflow could do', 'on work a workflow could do', 5, [2, 6, 20, 50]],
+      ['Chasing what is waiting on someone.', 'People who chase work that is waiting', 'chasing work that is waiting on someone', 3, [2, 5, 15, 40]],
+      ['Finding problems late.', 'People who find and fix problems after the fact', 'finding and fixing problems late', 4, [2, 5, 12, 30]],
+      ['Moving information by hand.', 'People who move information between tools', 'moving information between tools by hand', 3, [4, 12, 40, 100]]
+    ];
+    const list = a => a.length < 2 ? (a[0] || '') : a.slice(0, -1).join(', ') + ' and ' + a[a.length - 1];
+    const cap = t => t.charAt(0).toUpperCase() + t.slice(1);
+    const WORD = ['', 'One', 'Two', 'Three'], ALL = ['', '', 'both', 'all three', 'all four'];
+    let shown = {};   // what this visitor was shown, sent along with their email
+
     go.addEventListener('click', () => {
       const mine = [...picked].sort((a, b) => a - b).map(i => APPS[i]), n = mine.length;
-      el('rHead').textContent = `${n} apps today. 1 system.`;
-      el('rApps').innerHTML = mine.map(tag).join('');
-      el('rBefore').textContent = n * (n - 1) / 2;
-      el('rAfter').textContent = '1';
-      el('rAfterT').textContent = 'system that connects them all';
-      el('rFirst').textContent = PROBLEMS[problem][sells === 1 ? 2 : 1];   // services get their own wording
-      el('rFirstL').textContent = `The first thing we would build for a B2B ${['software company', 'services company', 'software and services company'][sells]}`;
-      el('cPeople').value = [4, 12, 40, 100][size]; cost();
+      const names = mine.map(a => a[0]), has = new Set(names), team = Object.fromEntries(mine);
+      const H = x => has.has(x), own = (xs, max) => xs.filter(H).slice(0, max || 9);
+      const svc = sells === 1, kind = ['software', 'services', 'software and services'][sells];
+      const stages = STAGES(svc), under = own(UNDER);
+
+      // the six handoffs: [usually connected?, why it probably is not]
+      const leads = stages[0][1].some(H), bills = H('Billing and invoicing') || H('Accounting') || (svc && H('Payments and subscriptions'));
+      const HO = [
+        [leads && H('CRM'), leads ? 'No CRM for leads to land in.' : 'Nothing you picked brings in leads.'],
+        [H('CRM') && H('E-signature'), H('E-signature') ? 'No CRM to carry the deal.' : 'Nothing you picked gets the contract signed.'],
+        svc ? [false, H('Project management') ? 'Someone sets up each project.' : 'Nothing you picked sets up the project.'] : [H('Customer onboarding'), 'Nothing you picked starts onboarding.'],
+        svc ? [H('Time tracking') && H('Billing and invoicing'), bills ? 'Hours and invoices are matched by hand.' : 'Nothing you picked sends the bill.']
+            : [H('Payments and subscriptions'), bills ? 'Someone raises each invoice.' : 'Nothing you picked sends the bill.'],
+        [H('Customer success platform'), H('Help desk') ? 'Support cannot see what a customer pays or uses.' : 'Nothing you picked looks after customers.'],
+        problem === 0 ? [false, 'You told us someone builds that report by hand.'] : [H('BI and dashboards'), 'Nothing you picked reports across all six stages.']
+      ];
+      const byHand = HO.map((h, i) => h[0] ? 0 : i + 1).filter(Boolean), k = byHand.length;
+
+      // the three apps we would build, the first one answering the problem they picked
+      const rep = new Set();
+      const also = (xs, phrase) => { const a = own(xs); a.forEach(x => rep.add(x)); return a.length ? [phrase + ' ' + list(a)] : []; };
+      const swap = xs => { const a = own(xs); a.forEach(x => rep.add(x)); return a; };
+      const reads = (xs, max) => { const a = own(xs, max); return a.length > 1 ? 'your ' + list(a) : 'every app you keep'; };
+      const signed = H('E-signature') ? 'E-signature completes' : H('CRM') ? 'a deal closes in your CRM' : 'a contract is signed';
+      const BUILD = {
+        dash: () => ['A company dashboard', `Reads ${reads(['CRM', svc ? 'Project management' : 'Product analytics', 'Payments and subscriptions', 'Billing and invoicing', 'Accounting', 'Help desk'], 4)}. Every Monday it explains what moved and what to do about it.`,
+          [...swap(['BI and dashboards']), ...also(['Spreadsheets'], 'the reports built in')], [6]],
+        onboard: () => svc
+          ? ['A project setup app', `Builds the plan, staffs it from who has capacity and raises the first invoice the moment ${signed}.`,
+              [...swap(['Resource scheduling', 'Time tracking']), ...(H('Resource scheduling') ? [] : also(['Spreadsheets'], 'the staffing plan kept in'))], [3, 4]]
+          : ['A customer onboarding app', `Opens the moment ${signed}. Every step is owned, timed and visible to your team and your customer.`,
+              [...swap(['Customer onboarding']), ...(H('Customer onboarding') ? [] : also(['Spreadsheets'], 'the onboarding run in'))], [3]],
+        health: () => svc
+          ? ['A client health app', 'Scores every project on budget, schedule and client sentiment, and drafts the check-in the moment one slips.', swap(['Customer success platform', 'Surveys and NPS']), [5]]
+          : ['An account health app', 'Scores every account on usage, tickets and payments, and drafts the outreach the moment one slips.', swap(['Customer success platform', 'Surveys and NPS']), [5]],
+        intake: () => ['A single intake app', `Takes each new customer once and writes it into ${reads(['CRM', 'Billing and invoicing', 'Payments and subscriptions', 'Accounting', 'Project management', 'Help desk'], 3)}, so nobody types the same details twice.`,
+          swap(['Landing pages and forms', 'Proposals and quoting']), [1, 2]],
+        handoff: () => ['A handoff tracker', `Follows every deal from signed to ${svc ? 'delivered' : 'live'}. Each step is owned, timed and visible, so nothing waits on one person remembering.`,
+          [...swap(['Customer onboarding']), ...also(['Spreadsheets', 'Knowledge base or wiki'], 'the checklists kept in')], [3]]
+      };
+      const builds = FIRST[problem].map(id => BUILD[id]());
+
+      // headline, and their own answers played back
+      el('rHead').textContent = `${n} apps. 6 handoffs. ${k === 0 ? 'On paper, all of them connect.' : k === 6 ? 'All 6 probably run by hand.' : k === 1 ? '1 of them probably runs by hand.' : k + ' of them probably run by hand.'}`;
+      el('rTold').innerHTML = `<em>What you told us</em><span>B2B ${kind}</span><span>${SIZES[size]} people</span><span class="p">${PROBLEMS[problem][0]}</span>`;
+
+      // the map
+      const app = x => `<li style="--c:${C[team[x]]}"><span>${x}${rep.has(x) ? '<br><span class="rp rep">Could replace</span>' : ''}</span></li>`;
+      el('rStages').innerHTML = stages.map(([name, apps], i) => { const a = own(apps), ok = i < 5 && HO[i][0];
+        const ho = i === 5 ? '<div class="rho end"><small>Then</small>Renewal starts the loop again</div>'
+          : `<div class="rho ${ok ? 'ok' : 'hand'}"><small>Handoff ${i + 1} to ${stages[i + 1][0]}</small>${ok ? 'Usually connected' : 'Probably by hand. ' + HO[i][1]}</div>`;
+        return `<div class="rst"><div><span class="n">0${i + 1}</span><b class="t">${name}</b></div><ul class="rapps">${a.length ? a.map(app).join('') : '<li class="none">No tool picked</li>'}</ul>${ho}</div>`; }).join('');
+      const urep = under.filter(x => rep.has(x));
+      el('rUnder').innerHTML = `<div><small>Handoff 6, underneath all of it</small><b>Reporting</b></div><p>${under.length ? list(under) + (under.length > 1 ? ' sit' : ' sits') + ' underneath all six stages.' : 'Nothing you picked sits underneath the six stages.'} ${HO[5][0] ? '' : HO[5][1]}${urep.length ? ' ' + list(urep) + ' could be replaced.' : ''}</p><span class="rp ${HO[5][0] ? 'ok' : 'hand'}">${HO[5][0] ? 'Usually connected' : 'By hand today'}</span>`;
+
+      // up to three questions their apps cannot answer, the one behind their problem first
+      const Q = QUESTIONS(svc, n);
+      const answer = id => { const [q, slots, end] = Q[id], taken = new Set(), parts = [];
+        slots.forEach(([says, xs]) => { const x = xs.find(y => H(y) && !taken.has(y)); if (x){ taken.add(x); parts.push(says + ' ' + x); } });
+        return { q, count: parts.length, text: parts.length > 1 ? cap(list(parts)) + '. ' + (end || `No one app sees ${ALL[parts.length]}.`) : '' }; };
+      const mainQ = Object.assign(answer(ASKS[problem]), { top: true });
+      if (!mainQ.text) mainQ.text = 'None of the apps you picked answers this on its own. Today the answer lives in someone\'s head.';
+      else if (problem === 0 && H('Spreadsheets')) mainQ.text = mainQ.text.replace(/ No one app sees.*$/, ' Someone stitches it together in Spreadsheets.');
+      const rest = ['biz', 'risk', 'channel', 'capacity', 'profit', 'slip', 'tools'].filter(id => id !== ASKS[problem] && !(id === 'risk' && H('Customer success platform'))).map(answer).filter(x => x.count > 1);
+      const qs = [mainQ, ...rest].slice(0, 3);
+      el('rQHead').textContent = `${WORD[qs.length]} question${qs.length > 1 ? 's' : ''} your apps cannot answer today.`;
+      el('rQs').innerHTML = qs.map(x => `<div class="rq${x.top ? ' top' : ''}"><span class="rp">${x.top ? 'The problem you picked' : 'Split across ' + x.count + ' apps'}</span><h4>${x.q}</h4><p>${x.text}</p></div>`).join('');
+
+      // what we would build, and what each could replace
+      el('rBuilds').innerHTML = builds.map(([title, does, reps, closes], i) => { const c = closes.filter(h => byHand.includes(h));
+        const tags = (i ? [] : ['Answers the problem you picked', 'First workflow live in 2 to 3 weeks']).concat(c.length ? [`Closes handoff${c.length > 1 ? 's' : ''} ${list(c)}`] : []);
+        return `<div class="rb${i ? '' : ' top'}"><b>${i + 1}</b><div class="w"><h4>${title}</h4><p>${does}</p></div><div class="x"><div class="rr"><small>${reps.length ? 'Could replace' : 'Fills a gap'}</small>${reps.length ? cap(list(reps)) : 'Nothing you picked does this today.'}</div><div class="tags">${tags.map(t => `<span class="rp t">${t}</span>`).join('')}</div></div></div>`; }).join('');
+      const open = names.filter(x => !rep.has(x));
+      el('rMore').hidden = !open.length;
+      el('rMore').innerHTML = open.length ? `<p class="lab">${open.length} more app${open.length > 1 ? 's' : ''} to go through together</p><div class="rchips">${open.map(x => `<span>${x}</span>`).join('')}</div>` : '';
+
+      // the cost of today, starting from the problem they picked
+      const [cHead, cWho, cWhat, cHrs, cPpl] = COSTS[problem];
+      el('cHead').textContent = cHead; el('cPeopleL').textContent = cWho;
+      el('cPeople').value = cPpl[size]; el('cHours').value = cHrs; el('cRate').value = 50; el('cTools').value = 0;
+      el('cNote').textContent = `These start as our assumptions for a ${kind} company of ${SIZES[size].toLowerCase()} people. Replace them with yours.`;
+      costWhat = cWhat; cost();
+
+      // the close: the report by email when forms are on, the call when they are not
+      const start = byHand.length ? `we start at handoff ${byHand[0]}` : 'we walk through your map';
+      el('rCloseA').hidden = el('rCloseB').hidden = !LIVE; el('rCloseC').hidden = LIVE;
+      el('rCall').innerHTML = `Or <a href="/call/">book 15 minutes</a> and ${start} with you.`;
+      el('rCallOnly').textContent = `Fifteen minutes. ${cap(start)} and tell you what we would build first.`;
+
+      shown = { sells: SELLS[sells], apps: names.join(', '), app_count: n, team_size: SIZES[size], problem: PROBLEMS[problem][0],
+        handoffs_probably_by_hand: byHand.join(', ') || 'none', questions: qs.map(x => x.q).join(' | '),
+        builds: builds.map(([t, , r], i) => `${i + 1}. ${t}${r.length ? ' (could replace ' + list(r) + ')' : ''}`).join(' | '), still_open: open.join(', ') };
       box.classList.add('done'); el('sent').hidden = true;
-      box.scrollIntoView({ behavior: calm ? 'auto' : 'smooth', block: 'nearest' });
+      box.scrollIntoView({ behavior: calm ? 'auto' : 'smooth', block: 'start' });
     });
-    // what the manual work costs, from the visitor's own numbers
+    // what today costs, from the visitor's own numbers: hours by hand, plus any tools they want to stop renting
     const money = n => '$' + Math.round(n).toLocaleString('en-US');
-    function cost(){ const p = Math.max(0, +el('cPeople').value || 0), h = Math.max(0, +el('cHours').value || 0), r = Math.max(0, +el('cRate').value || 0);
-      el('cOut').textContent = money(p * h * r * 50); el('cHow').textContent = `${p} people x ${h} hours x ${money(r)} x 50 working weeks. These are your numbers, so change any of them.`; }
-    ['cPeople', 'cHours', 'cRate'].forEach(id => el(id).addEventListener('input', cost));
+    let costWhat = '';
+    function cost(){ const v = id => Math.max(0, +el(id).value || 0), p = v('cPeople'), h = v('cHours'), r = v('cRate'), t = v('cTools') * 12, hrs = p * h * r * 50;
+      el('cOut').textContent = money(hrs + t);
+      el('cOutL').textContent = t ? 'a year in hours by hand and tools you rent' : 'a year spent ' + costWhat;
+      el('cHow').textContent = `${money(hrs)} in hours (${p} people x ${h} hours x ${money(r)} x 50 weeks)` + (t ? ` plus ${money(t)} in tools.` : '. Add the tools you would like to stop renting.'); }
+    ['cPeople', 'cHours', 'cRate', 'cTools'].forEach(id => el(id).addEventListener('input', cost));
     const say = t => { const n = el('sent'); n.textContent = t; n.hidden = false; };
     el('send').addEventListener('submit', async e => {
       e.preventDefault();
       if (el('botcheck').checked) return;
-      const btn = el('sendBtn'), label = btn.textContent, mine = [...picked].sort((a, b) => a - b).map(i => APPS[i][0]);
+      const btn = el('sendBtn'), label = btn.textContent;
       btn.disabled = true; btn.textContent = 'Sending';
       try {
-        const how = await post('New assessment from pileusops.com', { email: el('email').value.trim(),
-          sells: SELLS[sells] || '', apps: mine.join(', '), app_count: mine.length, team_size: SIZES[size] || '',
-          problem: (PROBLEMS[problem] || [''])[0], first_build: el('rFirst').textContent,
-          handoffs_today: el('rBefore').textContent, yearly_cost_of_manual_work: el('cOut').textContent,
-          cost_inputs: `${el('cPeople').value} people, ${el('cHours').value} hours a week, $${el('cRate').value} an hour` });
+        const how = await post('New assessment from pileusops.com', Object.assign({ email: el('email').value.trim() }, shown, { yearly_cost: el('cOut').textContent,
+          cost_inputs: `${el('cPeople').value} people, ${el('cHours').value} hours a week, $${el('cRate').value} an hour, $${el('cTools').value} a month on tools` }));
         if (how === 'off') say('Thanks. Emailed reports are coming soon. Your full result is on this page.');
-        else { say('Thanks. We have your results and will email your full report shortly.'); el('send').reset(); }
+        else { say('Thanks. We have your results and will email your report shortly.'); el('send').reset(); }
       } catch (err) { say('That did not send. Please try again in a moment.'); }
       btn.disabled = false; btn.textContent = label;
     });
-    el('again').addEventListener('click', () => { box.classList.remove('done'); });
+    el('again').addEventListener('click', () => { box.classList.remove('done'); box.scrollIntoView({ behavior: calm ? 'auto' : 'smooth', block: 'start' }); });
   }
 
   // ---- book a call: free times come from the hours below, shown in the visitor's own timezone

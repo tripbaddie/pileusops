@@ -39,7 +39,7 @@ The header navigation holds How it works, Pricing, About, Contact and the assess
 
 - `if (el('qs'))` wraps the home "ask your company" comparison.
 - `if (el('ftabs'))` wraps the function demo and the approval example.
-- `if (el('assess'))` wraps the assessment and its calculator.
+- `if (el('assess'))` wraps the assessment, its result and its calculator.
 - `if (el('book'))` wraps the booking calendar on Book a call.
 - `if (el('cxform'))` wraps the note form on Contact.
 - `if (el('est'))` wraps the first-year sum on Pricing.
@@ -72,7 +72,7 @@ Check desktop and a phone width (390px) before pushing.
 
 - No em-dashes anywhere.
 - Short paragraphs. Confident, benefit-led marketing copy without stacked caveats.
-- Never say which tools a client keeps and which get replaced. The line is: we can work with existing tools, or replace any of them with a custom solution.
+- Never list tools a client would keep. People come to us to offset what their tools cost, and a keep list puts them off. Replacement candidates may be named, always as "could replace", and the rest of the stack stays open: any tool can be connected as it is or rebuilt as an app the client owns, decided with them one tool at a time.
 - Staying on after launch is optional. Do not imply the client must keep us.
 - Examples must show the insight and the action taken, not the insight alone.
 - Name the thing we would build, then say what it does: "A routing workflow that sends each new lead to the right rep by source." A platform, a tool or a workflow, never a bare outcome with no object in it. This holds for the report cards on How it works and the result of the assessment.
@@ -137,11 +137,23 @@ Four questions, all in `app.js` under `if (el('assess'))`:
 1. What do you sell: `SELLS`. Software, Services or Both.
 2. Which apps do you run: `GROUPS`, 31 apps in six teams. Each option is the name of a software category a B2B company would recognise buying, a platform or a tool, not an activity. "Billing and invoicing", not "we send invoices". Each team gets a coloured dot from the brand palette, so the picker looks the way the sprawl happened. `APPS` is the flattened list the rest of the code uses.
 3. How many people: `SIZES`, which also sets the headcount the cost calculator starts from.
-4. Which of these sounds most like your company: `PROBLEMS`. Each entry is `[the problem in the owner's words, what we build for software, what we build for services]`, and the result picks the wording that matches question 1.
+4. Which of these sounds most like your company: `PROBLEMS`. Each entry starts with the problem in the owner's words. The two build sentences after it are no longer shown; the result now builds its own from `FIRST` and `BUILD`.
 
 Each of those answers names the thing we would build, a platform, a tool or a workflow, then
 says what it does. "A company dashboard that...", "An onboarding workflow that...". Not a
 description of an outcome with no object in it.
+
+### The result
+
+The result is built in the same block when the visitor presses Show my map. It is not a list of their answers. It has five parts, in this order:
+
+1. **The map.** `STAGES` places every app at one of six stages a customer passes through (Lead, Deal, Signed, Live or Delivered, Billed, Supported), and `UNDER` holds the apps that sit beneath all of them. `HO` in the click handler decides each of the six handoffs: usually connected, or probably by hand with a reason. These are rules of thumb from which tools were picked, so the copy always says "usually" and "probably", and the note under the map sends people to the call to confirm.
+2. **Questions their apps cannot answer.** `QUESTIONS` holds each question with the apps that hold a piece of it. A question only shows when the visitor picked at least two of those apps, so every app named is one they chose. The question behind their problem (`ASKS`) always comes first.
+3. **What it costs.** `COSTS` sets the heading, the labels and the starting numbers from the problem and the team size. The fourth input, tools they would like to stop renting, starts at zero so the figure never includes a number we made up.
+4. **Three apps they would own.** `FIRST` orders the builds by problem and `BUILD` writes each one. Each says what it could replace from the apps they picked, or that it fills a gap. Those apps carry a "Could replace" tag on the map.
+5. **The rest of the stack is open.** Every other app they picked is listed as still to go through together. Never turn this into a keep list.
+
+The close shows the email form when the forms are on, and the call button when they are not. If you add an app to `GROUPS`, also add it to `STAGES` or `UNDER`, or it will not appear on the map.
 
 Question 4 names a business problem an owner would recognise, not a specific broken process. Asking someone to diagnose the bottleneck puts the work on them, and the real problem is usually broader than one handoff. Keep any new option at that level.
 
