@@ -125,8 +125,9 @@ Never name either company. Both are companies the founder runs, so the page open
 Where the numbers come from:
 
 - Agents: each company's list of scheduled tasks as of 25 Nov 2026, 16 and 18.
-- Roles: an estimate from the work each agent carries a week, about 4 and about 5. The numbers in the summary card at the top of the page must match.
-- Hours of attention: an estimate the founder asked for, about 5 and 6 a week, from a 10 minute read of the morning report plus the daily review of what the agents prepared.
+- Roles: an estimate from the work each agent carries a week, 4 and 5. The numbers in the summary card at the top of the page must match.
+- State every number plainly. The founder had "about" and "give or take" removed (25 Nov 2026): "we should be more decisive". The one line under "What both show" is where the page says these are estimates, so the numbers themselves carry no hedge.
+- Hours of attention: an estimate the founder asked for, 5 and 6 a week, from a 10 minute read of the morning report plus the daily review of what the agents prepared.
 - The note under "What both show" says roles and hours are estimates. Keep it.
 - The travel app's results line is real, pulled on 25 Nov 2026 from its outreach tracker, its published pages and its coverage log. Refresh it from the source before changing it. Its sign-ups and revenue are left off because the app is early; ask the founder before adding them.
 - The sales platform has no results line yet. Add one only from real numbers the founder supplies.
