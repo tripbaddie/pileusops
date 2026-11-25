@@ -120,7 +120,7 @@ How to pitch them. The founder's ruling (25 Nov 2026): a reader should finish ea
 - The travel app's stories come from how its agents run. The founder asked for weekly learnings, competitor tracking and social listening to be among them.
 - No tables, no figure against each role, no per-agent descriptions, no vendor names, no lists of connected tools, no day-by-day numbers. A reader should not be able to read too much into a number, get confused or get lost in detail.
 - "What it stands in for" is two plain lists: job titles and kinds of software. Kinds only, never product names.
-- At most one line of results per example.
+- No results line on either example. The founder had the travel app's line taken down (25 Nov 2026). Do not add one back without asking her.
 
 Never name either company. Both are companies the founder runs, so the page opens by saying we built this inside our own companies first. They are described as "AI travel planning app" and "AI sales platform". Do not present them as outside clients. Do not name the companies, their people, their customers, their vendors, or anything narrow enough to identify them, on the page or in this file.
 
@@ -131,8 +131,6 @@ Where the numbers come from:
 - State every number plainly. The founder had "about" and "give or take" removed (25 Nov 2026): "we should be more decisive". The one line under "What both show" is where the page says these are estimates, so the numbers themselves carry no hedge.
 - Hours of attention: an estimate the founder asked for, 5 and 6 a week, from a 10 minute read of the morning report plus the daily review of what the agents prepared.
 - The note under "What both show" says roles and hours are estimates. Keep it.
-- The travel app's results line is real, pulled on 25 Nov 2026 from its outreach tracker, its published pages and its coverage log. Refresh it from the source before changing it. Its sign-ups and revenue are left off because the app is early; ask the founder before adding them.
-- The sales platform has no results line yet. Add one only from real numbers the founder supplies.
 
 ## Pricing
 
