@@ -55,7 +55,9 @@ The eight pages share the same `<head>` block, header and footer. They are copie
 
 Each page is a real address: `/`, `/how-it-works/`, `/case-studies/`, `/assessment/`, `/about/`, `/pricing/`, `/call/`, `/contact/`. Links between them use those paths, and the current page carries `aria-current="page"` in the header and footer navigation.
 
-The header navigation holds How it works, Case studies, Pricing, About, Contact and the assessment button. Book a call sits in the footer, on Contact, on the assessment page and under the closing button on Home. The assessment stays the main route in. The call is the alternative to it, never the replacement.
+The header navigation holds How it works, Case studies, Pricing, About, Contact and the assessment button. Book a call sits in the footer, on Contact, on the assessment page and under the closing button on Home.
+
+The footer has three columns: the brand and its line, the page links under "Explore", and "Contact" with the email address and the location (Detroit, MI). The founder asked for the address and the location to be on the site (25 Nov 2026). They also appear in the facts list on the Contact page. If either changes, change it in the footer of all nine HTML files and on Contact. The assessment stays the main route in. The call is the alternative to it, never the replacement.
 
 `app.js` runs on every page, so each interactive block is guarded by the element it needs:
 
@@ -102,7 +104,7 @@ Check desktop and a phone width (390px) before pushing.
 
 ## Known gaps
 
-- **All three forms are switched off until someone fills in one value.** The assessment, the call request and the contact note all go through `post()` at the top of `app.js`. Set `FORM_KEY` to a free Web3Forms access key and every form delivers to that inbox. Or set `CONTACT_EMAIL` and the forms open the visitor's own mail app with every answer filled in. With neither set, the send buttons are disabled and the pages say so. Both values are safe in public code.
+- **All three forms are switched off until someone fills in one value.** The assessment, the call request and the contact note all go through `post()` at the top of `app.js`. Set `FORM_KEY` to a free Web3Forms access key and every form delivers to that inbox. Or set `CONTACT_EMAIL` and the forms open the visitor's own mail app with every answer filled in. The public address is on the site now, but `CONTACT_EMAIL` is still empty: switching the forms on is the founder's call. With neither set, the send buttons are disabled and the pages say so. Both values are safe in public code.
 - The forms deliver the lead and their answers to the team. They do not email the visitor a report automatically. Someone has to send it.
 - Nothing reads anyone's real calendar. A requested time is a request, not a booking. See the next section.
 - The four advisor cards on About have no names, and their descriptions are placeholders.
@@ -127,7 +129,7 @@ On success the visitor gets a tentative `.ics` hold, not an invite. The copy say
 
 ## Contact
 
-`/contact/` is the note form on the left and the two other routes on the right: book a call, and start the assessment. The form posts through the same `post()` helper.
+`/contact/` is the note form on the left and the two other routes on the right: book a call, and start the assessment. Under them is a short list of facts that starts with the email address and the location. The form posts through the same `post()` helper.
 
 ## Case studies
 
