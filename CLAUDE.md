@@ -110,13 +110,14 @@ On success the visitor gets a tentative `.ics` hold, not an invite. The copy say
 
 ## Case studies
 
-`/case-studies/` has two examples, each with the same parts in the same order: three numbers, what we built, what changed for the person in charge, and what it stands in for. The styles are the `.csh`, `.csout` and `.cslist` rules at the end of `site.css`.
+`/case-studies/` has two examples, each with the same parts in the same order: three numbers, what it does, and what it stands in for. The styles are the `.csh`, `.csout` and `.cslist` rules at the end of `site.css`.
 
-Keep it a case study, not an analysis. The founder's ruling on the detailed draft (25 Nov 2026): say what we did at a high level and what came of it, and do not go deep into data or specifics that a reader could read too much into, get confused by or get lost in. So:
+How to pitch them. The founder's ruling (25 Nov 2026): a reader should finish each one thinking "wow, this is really cool". Her first two notes still hold underneath that: it must show outcomes, not a count of roles and tools, and it must stay a case study, not an analysis.
 
-- No tables of roles with a figure against each, no per-agent descriptions, no vendor names, no lists of connected tools, no day-by-day numbers.
-- "What we built" is three cards. Each names the thing, then says what it does.
-- "What changed" answers the same five in the same order, a headline and one or two short sentences each: executive function, reporting, visibility, time to decision, time to result. The founder asked for these five by name, because the first draft counted roles and tools and had no outcomes.
+- "What it does" is six short stories. Each has a label for the part of the business, a headline that states the surprising thing, and two or three plain sentences. Lead with what a reader would not expect a small company to have: a report that warns of a problem before it starts, a reply drafted before anyone opens the inbox, a CRM built because renting one cost too much, session recordings nobody has to watch, a support answer waiting when the customer writes in.
+- Say what the system does and what the person in charge no longer has to do. Do not explain how it works.
+- The sales platform's six stories are the founder's own account of her setup. Change the wording, not the claims, unless she says the setup changed.
+- No tables, no figure against each role, no per-agent descriptions, no vendor names, no lists of connected tools, no day-by-day numbers. A reader should not be able to read too much into a number, get confused or get lost in detail.
 - "What it stands in for" is two plain lists: job titles and kinds of software. Kinds only, never product names.
 - At most one line of results per example.
 
