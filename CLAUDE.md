@@ -57,7 +57,7 @@ Each page is a real address: `/`, `/how-it-works/`, `/case-studies/`, `/assessme
 
 The header navigation holds How it works, Case studies, Pricing, About, Contact and the assessment button. Book a call sits in the footer, on Contact, on the assessment page and under the closing button on Home.
 
-The footer has three columns: the brand and its line, the page links under "Explore", and "Contact" with the email address and the location (Detroit, MI). The founder asked for the address and the location to be on the site (25 Nov 2026). They also appear in the facts list on the Contact page. If either changes, change it in the footer of all nine HTML files and on Contact. The assessment stays the main route in. The call is the alternative to it, never the replacement.
+The footer has three columns: the brand and its line, the page links under "Explore", and "Contact" with the email address and the line "Based in Detroit, MI". The email is styled like the page links beside it, with no underline until hover: the founder found the first version, a bold underlined address over a bare "Detroit, MI", not professional looking. The founder asked for the address and the location to be on the site (25 Nov 2026). They also appear in the facts list on the Contact page. If either changes, change it in the footer of all nine HTML files and on Contact. The assessment stays the main route in. The call is the alternative to it, never the replacement.
 
 `app.js` runs on every page, so each interactive block is guarded by the element it needs:
 
