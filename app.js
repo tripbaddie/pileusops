@@ -359,7 +359,7 @@
       const rep = new Set();
       const also = (xs, phrase) => { const a = own(xs); a.forEach(x => rep.add(x)); return a.length ? [phrase + ' ' + list(a)] : []; };
       const swap = xs => { const a = own(xs); a.forEach(x => rep.add(x)); return a; };
-      const reads = (xs, max) => { const a = own(xs, max); return a.length > 1 ? 'your ' + list(a) : 'every app you keep'; };
+      const reads = (xs, max) => { const a = own(xs, max); return a.length > 1 ? 'your ' + list(a) : 'every app on your map'; };
       const signed = H('E-signature') ? 'E-signature completes' : H('CRM') ? 'a deal closes in your CRM' : 'a contract is signed';
       // every build: what it is, what it does with their own tools, and what it could replace
       const BUILD = {
@@ -405,6 +405,63 @@
       }
       const builds = picks.map(id => [...BUILD[id](), FIXES[id]]);
 
+      // one system, not three apps: what each build takes from the others. LINK is keyed 'from>to' and written for the card of the build that receives.
+      // A build nothing feeds says what it feeds instead, and the dashboard reads whatever else was picked. See CLAUDE.md before adding a build
+      const the = id => 'the ' + low(builds[picks.indexOf(id)][0].replace(/^An? /, ''));
+      const unit = svc ? 'project' : 'customer';
+      const acct = svc ? 'client' : 'account';
+      const LINK = {
+        'intake>onboard': f => `Starts from the customer record ${f} creates, so nothing is typed twice.`,
+        'intake>handoff': f => `Starts from the customer record ${f} creates, so nothing is typed twice.`,
+        'intake>invoice': f => `Bills from the customer record ${f} creates.`,
+        'intake>health': f => `Starts scoring from the record ${f} creates.`,
+        'intake>feedback': f => `Ties each request to the customer record ${f} creates, so you know who asked.`,
+        'intake>release': f => `Sends the notes to the contacts in the record ${f} creates.`,
+        'onboard>health': f => `Picks up each ${unit} from ${f}, so a slow start shows up as risk.`,
+        'handoff>health': f => `Picks up each ${unit} from ${f}, so a slow start shows up as risk.`,
+        'onboard>invoice': f => svc ? `Takes over after the first invoice ${f} raises.` : `Raises each invoice from what ${f} set up.`,
+        'onboard>feedback': f => `Collects what comes up during ${svc ? 'delivery' : 'onboarding'} in ${f}.`,
+        'handoff>feedback': f => `Collects what comes up while a ${unit} is going live in ${f}.`,
+        'onboard>release': f => `Sends the notes to every ${unit} ${f} has taken live.`,
+        'onboard>staff': f => svc ? `Staffs each new project the moment ${f} opens it.` : '',
+        'handoff>staff': f => `Assigns each new ${unit} the moment ${f} opens it.`,
+        'invoice>books': f => `Matches payments against the invoices ${f} sends.`,
+        'intake>books': f => `Matches each payment to the customer in the record ${f} creates.`,
+        'invoice>health': f => `Counts a late payment in ${f} as a sign of risk.`,
+        'books>invoice': f => `Stops chasing an invoice the moment ${f} matches its payment.`,
+        'books>health': f => `Counts a missed payment in ${f} as a sign of risk.`,
+        'health>feedback': f => `Weighs each request by the health of the ${acct} that asked, from ${f}.`,
+        'health>release': f => `Sends the news first to the ${acct}s ${f} marks at risk.`,
+        'feedback>health': f => `Counts requests left unanswered in ${f} as a sign of risk.`,
+        'feedback>release': f => `Tells the customers who asked, using the requests ${f} collected.`,
+        'hire>staff': f => `Shows each new hire as available the day ${f} finishes.`,
+        'hire>payroll': f => `Adds each new starter from ${f} to the next pay run.`,
+        'hire>onboard': f => svc ? `Counts each new hire from ${f} as capacity for the next project.` : `Makes each new hire from ${f} an owner of onboarding steps from their first day.`,
+        'hire>handoff': f => `Makes each new hire from ${f} an owner of steps from their first day.`,
+        'handoff>release': f => `Sends the notes to every ${unit} ${f} has taken live.`,
+        'handoff>invoice': f => `Bills every ${unit} ${f} is tracking, so none is missed.`,
+        'staff>onboard': f => svc ? `Asks ${f} who has room before it staffs a project.` : '',
+        'staff>health': f => svc ? `Marks a project at risk when ${f} shows its team is stretched.` : '',
+        'staff>payroll': f => `Takes who worked on what from ${f}.`
+      };
+      // what each build tells the rest of the system, for a build that nothing among the three feeds
+      const TELLS = { intake: 'who each new customer is', onboard: svc ? 'the plan and team for each project' : 'where each customer is in onboarding', handoff: `where each new ${unit} stands`,
+        health: `which ${acct}s are at risk`, invoice: 'who has paid and who is late', books: 'which payments have landed', feedback: 'what customers are asking for',
+        release: 'what shipped and who was told', hire: 'who is joining and when', staff: 'who has room', payroll: 'what each pay period costs' };
+      const link = (f, t) => LINK[f + '>' + t] ? LINK[f + '>' + t](the(f)) : '';
+      const joins = picks.map(to => {
+        const others = picks.filter(id => id !== to);
+        if (to === 'dash') return `Reads ${list(others.map(the))} as well, so one report covers all three.`;
+        const from = others.map(f => link(f, to)).filter(Boolean).slice(0, 2);
+        if (from.length) return from.join(' ');
+        const feeds = others.filter(t => t === 'dash' || link(to, t));
+        return feeds.length ? `Tells ${list(feeds.map(the))} ${TELLS[to]}.` : '';
+      });
+      // the record the three share, named from the paths they sit on
+      const HELD = { c: svc ? 'Clients and projects' : 'Customers', m: 'Invoices and payments', p: 'Requests and releases', t: 'People and hours' };
+      const held = ['c', 'm', 'p', 't'].filter(h => picks.some(id => HOME[id] === h)).map(h => HELD[h]);
+      const record = held.length ? held : [HELD.c];
+
       // headline, and their own answers played back
       el('rHead').textContent = `${n} apps. ${k === 0 ? `On paper, all ${T} steps between them look covered.` : k === T ? `All ${T} steps between them may still be done by hand.` : `${k} of the ${T} steps between them may still be done by hand.`}`;
       el('rTold').innerHTML = `<em>What you told us</em><span>B2B ${kind}</span><span>${SIZES[size]} people</span><span class="p">${PROBLEMS[problem][0]}</span>`;
@@ -442,7 +499,10 @@
       // what we would build, and what each could replace
       el('rBuilds').innerHTML = builds.map(([title, does, reps, closes], i) => { const c = closes.filter(key => byHand.includes(key));
         const tags = (i ? [] : ['Answers the problem you picked', 'First workflow live in 2 to 3 weeks']).concat(c.map(key => 'Covers: ' + low(S[key][0])));
-        return `<div class="rb${i ? '' : ' top'}"><b>${i + 1}</b><div class="w"><h4>${title}</h4><p>${does}</p></div><div class="x"><div class="rr"><small>${reps.length ? 'Could replace' : 'Fills a gap'}</small>${reps.length ? cap(list(reps)) : 'Nothing you picked does this today.'}</div><div class="tags">${tags.map(t => `<span class="rp t">${t}</span>`).join('')}</div></div></div>`; }).join('');
+        return `<div class="rb${i ? '' : ' top'}"><b>${i + 1}</b><div class="w"><h4>${title}</h4><p>${does}</p>${joins[i] ? `<p class="lk"><small>Connects</small>${joins[i]}</p>` : ''}</div><div class="x"><div class="rr"><small>${reps.length ? 'Could replace' : 'Fills a gap'}</small>${reps.length ? cap(list(reps)) : 'Nothing you picked does this today.'}</div><div class="tags">${tags.map(t => `<span class="rp t">${t}</span>`).join('')}</div></div></div>`; }).join('');
+      el('rSys').innerHTML = `<p class="lab">How the three fit together</p><div class="rsys3">${builds.map(([title], i) => `<span><b>${i + 1}</b>${title.replace(/^An? /, '').replace(/^./, c => c.toUpperCase())}</span>`).join('')}</div>`
+        + `<div class="rsysl" aria-hidden="true"><i></i><i></i><i></i></div><div class="rsysb"><small>What all three read and write</small><b>One shared record of your company</b><ul class="cslist">${record.map(r => `<li>${r}</li>`).join('')}</ul></div>`
+        + `<p class="rsysn">Each one reads and writes the same record, so the three work as one system. Whatever we build next joins it.</p>`;
       const open = names.filter(x => !rep.has(x));
       el('rMore').hidden = !open.length;
       el('rMore').innerHTML = open.length ? `<p class="lab">${open.length} more app${open.length > 1 ? 's' : ''} to go through together</p><div class="rchips">${open.map(x => `<span>${x}</span>`).join('')}</div>` : '';
@@ -462,7 +522,7 @@
 
       shown = { sells: SELLS[sells], apps: names.join(', '), app_count: n, team_size: SIZES[size], problem: PROBLEMS[problem][0],
         paths_shown: paths.map(p => p[0]).join(', '), steps_worth_a_look: byHand.map(key => S[key][0]).join(' | ') || 'none', questions: qs.map(x => x.q).join(' | '),
-        builds: builds.map(([t, , r], i) => `${i + 1}. ${t}${r.length ? ' (could replace ' + list(r) + ')' : ''}`).join(' | '), still_open: open.join(', ') };
+        builds: builds.map(([t, , r], i) => `${i + 1}. ${t}${r.length ? ' (could replace ' + list(r) + ')' : ''}`).join(' | '), how_they_connect: joins.filter(Boolean).join(' | ') || 'none', shared_record: record.join(', '), still_open: open.join(', ') };
       box.classList.add('done'); el('sent').hidden = true;
       box.scrollIntoView({ behavior: calm ? 'auto' : 'smooth', block: 'start' });
     });
