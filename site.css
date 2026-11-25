@@ -681,6 +681,12 @@ html.js .rv.seen{opacity:1;transform:none}
 .rp.hand{background:#FFE0E0;color:#A31212}
 .rp.rep{padding:2.5px 10px;border:1.5px solid var(--ink)}
 .rmap{margin-top:32px}
+.rtabs{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:24px}
+.rtabs button{all:unset;box-sizing:border-box;cursor:pointer;display:inline-flex;align-items:center;gap:9px;min-height:44px;padding:0 18px;border-radius:99px;background:var(--bg);font-weight:600;font-size:16px;transition:background .2s,color .2s}
+.rtabs button:hover{background:#E6E8E2}
+.rtabs button[aria-selected="true"]{background:var(--ink);color:#fff}
+.rtabs button:focus-visible{outline:2px solid var(--sales);outline-offset:2px}
+.rtabs .c{display:inline-flex;align-items:center;justify-content:center;min-width:22px;height:22px;padding:0 6px;border-radius:99px;background:#FFE0E0;color:#A31212;font-size:12.5px}
 .rmaph{display:flex;flex-wrap:wrap;gap:12px 24px;align-items:flex-end;justify-content:space-between;margin-bottom:16px}
 .result .rmaph h3{font-size:22px;max-width:none}
 .rleg{display:flex;flex-wrap:wrap;gap:8px}

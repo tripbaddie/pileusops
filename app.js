@@ -266,18 +266,33 @@
     const one = (host, labels, set) => { const bs = labels.map((l, i) => mk(host, l, () => { set(i); bs.forEach((x, k) => x.setAttribute('aria-pressed', k === i)); ready(); })); return bs; };
     one(el('optSells'), SELLS, i => { sells = i; }); one(el('optSize'), SIZES, i => { size = i; }); one(el('optStuck'), PROBLEMS.map(p => p[0]), i => { problem = i; });
     // ---- the result: the visitor's own map, what it cannot answer, what it costs and what we would build
-    // every app sits at one stage of the path a customer takes, or underneath all of them
-    const STAGES = svc => [
-      ['Leads', ['Email and marketing automation', 'Website or CMS', 'Landing pages and forms', 'Ad platforms', 'Webinar and event platform', 'Lead and intent data']],
-      ['Deals', ['CRM', 'Sales engagement and outbound', 'Proposals and quoting']],
-      ['Contract', ['E-signature']],
-      [svc ? 'Delivery' : 'Onboarding', ['Customer onboarding', 'Project management', 'Time tracking', 'Resource scheduling', 'Issue and sprint tracker', 'Product analytics', 'Code repository', 'Feedback and roadmap']],
-      ['Billing', ['Billing and invoicing', 'Payments and subscriptions', 'Accounting', 'Expense management']],
-      ['Support', ['Help desk', 'Customer success platform', 'Surveys and NPS']]
+    // four paths work takes through a company. Each is [tab, map title, what follows the last stage, stages],
+    // and a stage is [name, the apps that belong to it, the step that has to happen next]. Customers always shows; the rest show when the visitor runs them
+    const PATHS = svc => [
+      ['Customers', 'How a customer moves through your company', ['Renewal', 'The loop starts again'], [
+        ['Leads', ['Email and marketing automation', 'Website or CMS', 'Landing pages and forms', 'Ad platforms', 'Webinar and event platform', 'Lead and intent data'], 'lead'],
+        ['Deals', ['CRM', 'Sales engagement and outbound', 'Proposals and quoting'], 'sign'],
+        ['Contract', ['E-signature'], 'setup'],
+        [svc ? 'Delivery' : 'Onboarding', ['Customer onboarding', 'Project management', 'Time tracking', 'Resource scheduling', 'Product analytics'], 'bill'],
+        ['Billing', ['Billing and invoicing', 'Payments and subscriptions', 'Accounting', 'Expense management'], 'support'],
+        ['Support', ['Help desk', 'Customer success platform', 'Surveys and NPS']]]],
+      ['Money', 'How money moves through your company', ['Month end', 'The books get closed'], [
+        ['Quote', ['Proposals and quoting', 'CRM'], 'sign'],
+        ['Contract', ['E-signature'], 'bill'],
+        ['Invoice', ['Billing and invoicing', 'Payments and subscriptions'].concat(svc ? ['Time tracking'] : []), 'books'],
+        ['Books', ['Accounting', 'Expense management', 'Payroll']]]],
+      ['Product', 'How an idea becomes a release', ['Feedback', 'The loop starts again'], [
+        ['Feedback', ['Help desk', 'Surveys and NPS'], 'road'],
+        ['Roadmap', ['Feedback and roadmap'], 'work'],
+        ['Build', ['Issue and sprint tracker', 'Code repository'], 'ship'],
+        ['Launch', ['Email and marketing automation', 'Website or CMS', 'Knowledge base or wiki'], 'usage'],
+        ['Usage', ['Product analytics']]]],
+      ['Team', 'How your team runs', ['Next hire', 'The cycle starts again'], [
+        ['Hire', ['HR system'], 'hire'],
+        ['Onboard', ['Knowledge base or wiki', 'Team chat'], 'staff'],
+        ['Work', ['Project management', 'Resource scheduling', 'Time tracking'], 'payroll'],
+        ['Pay', ['Payroll', 'Expense management']]]]
     ];
-    // what has to happen after each stage, said the way an owner would say it. The sixth is the report underneath them all
-    const STEPS = svc => ['A new lead reaches sales', 'The deal goes out to be signed', svc ? 'The new project gets set up' : 'The new customer gets set up',
-      svc ? 'The work gets billed' : 'The customer gets billed', 'Support sees what the customer bought', 'Everything gets pulled into a report'];
     const UNDER = ['BI and dashboards', 'Spreadsheets', 'Team chat', 'Knowledge base or wiki', 'HR system', 'Payroll'];
     // a question no single app can answer: [the question, [[what one app holds, the apps that could hold it]...], closing line]
     const QUESTIONS = (svc, n) => ({
@@ -312,20 +327,33 @@
       const names = mine.map(a => a[0]), has = new Set(names), team = Object.fromEntries(mine);
       const H = x => has.has(x), own = (xs, max) => xs.filter(H).slice(0, max || 9);
       const svc = sells === 1, kind = ['software', 'services', 'software and services'][sells];
-      const stages = STAGES(svc), steps = STEPS(svc), under = own(UNDER), low = t => t.charAt(0).toLowerCase() + t.slice(1);
+      const under = own(UNDER), low = t => t.charAt(0).toLowerCase() + t.slice(1);
 
-      // the six steps between stages: [probably automatic?, why it probably is not]
-      const leads = stages[0][1].some(H), bills = H('Billing and invoicing') || H('Accounting') || (svc && H('Payments and subscriptions'));
-      const HO = [
-        [leads && H('CRM'), leads ? 'No CRM for leads to land in.' : 'Nothing you picked brings in leads.'],
-        [H('CRM') && H('E-signature'), H('E-signature') ? 'No CRM to carry the deal.' : 'Nothing you picked gets the contract signed.'],
-        svc ? [false, H('Project management') ? 'Someone sets up each project.' : 'Nothing you picked sets up the project.'] : [H('Customer onboarding'), 'Nothing you picked starts onboarding.'],
-        svc ? [H('Time tracking') && H('Billing and invoicing'), bills ? 'Hours and invoices are matched by hand.' : 'Nothing you picked sends the bill.']
-            : [H('Payments and subscriptions'), bills ? 'Someone raises each invoice.' : 'Nothing you picked sends the bill.'],
-        [H('Customer success platform'), H('Help desk') ? 'Support cannot see what a customer pays or uses.' : 'Nothing you picked looks after customers.'],
-        problem === 0 ? [false, 'You told us someone builds that report by hand.'] : [H('BI and dashboards'), 'Nothing you picked reports across all six stages.']
-      ];
-      const byHand = HO.map((h, i) => h[0] ? 0 : i + 1).filter(Boolean), k = byHand.length;
+      // every step between stages, in an owner's words: [what has to happen, probably automatic?, why it probably is not]
+      const leads = ['Email and marketing automation', 'Website or CMS', 'Landing pages and forms', 'Ad platforms', 'Webinar and event platform', 'Lead and intent data'].some(H);
+      const bills = H('Billing and invoicing') || H('Accounting') || (svc && H('Payments and subscriptions'));
+      const S = {
+        lead: ['A new lead reaches sales', leads && H('CRM'), leads ? 'No CRM for leads to land in.' : 'Nothing you picked brings in leads.'],
+        sign: ['The deal goes out to be signed', H('CRM') && H('E-signature'), H('E-signature') ? 'No CRM to carry the deal.' : 'Nothing you picked gets the contract signed.'],
+        setup: svc ? ['The new project gets set up', false, H('Project management') ? 'Someone sets up each project.' : 'Nothing you picked sets up the project.']
+          : ['The new customer gets set up', H('Customer onboarding'), 'Nothing you picked starts onboarding.'],
+        bill: svc ? ['The work gets billed', H('Time tracking') && H('Billing and invoicing'), bills ? 'Hours and invoices are matched by hand.' : 'Nothing you picked sends the bill.']
+          : ['The customer gets billed', H('Payments and subscriptions'), bills ? 'Someone raises each invoice.' : 'Nothing you picked sends the bill.'],
+        support: ['Support sees what the customer bought', H('Customer success platform'), H('Help desk') ? 'Support cannot see what a customer pays or uses.' : 'Nothing you picked looks after customers.'],
+        books: ['The payment lands in your books', H('Accounting') && H('Payments and subscriptions'), H('Accounting') ? 'Someone enters each payment by hand.' : 'Nothing you picked keeps the books.'],
+        road: ['Feedback reaches the roadmap', H('Feedback and roadmap'), 'Nothing you picked turns feedback into a roadmap.'],
+        work: ['The roadmap becomes work for the team', H('Feedback and roadmap') && H('Issue and sprint tracker'), H('Issue and sprint tracker') ? 'Someone copies the plan into the tracker.' : 'Nothing you picked tracks the build.'],
+        ship: ['Customers hear what shipped', false, ['Email and marketing automation', 'Website or CMS', 'Knowledge base or wiki'].some(H) ? 'Someone writes up each release.' : 'Nothing you picked tells customers what shipped.'],
+        usage: ['You see whether anyone uses it', H('Product analytics'), 'Nothing you picked measures usage.'],
+        hire: ['A new hire gets set up', false, H('HR system') ? 'Someone creates their accounts one tool at a time.' : 'Nothing you picked tracks your people.'],
+        staff: ['Work goes to whoever has room', H('Resource scheduling') && H('Project management'), H('Project management') ? 'Someone staffs each project from memory.' : 'Nothing you picked plans the work.'],
+        payroll: ['Hours and changes reach payroll', H('Payroll') && H('HR system'), H('Payroll') ? 'Someone keys hours and changes into Payroll.' : 'Nothing you picked runs payroll.'],
+        report: ['Everything gets pulled into a report', problem !== 0 && H('BI and dashboards'), problem === 0 ? 'You told us someone builds that report by hand.' : 'Nothing you picked reports across every stage.']
+      };
+      // the customer path always shows; another path shows when they run apps at two or more of its stages
+      const paths = PATHS(svc).filter((p, i) => !i || p[3].filter(st => st[1].some(H)).length > 1);
+      const keys = [...new Set(paths.flatMap(p => p[3].map(st => st[2]).filter(Boolean))), 'report'];
+      const byHand = keys.filter(key => !S[key][1]), k = byHand.length, T = keys.length;
 
       // the three apps we would build, the first one answering the problem they picked
       const rep = new Set();
@@ -335,33 +363,43 @@
       const signed = H('E-signature') ? 'E-signature completes' : H('CRM') ? 'a deal closes in your CRM' : 'a contract is signed';
       const BUILD = {
         dash: () => ['A company dashboard', `Reads ${reads(['CRM', svc ? 'Project management' : 'Product analytics', 'Payments and subscriptions', 'Billing and invoicing', 'Accounting', 'Help desk'], 4)}. Every Monday it explains what moved and what to do about it.`,
-          [...swap(['BI and dashboards']), ...also(['Spreadsheets'], 'the reports built in')], [6]],
+          [...swap(['BI and dashboards']), ...also(['Spreadsheets'], 'the reports built in')], ['report']],
         onboard: () => svc
           ? ['A project setup app', `Builds the plan, staffs it from who has capacity and raises the first invoice the moment ${signed}.`,
-              [...swap(['Resource scheduling', 'Time tracking']), ...(H('Resource scheduling') ? [] : also(['Spreadsheets'], 'the staffing plan kept in'))], [3, 4]]
+              [...swap(['Resource scheduling', 'Time tracking']), ...(H('Resource scheduling') ? [] : also(['Spreadsheets'], 'the staffing plan kept in'))], ['setup', 'bill']]
           : ['A customer onboarding app', `Opens the moment ${signed}. Every step is owned, timed and visible to your team and your customer.`,
-              [...swap(['Customer onboarding']), ...(H('Customer onboarding') ? [] : also(['Spreadsheets'], 'the onboarding run in'))], [3]],
+              [...swap(['Customer onboarding']), ...(H('Customer onboarding') ? [] : also(['Spreadsheets'], 'the onboarding run in'))], ['setup']],
         health: () => svc
-          ? ['A client health app', 'Scores every project on budget, schedule and client sentiment, and drafts the check-in the moment one slips.', swap(['Customer success platform', 'Surveys and NPS']), [5]]
-          : ['An account health app', 'Scores every account on usage, tickets and payments, and drafts the outreach the moment one slips.', swap(['Customer success platform', 'Surveys and NPS']), [5]],
+          ? ['A client health app', 'Scores every project on budget, schedule and client sentiment, and drafts the check-in the moment one slips.', swap(['Customer success platform', 'Surveys and NPS']), ['support']]
+          : ['An account health app', 'Scores every account on usage, tickets and payments, and drafts the outreach the moment one slips.', swap(['Customer success platform', 'Surveys and NPS']), ['support']],
         intake: () => ['A single intake app', `Takes each new customer once and writes it into ${reads(['CRM', 'Billing and invoicing', 'Payments and subscriptions', 'Accounting', 'Project management', 'Help desk'], 3)}, so nobody types the same details twice.`,
-          swap(['Landing pages and forms', 'Proposals and quoting']), [1, 2]],
+          swap(['Landing pages and forms', 'Proposals and quoting']), ['lead', 'sign']],
         handoff: () => [svc ? 'A new project tracker' : 'A new customer tracker', `Follows every deal from signed to ${svc ? 'delivered' : 'live'}. Each step is owned, timed and visible, so nothing waits on one person remembering.`,
-          [...swap(['Customer onboarding']), ...also(['Spreadsheets', 'Knowledge base or wiki'], 'the checklists kept in')], [3]]
+          [...swap(['Customer onboarding']), ...also(['Spreadsheets', 'Knowledge base or wiki'], 'the checklists kept in')], ['setup']]
       };
       const builds = FIRST[problem].map(id => BUILD[id]());
 
       // headline, and their own answers played back
-      el('rHead').textContent = `${n} apps. ${k === 0 ? 'On paper, all 6 steps between them run on their own.' : k === 6 ? 'All 6 steps between them are probably done by hand.' : k + ' of the 6 steps between them ' + (k === 1 ? 'is' : 'are') + ' probably done by hand.'}`;
+      el('rHead').textContent = `${n} apps. ${k === 0 ? `On paper, all ${T} steps between them run on their own.` : k === T ? `All ${T} steps between them are probably done by hand.` : `${k} of the ${T} steps between them ${k === 1 ? 'is' : 'are'} probably done by hand.`}`;
       el('rTold').innerHTML = `<em>What you told us</em><span>B2B ${kind}</span><span>${SIZES[size]} people</span><span class="p">${PROBLEMS[problem][0]}</span>`;
 
-      // the map
+      // the map: one tab per path they run, each stage with its apps and the step that follows it
       const app = x => `<li style="--c:${C[team[x]]}"><span>${x}</span></li>`;
-      el('rStages').innerHTML = stages.map(([name, apps], i) => { const a = own(apps), ok = i < 5 && HO[i][0];
-        const ho = i === 5 ? '<div class="rho last"><small>Next</small><b>Renewal</b>The loop starts again</div>'
-          : `<div class="rho ${ok ? 'ok' : 'hand'}"><small>Next</small><b>${steps[i]}</b>${ok ? 'Probably automatic' : 'Probably done by hand. ' + HO[i][1]}</div>`;
-        return `<div class="rst"><div><span class="n">0${i + 1}</span><b class="t">${name}</b></div><ul class="rapps">${a.length ? a.map(app).join('') : '<li class="none">No tool picked</li>'}</ul>${ho}</div>`; }).join('');
-      el('rUnder').innerHTML = `<div><small>Underneath all of it</small><b>Reporting</b></div><p>${under.length ? list(under) + (under.length > 1 ? ' sit' : ' sits') + ' underneath all six stages.' : 'Nothing you picked sits underneath the six stages.'} ${HO[5][0] ? '' : HO[5][1]}</p><span class="rp ${HO[5][0] ? 'ok' : 'hand'}">${HO[5][0] ? 'Probably automatic' : 'Done by hand today'}</span>`;
+      const draw = v => { const [, title, [after, then], stages] = paths[v];
+        [...el('rTabs').children].forEach((b, i) => b.setAttribute('aria-selected', i === v));
+        el('rMapT').textContent = title;
+        el('rStages').innerHTML = stages.map(([name, apps, key], i) => { const a = own(apps), st = key && S[key];
+          const next = st ? `<div class="rho ${st[1] ? 'ok' : 'hand'}"><small>Next</small><b>${st[0]}</b>${st[1] ? 'Probably automatic' : 'Probably done by hand. ' + st[2]}</div>`
+            : `<div class="rho last"><small>Next</small><b>${after}</b>${then}</div>`;
+          return `<div class="rst"><div><span class="n">0${i + 1}</span><b class="t">${name}</b></div><ul class="rapps">${a.length ? a.map(app).join('') : '<li class="none">No tool picked</li>'}</ul>${next}</div>`; }).join(''); };
+      el('rTabs').hidden = paths.length < 2;
+      el('rTabs').innerHTML = paths.map(([name, , , stages]) => { const c = stages.filter(st => st[2] && !S[st[2]][1]).length;
+        return `<button type="button" role="tab" aria-label="${name}${c ? ', ' + c + ' probably done by hand' : ''}">${name}${c ? `<span class="c" aria-hidden="true">${c}</span>` : ''}</button>`; }).join('');
+      [...el('rTabs').children].forEach((b, i) => b.addEventListener('click', () => draw(i)));
+      draw(0);
+      el('rUnder').innerHTML = `<div><small>Underneath all of it</small><b>Reporting</b></div><p>${under.length ? list(under) + (under.length > 1 ? ' sit' : ' sits') + ' underneath every stage.' : 'Nothing you picked sits underneath the stages.'} ${S.report[1] ? '' : S.report[2]}</p><span class="rp ${S.report[1] ? 'ok' : 'hand'}">${S.report[1] ? 'Probably automatic' : 'Done by hand today'}</span>`;
+      const placed = new Set(paths.flatMap(p => p[3].flatMap(st => st[1])).concat(UNDER)), loose = names.filter(x => !placed.has(x));
+      el('rAlso').hidden = !loose.length; el('rAlso').textContent = loose.length ? `Also in your stack: ${list(loose)}.` : '';
 
       // up to three questions their apps cannot answer, the one behind their problem first
       const Q = QUESTIONS(svc, n);
@@ -377,8 +415,8 @@
       el('rQs').innerHTML = qs.map(x => `<div class="rq${x.top ? ' top' : ''}"><span class="rp">${x.top ? 'The problem you picked' : 'Split across ' + x.count + ' apps'}</span><h4>${x.q}</h4><p>${x.text}</p></div>`).join('');
 
       // what we would build, and what each could replace
-      el('rBuilds').innerHTML = builds.map(([title, does, reps, closes], i) => { const c = closes.filter(h => byHand.includes(h));
-        const tags = (i ? [] : ['Answers the problem you picked', 'First workflow live in 2 to 3 weeks']).concat(c.map(h => 'Fixes: ' + low(steps[h - 1])));
+      el('rBuilds').innerHTML = builds.map(([title, does, reps, closes], i) => { const c = closes.filter(key => byHand.includes(key));
+        const tags = (i ? [] : ['Answers the problem you picked', 'First workflow live in 2 to 3 weeks']).concat(c.map(key => 'Fixes: ' + low(S[key][0])));
         return `<div class="rb${i ? '' : ' top'}"><b>${i + 1}</b><div class="w"><h4>${title}</h4><p>${does}</p></div><div class="x"><div class="rr"><small>${reps.length ? 'Could replace' : 'Fills a gap'}</small>${reps.length ? cap(list(reps)) : 'Nothing you picked does this today.'}</div><div class="tags">${tags.map(t => `<span class="rp t">${t}</span>`).join('')}</div></div></div>`; }).join('');
       const open = names.filter(x => !rep.has(x));
       el('rMore').hidden = !open.length;
@@ -392,13 +430,13 @@
       costWhat = cWhat; cost();
 
       // the close: the report by email when forms are on, the call when they are not
-      const start = byHand.length ? `we start where ${low(steps[byHand[0] - 1])}` : 'we walk through your map';
+      const start = byHand.length ? `we start where ${low(S[byHand[0]][0])}` : 'we walk through your map';
       el('rCloseA').hidden = el('rCloseB').hidden = !LIVE; el('rCloseC').hidden = LIVE;
       el('rCall').innerHTML = `Or <a href="/call/">book 15 minutes</a> and ${start} with you.`;
       el('rCallOnly').textContent = `Fifteen minutes. ${cap(start)} and tell you what we would build first.`;
 
       shown = { sells: SELLS[sells], apps: names.join(', '), app_count: n, team_size: SIZES[size], problem: PROBLEMS[problem][0],
-        steps_probably_done_by_hand: byHand.map(h => steps[h - 1]).join(' | ') || 'none', questions: qs.map(x => x.q).join(' | '),
+        paths_shown: paths.map(p => p[0]).join(', '), steps_probably_done_by_hand: byHand.map(key => S[key][0]).join(' | ') || 'none', questions: qs.map(x => x.q).join(' | '),
         builds: builds.map(([t, , r], i) => `${i + 1}. ${t}${r.length ? ' (could replace ' + list(r) + ')' : ''}`).join(' | '), still_open: open.join(', ') };
       box.classList.add('done'); el('sent').hidden = true;
       box.scrollIntoView({ behavior: calm ? 'auto' : 'smooth', block: 'start' });
