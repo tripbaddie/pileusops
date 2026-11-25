@@ -291,13 +291,13 @@
     });
     const ASKS = ['biz', 'capacity', 'slip', 'risk', 'tools'];                 // the question behind each problem
     const FIRST = [['dash', 'onboard', 'health'], ['onboard', 'dash', 'health'], ['handoff', 'dash', 'health'], ['health', 'dash', 'onboard'], ['intake', 'dash', 'onboard']];
-    // the cost calculator starts from the problem they picked: [heading, who does it, what the year was spent on, hours a week, people by team size]
+    // the cost sentences start from the problem they picked: [heading, what those people spend the hours doing, what the year was spent on, hours a week, people by team size]
     const COSTS = [
-      ['Building the report by hand.', 'People who build or chase reports', 'building reports by hand', 4, [1, 3, 8, 20]],
-      ['Work that grows with every customer.', 'People doing work a workflow could do', 'on work a workflow could do', 5, [2, 6, 20, 50]],
-      ['Chasing what is waiting on someone.', 'People who chase work that is waiting', 'chasing work that is waiting on someone', 3, [2, 5, 15, 40]],
-      ['Finding problems late.', 'People who find and fix problems after the fact', 'finding and fixing problems late', 4, [2, 5, 12, 30]],
-      ['Moving information by hand.', 'People who move information between tools', 'moving information between tools by hand', 3, [4, 12, 40, 100]]
+      ['Building the report by hand.', 'building or chasing reports', 'building reports by hand', 4, [1, 3, 8, 20]],
+      ['Work that grows with every customer.', 'on work a workflow could do', 'on work a workflow could do', 5, [2, 6, 20, 50]],
+      ['Chasing what is waiting on someone.', 'chasing work that is waiting on someone', 'chasing work that is waiting on someone', 3, [2, 5, 15, 40]],
+      ['Finding problems late.', 'finding and fixing problems after the fact', 'finding and fixing problems late', 4, [2, 5, 12, 30]],
+      ['Moving information by hand.', 'moving information between tools', 'moving information between tools by hand', 3, [4, 12, 40, 100]]
     ];
     const list = a => a.length < 2 ? (a[0] || '') : a.slice(0, -1).join(', ') + ' and ' + a[a.length - 1];
     const cap = t => t.charAt(0).toUpperCase() + t.slice(1);
@@ -383,10 +383,10 @@
       el('rMore').innerHTML = open.length ? `<p class="lab">${open.length} more app${open.length > 1 ? 's' : ''} to go through together</p><div class="rchips">${open.map(x => `<span>${x}</span>`).join('')}</div>` : '';
 
       // the cost of today, starting from the problem they picked
-      const [cHead, cWho, cWhat, cHrs, cPpl] = COSTS[problem];
-      el('cHead').textContent = cHead; el('cPeopleL').textContent = cWho;
+      const [cHead, cDoing, cWhat, cHrs, cPpl] = COSTS[problem];
+      el('cHead').textContent = cHead; el('cDoing').textContent = cDoing;
       el('cPeople').value = cPpl[size]; el('cHours').value = cHrs; el('cRate').value = 50; el('cTools').value = 0;
-      el('cNote').textContent = `These start as our assumptions for a ${kind} company of ${SIZES[size].toLowerCase()} people. Replace them with yours.`;
+      el('cNote').textContent = `These are our starting guesses for a ${kind} company of ${SIZES[size].toLowerCase()} people. Change any number to match yours.`;
       costWhat = cWhat; cost();
 
       // the close: the report by email when forms are on, the call when they are not
@@ -401,13 +401,13 @@
       box.classList.add('done'); el('sent').hidden = true;
       box.scrollIntoView({ behavior: calm ? 'auto' : 'smooth', block: 'start' });
     });
-    // what today costs, from the visitor's own numbers: hours by hand, plus any tools they want to stop renting
+    // what today costs, from the visitor's own numbers: hours by hand, plus any tools they want to stop paying for
     const money = n => '$' + Math.round(n).toLocaleString('en-US');
     let costWhat = '';
     function cost(){ const v = id => Math.max(0, +el(id).value || 0), p = v('cPeople'), h = v('cHours'), r = v('cRate'), t = v('cTools') * 12, hrs = p * h * r * 50;
       el('cOut').textContent = money(hrs + t);
       el('cOutL').textContent = t ? 'a year in hours by hand and tools you rent' : 'a year spent ' + costWhat;
-      el('cHow').textContent = `${money(hrs)} in hours (${p} people x ${h} hours x ${money(r)} x 50 weeks)` + (t ? ` plus ${money(t)} in tools.` : '. Add the tools you would like to stop renting.'); }
+      el('cHow').textContent = `${p} people x ${h} hours x ${money(r)} x 50 working weeks.` + (t ? ` Plus ${money(t)} a year in tools.` : ''); }
     ['cPeople', 'cHours', 'cRate', 'cTools'].forEach(id => el(id).addEventListener('input', cost));
     const say = t => { const n = el('sent'); n.textContent = t; n.hidden = false; };
     el('send').addEventListener('submit', async e => {

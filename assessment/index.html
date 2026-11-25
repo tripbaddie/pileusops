@@ -22,7 +22,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Funnel+Display:wght@500;600;700&family=Funnel+Sans:wght@400;500;600&family=Geist+Mono:wght@500&display=swap">
-<link rel="stylesheet" href="/site.css?v=202611242122">
+<link rel="stylesheet" href="/site.css?v=202611242128">
 </head>
 <body>
 <div class="bar">
@@ -72,11 +72,10 @@
           <div class="rin">
             <p class="eyebrow">What it costs you today</p>
             <h3 id="cHead"></h3>
-            <div class="costrow">
-              <label><span id="cPeopleL">People who do this by hand</span><input type="number" id="cPeople" min="0" step="1" value="10" inputmode="numeric"></label>
-              <label>Hours a week each spends on it<input type="number" id="cHours" min="0" step="0.5" value="3" inputmode="decimal"></label>
-              <label>Cost of an hour, in dollars<input type="number" id="cRate" min="0" step="5" value="50" inputmode="numeric"></label>
-              <label>A month on tools you would like to stop renting, in dollars<input type="number" id="cTools" min="0" step="100" value="0" inputmode="numeric"></label>
+            <div class="rsay">
+              <p>About <input type="number" id="cPeople" min="0" step="1" value="10" inputmode="numeric" aria-label="Number of people"> people spend <input type="number" id="cHours" min="0" step="0.5" value="3" inputmode="decimal" aria-label="Hours a week each person spends"> hours a week <span id="cDoing"></span>.</p>
+              <p>An hour of their time costs you about <span class="nb">$<input type="number" id="cRate" min="0" step="5" value="50" inputmode="numeric" aria-label="Cost of an hour, in dollars"></span>.</p>
+              <p>Tools you would like to drop cost <span class="nb">$<input type="number" id="cTools" min="0" step="100" value="0" inputmode="numeric" aria-label="Monthly cost of tools you would like to stop paying for, in dollars"></span> a month.</p>
             </div>
             <p class="note" id="cNote"></p>
           </div>
@@ -155,7 +154,7 @@
     <small>Operations for the AI era · 2026</small>
   </div>
 </footer>
-<script src="/brand.js?v=202611242122"></script>
-<script src="/app.js?v=202611242122"></script>
+<script src="/brand.js?v=202611242128"></script>
+<script src="/app.js?v=202611242128"></script>
 </body>
 </html>

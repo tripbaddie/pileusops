@@ -716,7 +716,11 @@ html.js .rv.seen{opacity:1;transform:none}
 .rq p{margin:0;color:var(--mute);font-size:16px}
 .rcost{display:flex;flex-wrap:wrap;gap:24px 48px;align-items:center}
 .rin{flex:1 1 380px;min-width:0}
-.rin .costrow{grid-template-columns:repeat(2,minmax(0,1fr));margin-top:22px}
+.rsay{margin-top:20px}
+.rsay p{margin:0 0 10px;font-size:19px;line-height:1.4}
+.rsay .nb{white-space:nowrap}
+.rsay input{width:88px;min-height:46px;margin:4px 3px;padding:0 8px;border-radius:10px;border:1px solid rgba(11,18,32,.3);background:#fff;font:inherit;font-family:var(--disp);font-weight:600;font-size:20px;text-align:center;color:var(--ink);vertical-align:middle}
+.rsay input:focus-visible{outline:2px solid var(--sales);outline-offset:2px}
 .rin .note{margin:14px 0 0;font-size:14.5px}
 .rout{flex:1 1 300px;min-width:0;padding:28px;border-radius:22px;background:var(--bg)}
 .rout b{display:block;font-family:var(--disp);font-weight:600;font-size:clamp(2.6rem,4vw,4rem);line-height:1;letter-spacing:-.035em}
@@ -761,6 +765,5 @@ html.js .rv.seen{opacity:1;transform:none}
 .rclose .alt a,.rclose .sent{color:#fff}
 .rclose #rCloseC .cta{margin-top:22px}
 @media (max-width:860px){
-  .rin .costrow{grid-template-columns:1fr}
   .rb .x{flex-basis:100%}
 }
