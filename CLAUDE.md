@@ -48,6 +48,7 @@ GitHub Pages serves the `main` branch as is, so every push updates the live site
 | `og.png` | The image shown when a link to the site is shared |
 | `favicon.svg` | The browser tab icon |
 | `sitemap.xml`, `robots.txt` | For search engines. Add any new page to the sitemap |
+| `backend/forms.gs`, `backend/appsscript.json` | A reference copy of the script that sends the forms. See "Sending the forms" |
 | `CNAME`, `.nojekyll` | Domain and Pages settings. Leave both alone |
 
 The nine pages share the same `<head>` block, header and footer. They are copied into each file rather than generated, so a change to the navigation or footer means editing all nine (and `404.html`).
@@ -108,12 +109,30 @@ Check desktop and a phone width (390px) before pushing.
 
 ## Known gaps
 
-- **The note and the call request send through the visitor's own email.** Both go through `post()` at the top of `app.js`. `CONTACT_EMAIL` is set to the public address, so pressing Send opens the visitor's email with every answer filled in, addressed to contact@pileusops.com. Never empty it. Set `FORM_KEY` to a free Web3Forms access key and both deliver straight to the inbox with no email step. The key is safe in public code.
-- **The assessment does not email a report yet.** Its email form shows only when `FORM_KEY` is set (`REPORT` in `app.js`). Until then the result closes on the Book a call button, with nothing on the page about a report. Turning it on means someone has to write and send each report, so that is the founder's call.
-- The forms deliver the lead and their answers to the team. They do not email the visitor a report automatically. Someone has to send it.
+- **The three forms are built to send through our own script, and it is not switched on yet.** As of 25 Nov 2026 `FORM_URL` is empty: the script is saved in script.google.com and waits on the founder adding contact@pileusops.com as a "Send mail as" address and authorising the script. Once the script's address is in `FORM_URL`, delete this sentence. See "Sending the forms" below. If `FORM_URL` in `app.js` is ever emptied, the note and the call request fall back to opening the visitor's own email addressed to contact@pileusops.com, and the assessment closes on the Book a call button with no report offered. Never empty `CONTACT_EMAIL` as well.
 - Nothing reads anyone's real calendar. A requested time is a request, not a booking. See the next section.
 - The four advisor cards on About have no names, and their descriptions are placeholders.
 - Demo data on How it works and the example answers on Home are invented for illustration.
+
+## Sending the forms
+
+The assessment, the call request and the contact note all go through `post()` at the top of `app.js`, which posts to `FORM_URL`: a Google Apps Script web app. Its source is `backend/forms.gs` and `backend/appsscript.json`. The copy in this repository is for reference. The live one is in script.google.com, in the Google account that receives pileusops.com mail, under the name "Pileus Ops website forms".
+
+What it does:
+
+- **Assessment (`report`):** emails the visitor a link to their own report, and emails the team the lead with everything they were shown. The founder chose automatic sending over approving each one (25 Nov 2026).
+- **Contact (`note`) and Book a call (`call`):** emails the team, with the visitor's address as the reply-to.
+
+Things to know before touching it:
+
+- It sends as contact@pileusops.com, which must stay a "Send mail as" address in that Gmail. If it is ever removed, Gmail quietly sends from the account's main address instead, which must never reach a visitor. Empty `FORM_URL` first.
+- Its only permission is to send email. It cannot read the mailbox.
+- Nothing a visitor types is ever emailed to another person. The report email is fixed copy plus a link, and the link is built from a code the script checks against a strict pattern. Do not add visitor-written text to that email: it would let anyone send their own words from our address.
+- The same pattern for the code is in `forms.gs` (`CODE`) and in `app.js` (the `link` check). Change both together.
+- It stops at 400 emails a day, and sends one report per address every ten minutes.
+- The report email's copy is in `reportText` and `reportHtml` in `forms.gs`. The copy rules above apply to it.
+- To change the live script: edit it in script.google.com, then Deploy, Manage deployments, edit the existing deployment and choose a new version. That keeps the same address. A new deployment gets a new address, and `FORM_URL` has to follow.
+- The site sends its request as plain text on purpose. Adding a content type header makes the browser ask the script's permission first, and Apps Script cannot answer.
 
 ## Book a call
 
@@ -238,7 +257,19 @@ The result is built in the same block when the visitor presses Show my map. It i
    A new build needs an entry in `BUILD`, `FIXES`, `HOME` and `TELLS`, a place in the pool list in the click handler, and a `LINK` line for each build it really connects to. After changing any of this, run a spread of answers through the form and read every "Connects" line it produces: the three picks vary with what the visitor sells, the apps they run and the problem they choose.
 5. **The rest of the stack is open.** Every other app they picked is listed as still to go through together. Never turn this into a keep list.
 
-The close shows the email form when `FORM_KEY` is set, and the call button when it is not. If you add an app to `GROUPS`, also add it to a stage in `PATHS` or to `UNDER`, or it only appears in the "Also in your stack" line.
+The close shows the email form when `FORM_URL` is set, and the call button when it is not.
+
+### The report
+
+Pressing "Email me the report" sends the visitor a link, `/assessment/?r=<code>`. The code holds their four answers and their cost numbers, so the page rebuilds their result with nothing stored anywhere. Opened from that link, the page is the report, and it adds the three things the close promises:
+
+- **A page they can share.** A strip at the top says the page is theirs and copies the link. The heading changes to "Your company map." and the page asks search engines not to list it.
+- **What each build needs from them.** `NEEDS` in the click handler holds one line per build, shown as "Needs from you" on each card. A new build needs a line here too.
+- **The assumptions behind the number.** A list under the cost, rebuilt whenever a number changes. Changing a number also updates the link in the address bar, so a shared link carries the edited figures.
+
+A report closes on the Book a call button, not the email form: they already have it. "Start over" goes back to a clean assessment.
+
+Each app is three characters in the code, made from its name (`KEYS`). Adding or reordering apps does not break old links. Renaming an app drops it from old links, so avoid renaming. The numbers in the code are whole numbers, with hours stored as tenths. If you add an app to `GROUPS`, also add it to a stage in `PATHS` or to `UNDER`, or it only appears in the "Also in your stack" line.
 
 Question 4 names a business problem an owner would recognise, not a specific broken process. Asking someone to diagnose the bottleneck puts the work on them, and the real problem is usually broader than one handoff. Keep any new option at that level.
 
