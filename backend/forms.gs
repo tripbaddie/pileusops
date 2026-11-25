@@ -7,7 +7,8 @@
 // plus a link built from a code this script checks first.
 // The copy of this file in the website repository is for reference. The live one is in script.google.com.
 
-const FROM = 'contact@pileusops.com';   // must be a "Send mail as" address in the Gmail that runs this
+const FROM = 'jaclyn@pileusops.com';    // the address it sends as. Must be a "Send mail as" address in the Gmail that runs this
+const TEAM = 'contact@pileusops.com';   // where leads go, and where a visitor's reply goes
 const NAME = 'Pileus Ops';
 const SITE = 'https://pileusops.com';
 const DAILY_CAP = 400;                   // emails a day, a brake if someone leans on the forms
@@ -36,11 +37,11 @@ function doPost(e) {
 
     const lines = ['from: ' + email].concat(Object.keys(fields).map(function (k) { return k.replace(/_/g, ' ') + ': ' + fields[k]; }));
     if (link) lines.push('their report: ' + link);
-    send(FROM, SUBJECT[kind], lines.join('\n\n'), '', email);
+    send(TEAM, SUBJECT[kind], lines.join('\n\n'), '', email);
 
     if (toVisitor) {
       const apps = code.split('-')[4].length / 3;
-      send(email, 'Your company map from Pileus Ops', reportText(link, apps), reportHtml(link, apps), FROM);
+      send(email, 'Your company map from Pileus Ops', reportText(link, apps), reportHtml(link, apps), TEAM);
       cache.put(seen, '1', 600);
     }
     return out(true);
@@ -111,7 +112,7 @@ function reportText(link, apps) {
     'Open your map: ' + link, '',
     'What is on the page:'].concat(INSIDE.map(function (x) { return '- ' + x; })).concat(['',
     'Want to walk through it? Book 15 minutes at ' + SITE + '/call/ and we will tell you what we would build first.', '',
-    'Pileus Ops', 'Operations for the AI era', 'Based in Detroit, MI', FROM, '',
+    'Pileus Ops', 'Operations for the AI era', 'Based in Detroit, MI', TEAM, '',
     'You are getting this because you asked for your report at pileusops.com.']).join('\n');
 }
 
@@ -131,12 +132,12 @@ function reportHtml(link, apps) {
     + '</table>'
     + '<p style="margin:28px 0 0;padding-top:22px;border-top:1px solid #E4E6E0;font-size:16px;line-height:1.55;color:#3A4250">Want to walk through it? <a href="' + SITE + '/call/" style="color:#0B1220;font-weight:600">Book 15 minutes</a> and we will tell you what we would build first.</p>'
     + '</td></tr>'
-    + '<tr><td style="padding:22px 4px 0;font-size:13px;line-height:1.6;color:#5B6472">Pileus Ops &middot; Operations for the AI era &middot; Based in Detroit, MI<br><a href="mailto:' + FROM + '" style="color:#5B6472">' + FROM + '</a><br>You are getting this because you asked for your report at pileusops.com.</td></tr>'
+    + '<tr><td style="padding:22px 4px 0;font-size:13px;line-height:1.6;color:#5B6472">Pileus Ops &middot; Operations for the AI era &middot; Based in Detroit, MI<br><a href="mailto:' + TEAM + '" style="color:#5B6472">' + TEAM + '</a><br>You are getting this because you asked for your report at pileusops.com.</td></tr>'
     + '</table></td></tr></table></body></html>';
 }
 
-// Run this once from the editor after setting up: it sends a sample report email to the team address.
+// Sends a sample report email to the team address. Run it from the editor to check the sender.
 function test() {
   const link = SITE + '/assessment/';
-  send(FROM, 'Test: your company map from Pileus Ops', reportText(link, 12), reportHtml(link, 12), FROM);
+  send(TEAM, 'Test: your company map from Pileus Ops', reportText(link, 12), reportHtml(link, 12), TEAM);
 }
