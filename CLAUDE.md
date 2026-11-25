@@ -129,7 +129,7 @@ On success the visitor gets a tentative `.ics` hold, not an invite. The copy say
 
 ## Contact
 
-`/contact/` is the note form on the left and the two other routes on the right: book a call, and start the assessment. Under them is a short list of facts that starts with the email address and the location. The form posts through the same `post()` helper.
+`/contact/` is the note form on the left and, on the right, the Book a call card and a short list of facts that starts with the email address and the location. The founder had the "Start with the assessment" card removed from this page (25 Nov 2026), so do not add it back. The assessment is still one click away in the header. The form posts through the same `post()` helper.
 
 ## Case studies
 
