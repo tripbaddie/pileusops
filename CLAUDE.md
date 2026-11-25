@@ -112,7 +112,13 @@ On success the visitor gets a tentative `.ics` hold, not an invite. The copy say
 
 `/case-studies/` has two examples, each with the same parts in the same order: three numbers, what changed for the person in charge, the team it stands in for, the software it stands in for, what it is connected to, and what stays with the person running it. The table styles are the `.cstab` rules and the outcome rows are the `.csout` rules, both at the end of `site.css`.
 
-The outcomes come before the headcount on purpose. The founder's note on the first draft was that it counted roles and tools but had no outcomes. Each example answers the same five in the same order: executive function, reporting, visibility, time to decision, time to result. Every line describes how the system really runs. None is a measured before and after, so do not add hours saved or percentages unless the founder supplies them.
+The outcomes come before the headcount on purpose. The founder's note on the first draft was that it counted roles and tools but had no outcomes. Each example answers the same five in the same order: executive function, reporting, visibility, time to decision, time to result. Every line describes how the system really runs. None is a measured before and after. The hours in them are estimates the founder asked for on 25 Nov 2026, worked out as follows, and the note under "What both show" says they are estimates:
+
+- Report built by hand: about 1.5 hours a day, seven days, for the travel app's four sources (10 hours a week), and about 2.5 hours each weekday for the sales platform's nine (12 hours a week).
+- Review time: a 10 minute read of the morning report for both. About 40 minutes a day in total for the travel app founder, and a little over an hour each weekday for the sales platform CEO, who reviews about 30 comment drafts a day on top of posts and outreach.
+- The trade: the FTE total times 40 hours (160 and 200 a week) against the review time across the week (about 5 and 6 hours).
+
+If an FTE total changes, the trade line changes with it. Replace any of these with a measured number as soon as the founder has one, and do not add results such as replies, sign-ups or revenue unless they are real.
 
 Both examples are companies the founder runs, so the page opens by saying we built this inside our own companies first. They are described, not named: "AI travel planning app" and "AI sales platform". Do not present them as outside clients, and do not name the companies, their people or their customers unless the founder asks.
 
