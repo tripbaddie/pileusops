@@ -129,7 +129,7 @@ On success the visitor gets a tentative `.ics` hold, not an invite. The copy say
 
 ## Contact
 
-`/contact/` is the note form on the left and, on the right, the Book a call card and a short list of facts that starts with the email address and the location. The founder had the "Start with the assessment" card removed from this page (25 Nov 2026), so do not add it back. The assessment is still one click away in the header. The form posts through the same `post()` helper.
+`/contact/` is the note form on the left and, on the right, the Book a call card and a short list of facts that starts with the email address and the location. The list holds three facts: the email address, the location and the one business day reply time. The founder had the "Start with the assessment" card removed from this page, and the fifteen minutes, B2B software and services and no hardware facts removed from the list (25 Nov 2026), so do not add them back. The assessment is still one click away in the header. The form posts through the same `post()` helper.
 
 ## Case studies
 
