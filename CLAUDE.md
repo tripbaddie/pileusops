@@ -103,6 +103,7 @@ Check desktop and a phone width (390px) before pushing.
 - Examples must show the insight and the action taken, not the insight alone.
 - Name the thing we would build, then say what it does: "A routing workflow that sends each new lead to the right rep by source." A platform, a tool or a workflow, never a bare outcome with no object in it. This holds for the report cards on How it works and the result of the assessment.
 - We do not do hardware. The client's existing provider keeps that.
+- Never sound new. Nothing on the site may suggest Pileus Ops is just starting out: no founding, launch, introductory or early prices, no "first clients", no count of clients, no "prices go up later", no "we are taking on". The founder had the founding prices note removed for this reason (25 Nov 2026).
 - Never tell a visitor that something on our side is not working, not connected or not set up yet. The founder had "This form is not connected to an inbox yet" removed (25 Nov 2026): "idk why you would ever tell someone something on our end isnt working or set up on a customer facing site". If a feature is not ready, make it work another way or leave it off the page. No "coming soon", no disabled button with an apology under it.
 
 ## Known gaps
@@ -171,7 +172,7 @@ Where the numbers come from:
 
 `/pricing/` is the rate card at the top, one section per stage, the first-year sum, and the pricing questions.
 
-These are launch prices, set for a first client of about 25 people. The page calls them founding prices for the first three clients, so raise them once three are signed.
+These prices are set for a client of about 25 people. The page used to call them "founding prices" for "our first three clients". The founder had that removed (25 Nov 2026): "we dont want them to think we are brand new". Do not bring it back in any form. See the copy rule on never sounding new.
 
 | Stage | Public price | Notes |
 | --- | --- | --- |
