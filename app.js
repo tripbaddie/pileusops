@@ -13,15 +13,16 @@
 
   // ---- the forms: the assessment, the call request and the contact note all deliver the same way
   // FORM_KEY is a Web3Forms access key. It is safe to keep in public code. Get a free one at web3forms.com.
-  // CONTACT_EMAIL is the fallback: with no key, a form opens the visitor's mail app with everything filled in.
-  // Set either one and all three forms work. With neither set they say so instead of pretending to send.
+  // CONTACT_EMAIL is the public address. With no key, the note and the call request open the visitor's own
+  // email with everything filled in, addressed to it. Never leave it empty: no page may tell a visitor that
+  // something on our side is not set up.
+  // The emailed assessment report needs FORM_KEY. Without one the assessment closes on the call button instead.
   const FORM_KEY = '';
-  const CONTACT_EMAIL = '';
-  const LIVE = !!(FORM_KEY || CONTACT_EMAIL);
-  // returns 'sent' when the inbox has it, 'mail' when the visitor's mail app took over, 'off' when neither is set
+  const CONTACT_EMAIL = 'contact@pileusops.com';
+  const REPORT = !!FORM_KEY;
+  // returns 'sent' when the inbox has it, 'mail' when the visitor's own email took over
   async function post(subject, fields){
     if (!FORM_KEY){
-      if (!CONTACT_EMAIL) return 'off';
       const body = Object.entries(fields).filter(([, v]) => v !== '' && v != null).map(([k, v]) => `${k.replace(/_/g, ' ')}: ${v}`).join('\n');
       location.href = `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
       return 'mail';
@@ -514,9 +515,9 @@
       el('cNote').textContent = `These are our starting guesses for a ${kind} company of ${SIZES[size].toLowerCase()} people. Change any number to match yours.`;
       costWhat = cWhat; cost();
 
-      // the close: the report by email when forms are on, the call when they are not
+      // the close: the report by email when there is a form key, the call when there is not
       const start = byHand.length ? `we start where ${low(S[byHand[0]][0])}` : 'we walk through your map';
-      el('rCloseA').hidden = el('rCloseB').hidden = !LIVE; el('rCloseC').hidden = LIVE;
+      el('rCloseA').hidden = el('rCloseB').hidden = !REPORT; el('rCloseC').hidden = REPORT;
       el('rCall').innerHTML = `Or <a href="/call/">book 15 minutes</a> and ${start} with you.`;
       el('rCallOnly').textContent = `Fifteen minutes. ${cap(start)} and tell you what we would build first.`;
 
@@ -543,7 +544,7 @@
       try {
         const how = await post('New assessment from pileusops.com', Object.assign({ email: el('email').value.trim() }, shown, { yearly_cost: el('cOut').textContent,
           cost_inputs: `${el('cPeople').value} people, ${el('cHours').value} hours a week, $${el('cRate').value} an hour, $${el('cTools').value} a month on tools` }));
-        if (how === 'off') say('Thanks. Emailed reports are coming soon. Your full result is on this page.');
+        if (how === 'mail') say('Press send in the email that just opened and we will send your report.');
         else { say('Thanks. We have your results and will email your report shortly.'); el('send').reset(); }
       } catch (err) { say('That did not send. Please try again in a moment.'); }
       btn.disabled = false; btn.textContent = label;
@@ -661,7 +662,6 @@
       slot = byDay.get(day)[+b.dataset.i];
       el('bkPicked').textContent = `${dayName(slot)} at ${timeName(slot)}`;
       card.classList.add('chosen'); form.hidden = false; done.hidden = true;
-      if (!LIVE){ el('bkSend').disabled = true; el('bkHint').textContent = 'Our inbox is not connected to this page yet, so this cannot be sent. Email us and we will hold the time.'; }
       card.scrollIntoView({ behavior: calm ? 'auto' : 'smooth', block: 'start' });
       el('bkName').focus({ preventScroll: true });
     });
@@ -697,16 +697,13 @@
           email: el('bkEmail').value.trim(), name: el('bkName').value.trim(), company: el('bkCo').value.trim(),
           requested_time_your_clock: ours, requested_time_their_clock: `${dayName(slot)} at ${timeName(slot)} (${zone})`,
           starts_utc: slot.toISOString(), length_minutes: CAL.minutes, to_cover: el('bkNote').value.trim() });
-        if (how === 'off'){ el('bkHint').textContent = 'Our inbox is not connected to this page yet, so nothing was sent.'; }
-        else {
-          el('bkOk').textContent = `Asked for ${dayName(slot)} at ${timeName(slot)}.`;
-          el('bkOkSub').textContent = how === 'mail'
-            ? 'Send the message your mail app just opened and we will confirm within one business day.'
-            : 'We confirm by email within one business day. Nothing is on your calendar until then, so add a hold if you want to keep the time free.';
-          el('bkIcs').href = hold(slot);
-          form.hidden = true; done.hidden = false;
-          done.scrollIntoView({ behavior: calm ? 'auto' : 'smooth', block: 'center' });
-        }
+        el('bkOk').textContent = `Asked for ${dayName(slot)} at ${timeName(slot)}.`;
+        el('bkOkSub').textContent = how === 'mail'
+          ? `Press send in the email that just opened and we will confirm within one business day. No email app? Write to ${CONTACT_EMAIL}.`
+          : 'We confirm by email within one business day. Nothing is on your calendar until then, so add a hold if you want to keep the time free.';
+        el('bkIcs').href = hold(slot);
+        form.hidden = true; done.hidden = false;
+        done.scrollIntoView({ behavior: calm ? 'auto' : 'smooth', block: 'center' });
       } catch (err){ el('bkHint').textContent = 'That did not send. Please try again in a moment.'; }
       btn.disabled = false; btn.textContent = label;
     });
@@ -718,7 +715,6 @@
   // ---- contact: one note, same inbox
   if (el('cxform')){
     const note = t => { const n = el('cxSent'); n.textContent = t; n.hidden = false; };
-    if (!LIVE){ el('cxSend').disabled = true; note('This form is not connected to an inbox yet. Book a call instead and we will pick it up there.'); }
     el('cxform').addEventListener('submit', async e => {
       e.preventDefault();
       if (el('cxBot').checked) return;
@@ -727,8 +723,7 @@
       try {
         const how = await post('New note from pileusops.com', { email: el('cxEmail').value.trim(), name: el('cxName').value.trim(),
           company: el('cxCo').value.trim(), team_size: el('cxSize').value.trim(), message: el('cxNote').value.trim() });
-        if (how === 'off') note('This form is not connected to an inbox yet.');
-        else if (how === 'mail') note('Send the message your mail app just opened and we will come back within one business day.');
+        if (how === 'mail') note(`Press send in the email that just opened and we will come back within one business day. No email app? Write to ${CONTACT_EMAIL}.`);
         else { note('Thanks. We will come back within one business day.'); el('cxform').reset(); }
       } catch (err){ note('That did not send. Please try again in a moment.'); }
       btn.disabled = false; btn.textContent = label;

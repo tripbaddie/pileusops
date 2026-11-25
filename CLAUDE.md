@@ -101,10 +101,12 @@ Check desktop and a phone width (390px) before pushing.
 - Examples must show the insight and the action taken, not the insight alone.
 - Name the thing we would build, then say what it does: "A routing workflow that sends each new lead to the right rep by source." A platform, a tool or a workflow, never a bare outcome with no object in it. This holds for the report cards on How it works and the result of the assessment.
 - We do not do hardware. The client's existing provider keeps that.
+- Never tell a visitor that something on our side is not working, not connected or not set up yet. The founder had "This form is not connected to an inbox yet" removed (25 Nov 2026): "idk why you would ever tell someone something on our end isnt working or set up on a customer facing site". If a feature is not ready, make it work another way or leave it off the page. No "coming soon", no disabled button with an apology under it.
 
 ## Known gaps
 
-- **All three forms are switched off until someone fills in one value.** The assessment, the call request and the contact note all go through `post()` at the top of `app.js`. Set `FORM_KEY` to a free Web3Forms access key and every form delivers to that inbox. Or set `CONTACT_EMAIL` and the forms open the visitor's own mail app with every answer filled in. The public address is on the site now, but `CONTACT_EMAIL` is still empty: switching the forms on is the founder's call. With neither set, the send buttons are disabled and the pages say so. Both values are safe in public code.
+- **The note and the call request send through the visitor's own email.** Both go through `post()` at the top of `app.js`. `CONTACT_EMAIL` is set to the public address, so pressing Send opens the visitor's email with every answer filled in, addressed to contact@pileusops.com. Never empty it. Set `FORM_KEY` to a free Web3Forms access key and both deliver straight to the inbox with no email step. The key is safe in public code.
+- **The assessment does not email a report yet.** Its email form shows only when `FORM_KEY` is set (`REPORT` in `app.js`). Until then the result closes on the Book a call button, with nothing on the page about a report. Turning it on means someone has to write and send each report, so that is the founder's call.
 - The forms deliver the lead and their answers to the team. They do not email the visitor a report automatically. Someone has to send it.
 - Nothing reads anyone's real calendar. A requested time is a request, not a booking. See the next section.
 - The four advisor cards on About have no names, and their descriptions are placeholders.
@@ -220,7 +222,7 @@ The result is built in the same block when the visitor presses Show my map. It i
    A new build needs an entry in `BUILD`, `FIXES`, `HOME` and `TELLS`, a place in the pool list in the click handler, and a `LINK` line for each build it really connects to. After changing any of this, run a spread of answers through the form and read every "Connects" line it produces: the three picks vary with what the visitor sells, the apps they run and the problem they choose.
 5. **The rest of the stack is open.** Every other app they picked is listed as still to go through together. Never turn this into a keep list.
 
-The close shows the email form when the forms are on, and the call button when they are not. If you add an app to `GROUPS`, also add it to a stage in `PATHS` or to `UNDER`, or it only appears in the "Also in your stack" line.
+The close shows the email form when `FORM_KEY` is set, and the call button when it is not. If you add an app to `GROUPS`, also add it to a stage in `PATHS` or to `UNDER`, or it only appears in the "Also in your stack" line.
 
 Question 4 names a business problem an owner would recognise, not a specific broken process. Asking someone to diagnose the bottleneck puts the work on them, and the real problem is usually broader than one handoff. Keep any new option at that level.
 
