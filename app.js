@@ -361,23 +361,49 @@
       const swap = xs => { const a = own(xs); a.forEach(x => rep.add(x)); return a; };
       const reads = (xs, max) => { const a = own(xs, max); return a.length > 1 ? 'your ' + list(a) : 'every app you keep'; };
       const signed = H('E-signature') ? 'E-signature completes' : H('CRM') ? 'a deal closes in your CRM' : 'a contract is signed';
+      // every build: what it is, what it does with their own tools, and what it could replace
       const BUILD = {
         dash: () => ['A company dashboard', `Reads ${reads(['CRM', svc ? 'Project management' : 'Product analytics', 'Payments and subscriptions', 'Billing and invoicing', 'Accounting', 'Help desk'], 4)}. Every Monday it explains what moved and what to do about it.`,
-          [...swap(['BI and dashboards']), ...also(['Spreadsheets'], 'the reports built in')], ['report']],
+          [...swap(['BI and dashboards']), ...also(['Spreadsheets'], 'the reports built in')]],
         onboard: () => svc
           ? ['A project setup app', `Builds the plan, staffs it from who has capacity and raises the first invoice the moment ${signed}.`,
-              [...swap(['Resource scheduling', 'Time tracking']), ...(H('Resource scheduling') ? [] : also(['Spreadsheets'], 'the staffing plan kept in'))], ['setup', 'bill']]
+              [...swap(['Resource scheduling', 'Time tracking']), ...(H('Resource scheduling') ? [] : also(['Spreadsheets'], 'the staffing plan kept in'))]]
           : ['A customer onboarding app', `Opens the moment ${signed}. Every step is owned, timed and visible to your team and your customer.`,
-              [...swap(['Customer onboarding']), ...(H('Customer onboarding') ? [] : also(['Spreadsheets'], 'the onboarding run in'))], ['setup']],
+              [...swap(['Customer onboarding']), ...(H('Customer onboarding') ? [] : also(['Spreadsheets'], 'the onboarding run in'))]],
         health: () => svc
-          ? ['A client health app', 'Scores every project on budget, schedule and client sentiment, and drafts the check-in the moment one slips.', swap(['Customer success platform', 'Surveys and NPS']), ['support']]
-          : ['An account health app', 'Scores every account on usage, tickets and payments, and drafts the outreach the moment one slips.', swap(['Customer success platform', 'Surveys and NPS']), ['support']],
+          ? ['A client health app', 'Scores every project on budget, schedule and client sentiment, and drafts the check-in the moment one slips.', swap(['Customer success platform', 'Surveys and NPS'])]
+          : ['An account health app', 'Scores every account on usage, tickets and payments, and drafts the outreach the moment one slips.', swap(['Customer success platform', 'Surveys and NPS'])],
         intake: () => ['A single intake app', `Takes each new customer once and writes it into ${reads(['CRM', 'Billing and invoicing', 'Payments and subscriptions', 'Accounting', 'Project management', 'Help desk'], 3)}, so nobody types the same details twice.`,
-          swap(['Landing pages and forms', 'Proposals and quoting']), ['lead', 'sign']],
+          swap(['Landing pages and forms', 'Proposals and quoting'])],
         handoff: () => [svc ? 'A new project tracker' : 'A new customer tracker', `Follows every deal from signed to ${svc ? 'delivered' : 'live'}. Each step is owned, timed and visible, so nothing waits on one person remembering.`,
-          [...swap(['Customer onboarding']), ...also(['Spreadsheets', 'Knowledge base or wiki'], 'the checklists kept in')], ['setup']]
+          [...swap(['Customer onboarding']), ...also(['Spreadsheets', 'Knowledge base or wiki'], 'the checklists kept in')]],
+        invoice: () => ['An invoicing app', svc ? `Turns the hours in ${H('Time tracking') ? 'Time tracking' : 'your projects'} into invoices, sends them and chases them until they are paid.`
+          : `Raises the invoice the moment ${signed}, sends it and chases it until it is paid.`, swap(['Billing and invoicing'])],
+        books: () => ['A payment matching app', `Matches every payment to its invoice, posts it to ${H('Accounting') ? 'Accounting' : 'your books'} and flags the ones that do not match.`, []],
+        feedback: () => ['A product feedback app', `Collects every request from ${reads(['Help desk', 'Surveys and NPS', 'CRM'], 3)}, groups them by theme and turns the top ones into work for the team.`, swap(['Feedback and roadmap'])],
+        release: () => ['A release notes app', `Drafts the notes from what shipped in ${H('Issue and sprint tracker') ? 'your Issue and sprint tracker' : 'each release'}, and sends them to the customers who asked for it.`, []],
+        hire: () => ['A new hire setup app', 'Creates the accounts, sends the paperwork and plans the first week the moment an offer is accepted.', []],
+        staff: () => ['A staffing app', 'Shows who has room and gives new work to them, so nobody staffs a project from memory.',
+          [...swap(['Resource scheduling']), ...(H('Resource scheduling') ? [] : also(['Spreadsheets'], 'the staffing plan kept in'))]],
+        payroll: () => ['A payroll prep app', `Gathers hours, new starters and changes each pay period, and hands ${H('Payroll') ? 'Payroll' : 'your payroll'} a file that is ready to run.`, []]
       };
-      const builds = FIRST[problem].map(id => BUILD[id]());
+      // which steps each build fixes, and the path it belongs to
+      const FIXES = { dash: ['report'], onboard: svc ? ['setup', 'bill'] : ['setup'], health: ['support'], intake: ['lead', 'sign'], handoff: ['setup'], invoice: ['bill'], books: ['books'],
+        feedback: ['road', 'work'], release: ['ship'], hire: ['hire'], staff: ['staff'], payroll: ['payroll'] };
+      const HOME = { onboard: 'c', health: 'c', intake: 'c', handoff: 'c', invoice: 'm', books: 'm', feedback: 'p', release: 'p', hire: 't', staff: 't', payroll: 't' };
+      // the first build answers the problem they picked. The next two go where their steps are done by hand, on the paths they run,
+      // spread across paths before doubling up on one. If nothing else is by hand, fall back to the usual three for that problem
+      const picks = [FIRST[problem][0]], done = new Set(FIXES[picks[0]]), run = new Set(paths.map(p => p[0][0].toLowerCase()));
+      const gain = id => FIXES[id].filter(key => byHand.includes(key) && !done.has(key)).length;
+      while (picks.length < 3){
+        const pool = ['onboard', 'health', 'dash', 'invoice', 'feedback', 'hire', 'intake', 'books', 'release', 'staff', 'payroll'].filter(id => !picks.includes(id) && gain(id) > 0);
+        const homes = new Set(picks.map(id => HOME[id]).filter(Boolean));
+        const rank = id => (homes.has(HOME[id]) ? 2 : 0) + (HOME[id] && !run.has(HOME[id]) ? 1 : 0);   // a path not used yet first, and a path they run before one they do not
+        pool.sort((x, y) => rank(x) - rank(y) || gain(y) - gain(x));
+        const next = pool[0] || FIRST[problem].find(id => !picks.includes(id));
+        picks.push(next); FIXES[next].forEach(key => done.add(key));
+      }
+      const builds = picks.map(id => [...BUILD[id](), FIXES[id]]);
 
       // headline, and their own answers played back
       el('rHead').textContent = `${n} apps. ${k === 0 ? `On paper, all ${T} steps between them run on their own.` : k === T ? `All ${T} steps between them are probably done by hand.` : `${k} of the ${T} steps between them ${k === 1 ? 'is' : 'are'} probably done by hand.`}`;
