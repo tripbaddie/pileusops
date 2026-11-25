@@ -104,7 +104,7 @@ Check desktop and a phone width (390px) before pushing.
 - Examples must show the insight and the action taken, not the insight alone.
 - Name the thing we would build, then say what it does: "A routing workflow that sends each new lead to the right rep by source." A platform, a tool or a workflow, never a bare outcome with no object in it. This holds for the report cards on How it works and the result of the assessment.
 - We do not do hardware. The client's existing provider keeps that.
-- Never sound new. Nothing on the site may suggest Pileus Ops is just starting out: no founding, launch, introductory or early prices, no "first clients", no count of clients, no "prices go up later", no "we are taking on". The founder had the founding prices note removed for this reason (25 Nov 2026).
+- Never sound new. Nothing on the site may suggest Pileus Ops is just starting out: no founding, launch, introductory or early prices, no "first clients", no count of clients we have or have had, no "prices go up later", no "we are taking on". The founder had the founding prices note removed for this reason (25 Nov 2026).
 - Never tell a visitor that something on our side is not working, not connected or not set up yet. The founder had "This form is not connected to an inbox yet" removed (25 Nov 2026): "idk why you would ever tell someone something on our end isnt working or set up on a customer facing site". If a feature is not ready, make it work another way or leave it off the page. No "coming soon", no disabled button with an apology under it.
 
 ## Known gaps
@@ -207,6 +207,8 @@ These prices are set for a client of about 25 people. The page used to call them
 The prices appear in three places that must agree: the HTML of `pricing/index.html`, the page's meta description, and the `BLUEPRINT`, `BUILD` and `AFTER` values in `app.js` under `if (el('est'))`. The Blueprint price is also on `/blueprint/`, in the page, its meta description and its sub line. The sum covers a first workflow or one function. For a function it shows the build with the Blueprint credit already taken off.
 
 The Blueprint section carries a short preview of the example Blueprint: the top of the map fading out, the whole card a link to `/blueprint/`. The founder liked the full figure but found it "too much for this page" (25 Nov 2026), so the full version has its own page. See "The example Blueprint" below. The Blueprint's $5,000 price is also stated on that page.
+
+The Build section ends with the capacity line, "Four builds at a time", and the questions explain it. This is the scarcity the founder wanted from the start: a limit on how much we take on at once, which reads as a firm in demand. It got swapped for "founding prices" in an earlier draft, which read as brand new and was removed. The cap is on builds, not on the Blueprint or the monthly plans, so it stays true however many clients we run month to month. Never show how many places are open unless the founder gives a real number.
 
 Do not put a price on the full rollout. A large number beside the entry offers makes the whole page read as expensive.
 
