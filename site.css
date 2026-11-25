@@ -817,3 +817,5 @@ html.js .rv.seen{opacity:1;transform:none}
 .csout h4{margin:0;font-family:var(--disp);font-weight:600;font-size:22px;letter-spacing:-.02em;line-height:1.2;text-wrap:balance}
 .csout p{margin:0;font-size:17px;color:var(--mute);max-width:56ch}
 @media (max-width:860px){.csout>div{grid-template-columns:1fr;gap:8px;padding:22px 0}}
+.stat.sm b{font-size:clamp(2.2rem,3vw,3rem);margin-bottom:10px}
+.stat.sm p{font-size:16.5px;font-weight:400;color:var(--mute)}
