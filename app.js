@@ -11,6 +11,28 @@
   const action = ([text, st]) => `<small>Action</small><p>${text}</p><span class="st ${st}">${st === 'ask' ? 'You approve' : 'Done'}</span>`;
   const tag = ([name, g]) => `<span class="src on" style="--c:${C[g]}">${glyph(g, C[g])}${name}</span>`;
 
+  // ---- the forms: the assessment, the call request and the contact note all deliver the same way
+  // FORM_KEY is a Web3Forms access key. It is safe to keep in public code. Get a free one at web3forms.com.
+  // CONTACT_EMAIL is the fallback: with no key, a form opens the visitor's mail app with everything filled in.
+  // Set either one and all three forms work. With neither set they say so instead of pretending to send.
+  const FORM_KEY = '';
+  const CONTACT_EMAIL = '';
+  const LIVE = !!(FORM_KEY || CONTACT_EMAIL);
+  // returns 'sent' when the inbox has it, 'mail' when the visitor's mail app took over, 'off' when neither is set
+  async function post(subject, fields){
+    if (!FORM_KEY){
+      if (!CONTACT_EMAIL) return 'off';
+      const body = Object.entries(fields).filter(([, v]) => v !== '' && v != null).map(([k, v]) => `${k.replace(/_/g, ' ')}: ${v}`).join('\n');
+      location.href = `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+      return 'mail';
+    }
+    const r = await fetch('https://api.web3forms.com/submit', { method: 'POST', headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+      body: JSON.stringify(Object.assign({ access_key: FORM_KEY, subject, from_name: 'Pileus Ops website' }, fields)) });
+    const j = await r.json().catch(() => ({}));
+    if (!r.ok || j.success === false) throw new Error(j.message || 'send failed');
+    return 'sent';
+  }
+
   // sections ease in as they arrive
   const io = 'IntersectionObserver' in window ? new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting){ e.target.classList.add('seen'); io.unobserve(e.target); } }), { threshold: 0.12 }) : null;
   document.querySelectorAll('.rv').forEach(n => io ? io.observe(n) : n.classList.add('seen'));
@@ -261,30 +283,208 @@
     function cost(){ const p = Math.max(0, +el('cPeople').value || 0), h = Math.max(0, +el('cHours').value || 0), r = Math.max(0, +el('cRate').value || 0);
       el('cOut').textContent = money(p * h * r * 50); el('cHow').textContent = `${p} people x ${h} hours x ${money(r)} x 50 working weeks. These are your numbers, so change any of them.`; }
     ['cPeople', 'cHours', 'cRate'].forEach(id => el(id).addEventListener('input', cost));
-    // The email form posts to Web3Forms, which forwards each submission to the team inbox.
-    // FORM_KEY is a Web3Forms access key. It is safe to keep in public code. Leave it empty to switch the form off.
-    const FORM_KEY = '';
     const say = t => { const n = el('sent'); n.textContent = t; n.hidden = false; };
     el('send').addEventListener('submit', async e => {
       e.preventDefault();
       if (el('botcheck').checked) return;
-      if (!FORM_KEY){ say('Thanks. Emailed reports are coming soon. Your full result is on this page.'); return; }
       const btn = el('sendBtn'), label = btn.textContent, mine = [...picked].sort((a, b) => a - b).map(i => APPS[i][0]);
       btn.disabled = true; btn.textContent = 'Sending';
       try {
-        const r = await fetch('https://api.web3forms.com/submit', { method: 'POST', headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-          body: JSON.stringify({ access_key: FORM_KEY, subject: 'New assessment from pileusops.com', from_name: 'Pileus Ops website', email: el('email').value.trim(),
-            sells: SELLS[sells] || '', apps: mine.join(', '), app_count: mine.length, team_size: SIZES[size] || '',
+        const how = await post('New assessment from pileusops.com', { email: el('email').value.trim(),
+          sells: SELLS[sells] || '', apps: mine.join(', '), app_count: mine.length, team_size: SIZES[size] || '',
           problem: (PROBLEMS[problem] || [''])[0], first_build: el('rFirst').textContent,
-            handoffs_today: el('rBefore').textContent, yearly_cost_of_manual_work: el('cOut').textContent,
-            cost_inputs: `${el('cPeople').value} people, ${el('cHours').value} hours a week, $${el('cRate').value} an hour` }) });
-        const j = await r.json().catch(() => ({}));
-        if (!r.ok || j.success === false) throw new Error(j.message || 'send failed');
-        say('Thanks. We have your results and will email your full report shortly.'); el('send').reset();
+          handoffs_today: el('rBefore').textContent, yearly_cost_of_manual_work: el('cOut').textContent,
+          cost_inputs: `${el('cPeople').value} people, ${el('cHours').value} hours a week, $${el('cRate').value} an hour` });
+        if (how === 'off') say('Thanks. Emailed reports are coming soon. Your full result is on this page.');
+        else { say('Thanks. We have your results and will email your full report shortly.'); el('send').reset(); }
       } catch (err) { say('That did not send. Please try again in a moment.'); }
       btn.disabled = false; btn.textContent = label;
     });
     el('again').addEventListener('click', () => { box.classList.remove('done'); });
+  }
+
+  // ---- book a call: free times come from the hours below, shown in the visitor's own timezone
+  if (el('book')){
+    // Your availability. Change it here and the page follows.
+    const CAL = {
+      minutes: 30,            // how long the call runs
+      tz: 'America/Detroit',  // the timezone the hours below are written in
+      hours: {                // 0 Sunday to 6 Saturday. 24 hour clock, in the timezone above
+        1: [['09:00', '12:00'], ['13:00', '16:00']],
+        2: [['09:00', '12:00'], ['13:00', '16:00']],
+        3: [['09:00', '12:00'], ['13:00', '16:00']],
+        4: [['09:00', '12:00'], ['13:00', '16:00']],
+        5: [['09:00', '12:00']]
+      },
+      lead: 18,               // hours of notice before the earliest time anyone can pick
+      horizon: 35,            // how far ahead anyone can book, in days
+      // Nothing here reads your calendar, so block anything you are not free for.
+      // A whole day: '2026-12-25'. One time: '2026-12-02 10:00', in the timezone above.
+      off: ['2026-11-26', '2026-11-27', '2026-12-24', '2026-12-25', '2026-12-31', '2027-01-01']
+    };
+
+    const pad = n => String(n).padStart(2, '0');
+    const mins = s => { const [h, m] = s.split(':').map(Number); return h * 60 + m; };
+    // the parts of an instant as a clock in that timezone reads them
+    const partsIn = (tz, d) => { const o = {};
+      new Intl.DateTimeFormat('en-US', { timeZone: tz, hour12: false, year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit' })
+        .formatToParts(d).forEach(p => { if (p.type !== 'literal') o[p.type] = p.value; }); return o; };
+    // minutes that timezone is ahead of UTC at that instant, so daylight saving takes care of itself
+    const offset = (tz, d) => { const p = partsIn(tz, d), h = p.hour === '24' ? 0 : +p.hour;
+      return (Date.UTC(+p.year, +p.month - 1, +p.day, h, +p.minute, +p.second) - Math.floor(d.getTime() / 1000) * 1000) / 60000; };
+    // the instant at which a clock in that timezone reads this wall time
+    const instant = (tz, y, m, d, hh, mm) => { let t = Date.UTC(y, m - 1, d, hh, mm);
+      for (let i = 0; i < 2; i++) t = Date.UTC(y, m - 1, d, hh, mm) - offset(tz, new Date(t)) * 60000;
+      return new Date(t); };
+
+    // every free time between now plus the notice period and the far edge of the window
+    const earliest = Date.now() + CAL.lead * 36e5, latest = Date.now() + CAL.horizon * 864e5, seen = new Set(), slots = [];
+    for (let i = 0; i <= CAL.horizon + 1; i++){
+      const p = partsIn(CAL.tz, new Date(Date.now() + i * 864e5)), day = `${p.year}-${p.month}-${p.day}`;
+      if (seen.has(day)) continue;
+      seen.add(day);
+      if (CAL.off.includes(day)) continue;
+      const y = +p.year, mo = +p.month, da = +p.day, dow = new Date(Date.UTC(y, mo - 1, da)).getUTCDay();
+      (CAL.hours[dow] || []).forEach(([from, to]) => {
+        for (let t = mins(from); t + CAL.minutes <= mins(to); t += CAL.minutes){
+          const hh = Math.floor(t / 60), mm = t % 60;
+          if (CAL.off.includes(`${day} ${pad(hh)}:${pad(mm)}`)) continue;
+          const at = instant(CAL.tz, y, mo, da, hh, mm);
+          if (at.getTime() < earliest || at.getTime() > latest) continue;
+          slots.push(at);
+        }
+      });
+    }
+
+    // grouped by the visitor's own date, so the grid matches the clock they are reading
+    const byDay = new Map();
+    slots.forEach(d => { const k = `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+      if (!byDay.has(k)) byDay.set(k, []); byDay.get(k).push(d); });
+    const keys = [...byDay.keys()].sort();
+    const monthOf = k => +k.slice(0, 4) * 12 + (+k.slice(5, 7) - 1);
+    const lo = keys.length ? monthOf(keys[0]) : 0, hi = keys.length ? monthOf(keys[keys.length - 1]) : 0;
+
+    const card = el('book'), form = el('bkForm'), done = el('bkDone');
+    const dayName = d => d.toLocaleDateString(undefined, { weekday: 'long', month: 'long', day: 'numeric' });
+    const timeName = d => d.toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' });
+    let view = lo, day = null, slot = null;
+
+    const zone = Intl.DateTimeFormat().resolvedOptions().timeZone || '';
+    const short = new Intl.DateTimeFormat(undefined, { timeZoneName: 'short' }).formatToParts(new Date()).find(p => p.type === 'timeZoneName');
+    el('bkTz').textContent = zone ? `All times in ${zone.split('/').pop().replace(/_/g, ' ')}${short ? ' (' + short.value + ')' : ''}` : '';
+
+    function drawMonth(){
+      const y = Math.floor(view / 12), m = view % 12, one = new Date(y, m, 1);
+      el('bkMonth').textContent = one.toLocaleDateString(undefined, { month: 'long', year: 'numeric' });
+      el('bkPrev').disabled = view <= lo;
+      el('bkNext').disabled = view >= hi;
+      let html = '';
+      for (let i = 0, start = (one.getDay() + 6) % 7; i < start; i++) html += '<span class="bkday pad"></span>';
+      for (let d = 1; d <= new Date(y, m + 1, 0).getDate(); d++){
+        const k = `${y}-${pad(m + 1)}-${pad(d)}`, free = byDay.get(k);
+        html += free
+          ? `<button type="button" class="bkday" data-k="${k}" aria-pressed="${k === day}" aria-label="${dayName(free[0])}, ${free.length} ${free.length === 1 ? 'time' : 'times'} free">${d}</button>`
+          : `<button type="button" class="bkday" disabled>${d}</button>`;
+      }
+      el('bkDays').innerHTML = html;
+    }
+
+    function drawTimes(){
+      const list = day ? byDay.get(day) : null;
+      if (!list){
+        el('bkDayLabel').textContent = 'Pick a day';
+        el('bkTimes').innerHTML = `<p class="bknone">${keys.length ? 'The days you can press are the days we are free.' : 'There is nothing free in the next few weeks. Send a note instead and we will find a time.'}</p>`;
+        return;
+      }
+      el('bkDayLabel').textContent = dayName(list[0]);
+      el('bkTimes').innerHTML = list.map((d, i) => `<button type="button" class="bktime" data-i="${i}"><span>${timeName(d)}</span><em>${CAL.minutes} min</em></button>`).join('');
+    }
+
+    el('bkDays').addEventListener('click', e => {
+      const b = e.target.closest('.bkday[data-k]');
+      if (!b) return;
+      day = b.dataset.k; drawMonth(); drawTimes();
+      if (innerWidth <= 860) el('bkDayLabel').scrollIntoView({ behavior: calm ? 'auto' : 'smooth', block: 'center' });
+    });
+
+    el('bkTimes').addEventListener('click', e => {
+      const b = e.target.closest('.bktime');
+      if (!b) return;
+      slot = byDay.get(day)[+b.dataset.i];
+      el('bkPicked').textContent = `${dayName(slot)} at ${timeName(slot)}`;
+      card.classList.add('chosen'); form.hidden = false; done.hidden = true;
+      if (!LIVE){ el('bkSend').disabled = true; el('bkHint').textContent = 'Our inbox is not connected to this page yet, so this cannot be sent. Email us and we will hold the time.'; }
+      card.scrollIntoView({ behavior: calm ? 'auto' : 'smooth', block: 'start' });
+      el('bkName').focus({ preventScroll: true });
+    });
+
+    el('bkPrev').addEventListener('click', () => { if (view > lo){ view--; drawMonth(); } });
+    el('bkNext').addEventListener('click', () => { if (view < hi){ view++; drawMonth(); } });
+    el('bkBack').addEventListener('click', () => { card.classList.remove('chosen'); form.hidden = true; slot = null; });
+    el('bkReset').addEventListener('click', () => {
+      card.classList.remove('chosen'); done.hidden = true; form.reset(); day = null; slot = null;
+      drawMonth(); drawTimes();
+    });
+
+    // a tentative hold, so the visitor can keep the time free while we confirm
+    function hold(start){
+      const stamp = d => d.toISOString().replace(/[-:]/g, '').replace(/\.\d{3}/, '');
+      const lines = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//Pileus Ops//Booking//EN', 'BEGIN:VEVENT',
+        `UID:${start.getTime()}@pileusops.com`, `DTSTAMP:${stamp(new Date())}`, `DTSTART:${stamp(start)}`,
+        `DTEND:${stamp(new Date(start.getTime() + CAL.minutes * 60000))}`,
+        'SUMMARY:Hold: intro call with Pileus Ops', 'STATUS:TENTATIVE',
+        'DESCRIPTION:A hold for the time you asked for at pileusops.com. We confirm by email and send the invite.',
+        'END:VEVENT', 'END:VCALENDAR'];
+      return URL.createObjectURL(new Blob([lines.join('\r\n')], { type: 'text/calendar' }));
+    }
+
+    form.addEventListener('submit', async e => {
+      e.preventDefault();
+      if (el('bkBot').checked || !slot) return;
+      const btn = el('bkSend'), label = btn.textContent;
+      btn.disabled = true; btn.textContent = 'Sending';
+      const ours = slot.toLocaleString('en-US', { timeZone: CAL.tz, weekday: 'long', month: 'long', day: 'numeric', hour: 'numeric', minute: '2-digit', timeZoneName: 'short' });
+      try {
+        const how = await post('New call request from pileusops.com', {
+          email: el('bkEmail').value.trim(), name: el('bkName').value.trim(), company: el('bkCo').value.trim(),
+          requested_time_your_clock: ours, requested_time_their_clock: `${dayName(slot)} at ${timeName(slot)} (${zone})`,
+          starts_utc: slot.toISOString(), length_minutes: CAL.minutes, to_cover: el('bkNote').value.trim() });
+        if (how === 'off'){ el('bkHint').textContent = 'Our inbox is not connected to this page yet, so nothing was sent.'; }
+        else {
+          el('bkOk').textContent = `Asked for ${dayName(slot)} at ${timeName(slot)}.`;
+          el('bkOkSub').textContent = how === 'mail'
+            ? 'Send the message your mail app just opened and we will confirm within one business day.'
+            : 'We confirm by email within one business day. Nothing is on your calendar until then, so add a hold if you want to keep the time free.';
+          el('bkIcs').href = hold(slot);
+          form.hidden = true; done.hidden = false;
+          done.scrollIntoView({ behavior: calm ? 'auto' : 'smooth', block: 'center' });
+        }
+      } catch (err){ el('bkHint').textContent = 'That did not send. Please try again in a moment.'; }
+      btn.disabled = false; btn.textContent = label;
+    });
+
+    drawMonth(); drawTimes();
+    if (keys.length) { day = keys[0]; drawMonth(); drawTimes(); }
+  }
+
+  // ---- contact: one note, same inbox
+  if (el('cxform')){
+    const note = t => { const n = el('cxSent'); n.textContent = t; n.hidden = false; };
+    if (!LIVE){ el('cxSend').disabled = true; note('This form is not connected to an inbox yet. Book a call instead and we will pick it up there.'); }
+    el('cxform').addEventListener('submit', async e => {
+      e.preventDefault();
+      if (el('cxBot').checked) return;
+      const btn = el('cxSend'), label = btn.textContent;
+      btn.disabled = true; btn.textContent = 'Sending';
+      try {
+        const how = await post('New note from pileusops.com', { email: el('cxEmail').value.trim(), name: el('cxName').value.trim(),
+          company: el('cxCo').value.trim(), team_size: el('cxSize').value.trim(), message: el('cxNote').value.trim() });
+        if (how === 'off') note('This form is not connected to an inbox yet.');
+        else if (how === 'mail') note('Send the message your mail app just opened and we will come back within one business day.');
+        else { note('Thanks. We will come back within one business day.'); el('cxform').reset(); }
+      } catch (err){ note('That did not send. Please try again in a moment.'); }
+      btn.disabled = false; btn.textContent = label;
+    });
   }
 
 })();

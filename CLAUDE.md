@@ -14,6 +14,8 @@ GitHub Pages serves the `main` branch as is, so every push updates the live site
 | `how-it-works/index.html` | How it works |
 | `assessment/index.html` | Assessment |
 | `about/index.html` | About |
+| `call/index.html` | Book a call |
+| `contact/index.html` | Contact |
 | `404.html` | Shown for any address that does not exist |
 | `site.css` | Every style on the site |
 | `brand.js` | Team colours, icons and two helpers. Loaded by every page |
@@ -24,19 +26,23 @@ GitHub Pages serves the `main` branch as is, so every push updates the live site
 | `sitemap.xml`, `robots.txt` | For search engines. Add any new page to the sitemap |
 | `CNAME`, `.nojekyll` | Domain and Pages settings. Leave both alone |
 
-The four pages share the same `<head>` block, header and footer. They are copied into each file rather than generated, so a change to the navigation or footer means editing all four (and `404.html`).
+The six pages share the same `<head>` block, header and footer. They are copied into each file rather than generated, so a change to the navigation or footer means editing all six (and `404.html`).
 
 ## How the pages work
 
-Each page is a real address: `/`, `/how-it-works/`, `/assessment/`, `/about/`. Links between them use those paths, and the current page carries `aria-current="page"` in the header and footer navigation.
+Each page is a real address: `/`, `/how-it-works/`, `/assessment/`, `/about/`, `/call/`, `/contact/`. Links between them use those paths, and the current page carries `aria-current="page"` in the header and footer navigation.
 
-`app.js` runs on all four pages, so each interactive block is guarded by the element it needs:
+The header navigation holds How it works, About, Contact and the assessment button. Book a call sits in the footer, on Contact, on the assessment page and under the closing button on Home. The assessment stays the main route in. The call is the alternative to it, never the replacement.
+
+`app.js` runs on every page, so each interactive block is guarded by the element it needs:
 
 - `if (el('qs'))` wraps the home "ask your company" comparison.
 - `if (el('ftabs'))` wraps the function demo and the approval example.
 - `if (el('assess'))` wraps the assessment and its calculator.
+- `if (el('book'))` wraps the booking calendar on Book a call.
+- `if (el('cxform'))` wraps the note form on Contact.
 
-Add a new page by copying an existing one, changing the head and body, adding it to the navigation in all five HTML files, and adding it to `sitemap.xml`.
+Add a new page by copying an existing one, changing the head and body, adding it to the navigation in all seven HTML files, and adding it to `sitemap.xml`.
 
 The site used to be one file with `#hash` addresses. `app.js` still redirects those old links to the right page.
 
@@ -72,10 +78,32 @@ Check desktop and a phone width (390px) before pushing.
 
 ## Known gaps
 
-- The assessment email form posts to Web3Forms, which forwards each submission to the team inbox. It needs an access key in `FORM_KEY` near the end of `app.js`. While `FORM_KEY` is empty the form shows a "coming soon" note and sends nothing.
-- The form delivers the lead and their answers to the team. It does not email the visitor a report automatically. Someone has to send it.
+- **All three forms are switched off until someone fills in one value.** The assessment, the call request and the contact note all go through `post()` at the top of `app.js`. Set `FORM_KEY` to a free Web3Forms access key and every form delivers to that inbox. Or set `CONTACT_EMAIL` and the forms open the visitor's own mail app with every answer filled in. With neither set, the send buttons are disabled and the pages say so. Both values are safe in public code.
+- The forms deliver the lead and their answers to the team. They do not email the visitor a report automatically. Someone has to send it.
+- Nothing reads anyone's real calendar. A requested time is a request, not a booking. See the next section.
 - The four advisor cards on About have no names, and their descriptions are placeholders.
 - Demo data on How it works and the example answers on Home are invented for illustration.
+
+## Book a call
+
+`/call/` offers a day, then a free time, then a short form. All of it is in `app.js` under `if (el('book'))`, and the whole thing is driven by the `CAL` object at the top of that block:
+
+- `minutes` is the length of the call, and the step between times.
+- `tz` is the timezone the hours are written in. Everything else converts from it.
+- `hours` is keyed 0 Sunday to 6 Saturday, with ranges on a 24 hour clock.
+- `lead` is the hours of notice before the earliest time a visitor can pick.
+- `horizon` is how far ahead anyone can book, in days.
+- `off` takes a whole day as `'2026-12-25'` or a single time as `'2026-12-02 10:00'`, both in `tz`.
+
+Times are generated in `tz` and then grouped by the **visitor's** own date, so someone in another timezone sees them on the day their own clock says. Daylight saving is handled by reading the real offset for each date, so the hours above never need touching twice a year.
+
+Because nothing reads a real calendar, two people can ask for the same time, and a time that is already booked still shows as free. Keep `off` current, or swap the picker for a booking service that syncs a calendar.
+
+On success the visitor gets a tentative `.ics` hold, not an invite. The copy says the time is confirmed by email, so do not change it to sound like a confirmed booking.
+
+## Contact
+
+`/contact/` is the note form on the left and the two other routes on the right: book a call, and start the assessment. The form posts through the same `post()` helper.
 
 ## The assessment
 
