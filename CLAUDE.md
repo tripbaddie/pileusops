@@ -110,7 +110,9 @@ On success the visitor gets a tentative `.ics` hold, not an invite. The copy say
 
 ## Case studies
 
-`/case-studies/` has two examples, each with the same parts in the same order: three numbers, what it does, and what it stands in for. The styles are the `.csh`, `.csout` and `.cslist` rules at the end of `site.css`.
+`/case-studies/` has two examples, each with the same parts in the same order: three numbers, a map of how it fits together, what it does, and what it stands in for. The styles are the `.csh`, `.csmap`, `.csout` and `.cslist` rules at the end of `site.css`.
+
+The map is four boxes read left to right: what the system reads, the agents (the dark box), the person in charge (the blue outline, with their hours a week) and what it sends, with one dashed line underneath for results feeding back in. The founder asked for a visual of each example (25 Nov 2026). Keep it this calm: plain words in each box, one dark box, one blue outline, no extra colors or icons. The lanes in the agents box should match the labels of the stories under "What it does", and the agent count and hours must match the three numbers above. On a phone the boxes stack with the arrows pointing down.
 
 How to pitch them. The founder's ruling (25 Nov 2026): a reader should finish each one thinking "wow, this is really cool". Her first two notes still hold underneath that: it must show outcomes, not a count of roles and tools, and it must stay a case study, not an analysis.
 
