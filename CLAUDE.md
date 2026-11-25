@@ -114,9 +114,10 @@ On success the visitor gets a tentative `.ics` hold, not an invite. The copy say
 
 How to pitch them. The founder's ruling (25 Nov 2026): a reader should finish each one thinking "wow, this is really cool". Her first two notes still hold underneath that: it must show outcomes, not a count of roles and tools, and it must stay a case study, not an analysis.
 
-- "What it does" is six short stories. Each has a label for the part of the business, a headline that states the surprising thing, and two or three plain sentences. Lead with what a reader would not expect a small company to have: a report that warns of a problem before it starts, a reply drafted before anyone opens the inbox, a CRM built because renting one cost too much, session recordings nobody has to watch, a support answer waiting when the customer writes in.
+- "What it does" is seven short stories. Each has a label for the part of the business, a headline that states the surprising thing, and two or three plain sentences. Lead with what a reader would not expect a small company to have: a report that warns of a problem before it starts, a reply drafted before anyone opens the inbox, a CRM built because renting one cost too much, session recordings nobody has to watch, a support answer waiting when the customer writes in.
 - Say what the system does and what the person in charge no longer has to do. Do not explain how it works.
-- The sales platform's six stories are the founder's own account of her setup. Change the wording, not the claims, unless she says the setup changed.
+- The sales platform's stories are the founder's own account of her setup, including the vendor story (an agent read an agency's weekly reports and caught altered screenshots, a strategy not being followed and numbers that were not delivering). Change the wording, not the claims, unless she says the setup changed. Never name or describe the agency.
+- The travel app's stories come from how its agents run. The founder asked for weekly learnings, competitor tracking and social listening to be among them.
 - No tables, no figure against each role, no per-agent descriptions, no vendor names, no lists of connected tools, no day-by-day numbers. A reader should not be able to read too much into a number, get confused or get lost in detail.
 - "What it stands in for" is two plain lists: job titles and kinds of software. Kinds only, never product names.
 - At most one line of results per example.
