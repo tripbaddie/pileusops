@@ -756,4 +756,62 @@
     draw();
   }
 
+  // ---- the example Blueprint map, in full on /blueprint/ and as a short preview on /pricing/. Six teams of apps, every handoff between them, and the
+  // stuck ones numbered in the order we would fix them. An illustration, not anyone's real company.
+  // The numbers match the first pieces listed under the map in blueprint/index.html: change one, change the other
+  if (el('bpdraw')){
+    // lanes left to right, apps top to bottom. Short names: the full ones do not fit a node
+    const LANES = [
+      ['Marketing', ['Ad platforms', 'Website', 'Forms', 'Marketing automation', 'Webinars']],
+      ['Sales', ['Intent data', 'Outbound', 'CRM', 'Quoting', 'E-signature']],
+      ['Delivery', ['Projects', 'Time tracking', 'Scheduling', 'Spreadsheets', 'Wiki', 'Team chat', 'HR system']],
+      ['Finance', ['Invoicing', 'Payments', 'Accounting', 'Expenses', 'Payroll', 'Dashboards']],
+      ['Customer', ['Onboarding', 'Customer success', 'Help desk', 'Surveys']],
+      ['Product', ['Roadmap', 'Sprint tracker', 'Code repository', 'Product analytics']]
+    ];
+    // every handoff: from, to, and how it moves. a = on its own, h = by hand, 1 to 5 = stuck, in fix order
+    const HAND = [
+      ['Ad platforms', 'Website', 'a'], ['Website', 'Forms', 'a'], ['Forms', 'Marketing automation', 'a'], ['Webinars', 'Marketing automation', 'h'],
+      ['Marketing automation', 'CRM', 'a'], ['Forms', 'CRM', 1], ['Webinars', 'Outbound', 'h'], ['Ad platforms', 'Intent data', 'h'],
+      ['Intent data', 'Outbound', 'a'], ['Outbound', 'CRM', 'a'], ['CRM', 'Quoting', 'h'], ['Quoting', 'E-signature', 'a'],
+      ['E-signature', 'Projects', 2], ['E-signature', 'Invoicing', 'h'], ['CRM', 'Spreadsheets', 'h'], ['Quoting', 'Scheduling', 'h'],
+      ['Projects', 'Time tracking', 'a'], ['Time tracking', 'Scheduling', 'h'], ['Scheduling', 'Spreadsheets', 'h'], ['Wiki', 'Team chat', 'a'],
+      ['Time tracking', 'Invoicing', 3], ['Spreadsheets', 'Dashboards', 'h'], ['HR system', 'Payroll', 'a'], ['Team chat', 'Help desk', 'h'],
+      ['Projects', 'Onboarding', 'a'], ['Invoicing', 'Payments', 'a'], ['Payments', 'Accounting', 4], ['Expenses', 'Accounting', 'a'],
+      ['Payroll', 'Accounting', 'h'], ['Accounting', 'Dashboards', 'h'], ['Payments', 'Customer success', 'h'], ['Invoicing', 'Onboarding', 'h'],
+      ['Onboarding', 'Customer success', 'h'], ['Customer success', 'Help desk', 'a'], ['Help desk', 'Surveys', 'a'], ['Help desk', 'Sprint tracker', 5],
+      ['Surveys', 'Roadmap', 'h'], ['Roadmap', 'Sprint tracker', 'a'], ['Sprint tracker', 'Code repository', 'a'], ['Product analytics', 'Customer success', 'h'],
+      ['Product analytics', 'Dashboards', 'h'], ['CRM', 'Dashboards', 'h']
+    ];
+    const W = 1200, H = 524, NW = 148, NH = 30, TOP = 74, GAP = 66, LW = W / LANES.length;
+    const at = {};
+    LANES.forEach(([, apps], i) => {
+      const y0 = TOP + (7 - apps.length) * GAP / 2;   // shorter lanes sit centred against the longest
+      apps.forEach((a, j) => { at[a] = { x: LW * i + LW / 2, y: y0 + j * GAP, lane: i, row: j }; });
+    });
+    let lines = '', pins = '';
+    HAND.forEach(([f, t, k]) => {
+      const a = at[f], b = at[t], stuck = typeof k === 'number';
+      let d, mx, my;
+      if (a.lane === b.lane && Math.abs(a.row - b.row) === 1){          // neighbours: straight down or up
+        const dir = b.y > a.y ? 1 : -1;
+        d = `M${a.x} ${a.y + dir * NH / 2}V${b.y - dir * NH / 2}`; mx = a.x; my = (a.y + b.y) / 2;
+      } else if (a.lane === b.lane){                                    // same lane, apart: loop round the side
+        const x = a.x + NW / 2, out = 34;
+        d = `M${x} ${a.y}C${x + out} ${a.y} ${x + out} ${b.y} ${x} ${b.y}`; mx = x + out * .75; my = (a.y + b.y) / 2;
+      } else {                                                          // across lanes: side to side
+        const dir = b.x > a.x ? 1 : -1, x1 = a.x + dir * NW / 2, x2 = b.x - dir * NW / 2, m = (x1 + x2) / 2;
+        d = `M${x1} ${a.y}C${m} ${a.y} ${m} ${b.y} ${x2} ${b.y}`; mx = m; my = (a.y + b.y) / 2;
+      }
+      lines += `<path class="${stuck ? 's' : k}" d="${d}"/>`;
+      if (stuck) pins += `<g transform="translate(${mx} ${my})"><circle r="12"/><text y="4.5">${k}</text></g>`;
+    });
+    const heads = LANES.map(([n, apps], i) => `<text class="lh" x="${LW * i + LW / 2}" y="34">${n}<tspan class="ln" dx="8">${apps.length}</tspan></text>`).join('');
+    const rules = LANES.slice(1).map((_, i) => `<path class="rule" d="M${LW * (i + 1)} 60V${H - 14}"/>`).join('');
+    const nodes = Object.entries(at).map(([n, p]) => `<g transform="translate(${p.x - NW / 2} ${p.y - NH / 2})"><rect width="${NW}" height="${NH}" rx="9"/><text x="${NW / 2}" y="19.5">${n}</text></g>`).join('');
+    el('bpdraw').innerHTML = `<svg viewBox="0 0 ${W} ${H}" aria-hidden="true"><defs><pattern id="bpdots" width="20" height="20" patternUnits="userSpaceOnUse"><circle cx="10" cy="10" r="1"/></pattern></defs>`
+      + `<rect class="dots" y="50" width="${W}" height="${H - 50}" fill="url(#bpdots)"/>${rules}${heads}<g class="hand">${lines}</g><g class="node">${nodes}</g><g class="pin">${pins}</g></svg>`;
+    el('bpstat').textContent = `${Object.keys(at).length} apps, ${HAND.length} handoffs`;
+  }
+
 })();

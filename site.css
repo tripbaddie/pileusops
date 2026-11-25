@@ -864,3 +864,59 @@ a.cslink:hover h3{text-decoration:underline;text-underline-offset:5px;text-decor
   .foot .in{grid-template-columns:1fr;gap:28px}
   .foot nav{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
+
+/* pricing: the example Blueprint map. Dense on purpose, calm in colour: grey lines, one blue for where work gets stuck */
+.bpmap{margin:clamp(28px,4vw,52px) 0 0;border:1px solid var(--line);border-radius:24px;background:var(--bg);overflow:hidden}
+.band:not(.white) .bpmap{box-shadow:0 20px 44px rgba(11,18,32,.06)}
+.bp-top{display:flex;justify-content:space-between;gap:16px;padding:20px clamp(20px,3vw,32px) 0}
+.bp-top .cm-h{margin:0}
+.bp-scroll{padding:6px clamp(8px,1.4vw,16px) 0}
+.bp-scroll svg{display:block;width:100%;height:auto;font-family:var(--sans)}
+.bpmap .dots circle{fill:rgba(11,18,32,.11)}
+.bpmap .rule{stroke:rgba(11,18,32,.1);stroke-width:1;stroke-dasharray:2 6}
+.bpmap text{text-anchor:middle}
+.bpmap .lh{font-family:var(--mono);font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;fill:var(--mute)}
+.bpmap .ln{fill:rgba(11,18,32,.38)}
+.bpmap .hand path{fill:none;stroke:rgba(11,18,32,.4);stroke-width:1.4}
+.bpmap .hand .h{stroke-dasharray:4 5}
+.bpmap .hand .s{stroke:var(--sales);stroke-width:2.2}
+.bpmap .node rect{fill:#fff;stroke:rgba(11,18,32,.2);stroke-width:1}
+.bpmap .node text{font-size:13px;font-weight:500;fill:var(--ink)}
+.bpmap .pin circle{fill:var(--sales);stroke:var(--bg);stroke-width:3}
+.bpmap .pin text{font-family:var(--mono);font-size:12.5px;font-weight:500;fill:#fff}
+.bp-key{list-style:none;margin:0;padding:14px clamp(20px,3vw,32px) 16px;display:flex;flex-wrap:wrap;gap:10px 28px;border-top:1px solid var(--line);font-size:15px;color:var(--mute)}
+.bp-key li{display:flex;align-items:center;gap:10px}
+.bp-key i{flex:none;width:30px;height:0;border-top:1.5px solid rgba(11,18,32,.45)}
+.bp-key .k-hand{border-top-style:dashed}
+.bp-key .k-stuck{width:22px;height:22px;border:0;border-radius:50%;background:var(--sales);color:#fff;font:500 12px/22px var(--mono);font-style:normal;text-align:center}
+.bp-next{padding:22px clamp(20px,3vw,32px) 24px;border-top:1px solid var(--line);background:#fff}
+.bp-next .cm-h{margin:0 0 14px}
+.bp-rec{border:2px solid var(--sales);border-radius:18px;padding:20px clamp(18px,2.4vw,26px) 22px}
+.bp-rec .cm-h{margin:0 0 8px;color:var(--sales)}
+.bp-rec p:last-child{margin:10px 0 0;max-width:78ch;font-size:16.5px;line-height:1.45;color:var(--mute)}
+.bp-next .bp-sub{margin:26px 0 2px}
+.bp-next ol{list-style:none;margin:0;padding:0}
+.bp-next li{display:grid;grid-template-columns:22px minmax(0,1fr) auto;gap:6px 16px;align-items:center;padding:13px 0;border-bottom:1px solid var(--line)}
+.bp-next li i{width:22px;height:22px;border-radius:50%;background:var(--sales);color:#fff;font:500 12px/22px var(--mono);font-style:normal;text-align:center}
+.bp-next li p{margin:0;max-width:none;font-size:16.5px;line-height:1.4;color:var(--mute)}
+.bp-next li b{font-weight:600;color:var(--ink)}
+.bp-next li span{font-size:14.5px;color:var(--mute);text-align:right;white-space:nowrap}
+.bp-one{margin:18px 0 0;max-width:none;font-size:16.5px;color:var(--mute)}
+.bp-one b{font-weight:600;color:var(--ink)}
+.bpmap + .grid{margin-top:18px}
+/* the short preview on Pricing: the top of the map fading out, the whole thing a link to /blueprint/ */
+a.bpmap.peek{display:block;position:relative;color:inherit;text-decoration:none;transition:transform .2s ease,box-shadow .2s ease}
+a.bpmap.peek:hover{transform:translateY(-2px);box-shadow:0 12px 24px rgba(11,18,32,.08)}
+a.bpmap.peek:focus-visible{outline:2px solid var(--sales);outline-offset:3px}
+.peek .bp-scroll{max-height:clamp(220px,25vw,320px);overflow:hidden;-webkit-mask-image:linear-gradient(#000 38%,transparent 94%);mask-image:linear-gradient(#000 38%,transparent 94%)}
+.bp-more{position:absolute;left:50%;bottom:22px;transform:translateX(-50%);display:inline-flex;align-items:center;gap:10px;min-height:48px;padding:0 22px;border-radius:12px;background:var(--ink);color:#fff;font-weight:600;font-size:16px;white-space:nowrap}
+.after a,.faq a{color:var(--sales);font-weight:600;text-underline-offset:4px;white-space:nowrap}
+@media (max-width:860px){
+  .bp-top{flex-direction:column;gap:4px}
+  .bp-next li{grid-template-columns:22px minmax(0,1fr);align-items:start}
+  .bp-next li i{margin-top:1px}
+  .bp-next li span{grid-column:2;text-align:left;white-space:normal}
+  .bp-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
+  .bp-scroll svg{width:880px;max-width:none}
+  .peek .bp-scroll{overflow:hidden}
+}

@@ -37,6 +37,7 @@ GitHub Pages serves the `main` branch as is, so every push updates the live site
 | `assessment/index.html` | Assessment |
 | `about/index.html` | About |
 | `pricing/index.html` | Pricing |
+| `blueprint/index.html` | The example Blueprint. Linked from Pricing, not in the navigation |
 | `call/index.html` | Book a call |
 | `contact/index.html` | Contact |
 | `404.html` | Shown for any address that does not exist |
@@ -49,15 +50,15 @@ GitHub Pages serves the `main` branch as is, so every push updates the live site
 | `sitemap.xml`, `robots.txt` | For search engines. Add any new page to the sitemap |
 | `CNAME`, `.nojekyll` | Domain and Pages settings. Leave both alone |
 
-The eight pages share the same `<head>` block, header and footer. They are copied into each file rather than generated, so a change to the navigation or footer means editing all eight (and `404.html`).
+The nine pages share the same `<head>` block, header and footer. They are copied into each file rather than generated, so a change to the navigation or footer means editing all nine (and `404.html`).
 
 ## How the pages work
 
-Each page is a real address: `/`, `/how-it-works/`, `/case-studies/`, `/assessment/`, `/about/`, `/pricing/`, `/call/`, `/contact/`. Links between them use those paths, and the current page carries `aria-current="page"` in the header and footer navigation.
+Each page is a real address: `/`, `/how-it-works/`, `/case-studies/`, `/assessment/`, `/about/`, `/pricing/`, `/blueprint/`, `/call/`, `/contact/`. Links between them use those paths, and the current page carries `aria-current="page"` in the header and footer navigation.
 
 The header navigation holds How it works, Case studies, Pricing, Contact and the assessment button. About is in the footer only: the founder had it taken out of the header (25 Nov 2026), so do not add it back. Book a call sits in the footer, on Contact, on the assessment page and under the closing button on Home.
 
-The footer has three columns: the brand and its line, the page links under "Explore", and "Contact" with the email address and the line "Based in Detroit, MI". The email is styled like the page links beside it, with no underline until hover: the founder found the first version, a bold underlined address over a bare "Detroit, MI", not professional looking. The founder asked for the address and the location to be on the site (25 Nov 2026). The public address is contact@pileusops.com, which she chose over a named one. They also appear in the facts list on the Contact page. If either changes, change it in the footer of all nine HTML files and on Contact. The assessment stays the main route in. The call is the alternative to it, never the replacement.
+The footer has three columns: the brand and its line, the page links under "Explore", and "Contact" with the email address and the line "Based in Detroit, MI". The email is styled like the page links beside it, with no underline until hover: the founder found the first version, a bold underlined address over a bare "Detroit, MI", not professional looking. The founder asked for the address and the location to be on the site (25 Nov 2026). The public address is contact@pileusops.com, which she chose over a named one. They also appear in the facts list on the Contact page. If either changes, change it in the footer of all ten HTML files and on Contact. The assessment stays the main route in. The call is the alternative to it, never the replacement.
 
 `app.js` runs on every page, so each interactive block is guarded by the element it needs:
 
@@ -67,8 +68,9 @@ The footer has three columns: the brand and its line, the page links under "Expl
 - `if (el('book'))` wraps the booking calendar on Book a call.
 - `if (el('cxform'))` wraps the note form on Contact.
 - `if (el('est'))` wraps the first-year sum on Pricing.
+- `if (el('bpdraw'))` wraps the example Blueprint map, on its own page and in the preview on Pricing.
 
-Add a new page by copying an existing one, changing the head and body, adding it to the navigation in all nine HTML files, and adding it to `sitemap.xml`.
+Add a new page by copying an existing one, changing the head and body, adding it to the navigation in all ten HTML files, and adding it to `sitemap.xml`.
 
 The site used to be one file with `#hash` addresses. `app.js` still redirects those old links to the right page.
 
@@ -182,11 +184,24 @@ These are launch prices, set for a first client of about 25 people. The page cal
 | We run it | from $1,000 a month | Priced at about a fifth of the build a year, never under $1,000 a month |
 | We keep building | from $4,000 a month | Includes everything in We run it |
 
-The prices appear in three places that must agree: the HTML of `pricing/index.html`, the page's meta description, and the `BLUEPRINT`, `BUILD` and `AFTER` values in `app.js` under `if (el('est'))`. The sum covers a first workflow or one function. For a function it shows the build with the Blueprint credit already taken off.
+The prices appear in three places that must agree: the HTML of `pricing/index.html`, the page's meta description, and the `BLUEPRINT`, `BUILD` and `AFTER` values in `app.js` under `if (el('est'))`. The Blueprint price is also on `/blueprint/`, in the page, its meta description and its sub line. The sum covers a first workflow or one function. For a function it shows the build with the Blueprint credit already taken off.
+
+The Blueprint section carries a short preview of the example Blueprint: the top of the map fading out, the whole card a link to `/blueprint/`. The founder liked the full figure but found it "too much for this page" (25 Nov 2026), so the full version has its own page. See "The example Blueprint" below. The Blueprint's $5,000 price is also stated on that page.
 
 Do not put a price on the full rollout. A large number beside the entry offers makes the whole page read as expensive.
 
 Clients hold their own accounts with the model providers and pay usage at cost. We do not mark it up.
+
+## The example Blueprint
+
+`/blueprint/` shows what the first paid step produces, so there is a link to send people. It is not in the header or footer navigation. Pricing links to it from the preview in the Blueprint section and from the "Why is the Blueprint paid?" question. The founder asked for "a complex looking map" (25 Nov 2026). The figure has two halves.
+
+- **Where the company is today.** The map, drawn by `app.js` under `if (el('bpdraw'))` from two lists: `LANES`, six teams of apps, and `HAND`, every handoff between two apps, marked as moving on its own, moved by hand, or stuck. The five stuck ones carry numbered pins. It is meant to look dense, since the point is how much a Blueprint covers, but it keeps the brand's calm: grey lines and one blue. Keep each pin on a handoff between neighbouring lanes or neighbouring apps, so it never lands on a label. The counts in its corner are counted from the lists. On a phone it scrolls sideways rather than shrinking. The same code draws the preview on Pricing.
+- **Where we would start.** Written in `blueprint/index.html`. The founder asked for the next step so the figure "isnt just a map of existing infrastructure", then had it checked against the lens at the top of this file and made "more of a starting point". So it does not list five fixes. It opens with the one shared record of every customer, in the blue outline, and says every stuck point is the same gap. Then one piece per pin, each built on that record. Each row names the piece, says what it can do because it sees more than its own two apps, and ends in a "Draws on" line that crosses teams. A row that only joins the two apps either side of its pin reads as an automation and fails the lens. The closing line says the pieces are one system and that the Blueprint comes with a fixed quote for the first.
+
+The pin numbers in `HAND` and the rows in the HTML must agree. Number 1 is the lead routing workflow that Pricing gives as its example of a first workflow. The top bar labels it "Example Blueprint". There is no caption saying it is an example: the founder had it removed as implied. The company on it is invented.
+
+Under the figure the page repeats the three things a client leaves with and the $5,000 price from Pricing. If either changes there, change it here.
 
 ## The assessment
 
