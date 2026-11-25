@@ -12,25 +12,26 @@
   const tag = ([name, g]) => `<span class="src on" style="--c:${C[g]}">${glyph(g, C[g])}${name}</span>`;
 
   // ---- the forms: the assessment, the call request and the contact note all deliver the same way
-  // FORM_KEY is a Web3Forms access key. It is safe to keep in public code. Get a free one at web3forms.com.
-  // CONTACT_EMAIL is the public address. With no key, the note and the call request open the visitor's own
-  // email with everything filled in, addressed to it. Never leave it empty: no page may tell a visitor that
-  // something on our side is not set up.
-  // The emailed assessment report needs FORM_KEY. Without one the assessment closes on the call button instead.
-  const FORM_KEY = '';
+  // FORM_URL is the address of our own sending script (backend/forms.gs, running in the company Google account).
+  // It is safe in public code. With it set, the note and the call request go straight to the inbox, and the
+  // assessment emails each visitor a link to their own report.
+  // CONTACT_EMAIL is the public address. With no FORM_URL, the note and the call request open the visitor's own
+  // email with everything filled in, addressed to it, and the assessment closes on the call button instead.
+  // Never leave both empty: no page may tell a visitor that something on our side is not set up.
+  const FORM_URL = '';
   const CONTACT_EMAIL = 'contact@pileusops.com';
-  const REPORT = !!FORM_KEY;
-  // returns 'sent' when the inbox has it, 'mail' when the visitor's own email took over
-  async function post(subject, fields){
-    if (!FORM_KEY){
-      const body = Object.entries(fields).filter(([, v]) => v !== '' && v != null).map(([k, v]) => `${k.replace(/_/g, ' ')}: ${v}`).join('\n');
+  const REPORT = !!FORM_URL;
+  // kind is 'report', 'note' or 'call'. Returns 'sent' when the script has it, 'mail' when the visitor's own email took over
+  async function post(kind, subject, email, fields, code){
+    if (!FORM_URL){
+      const body = Object.entries(Object.assign({ email }, fields)).filter(([, v]) => v !== '' && v != null).map(([k, v]) => `${k.replace(/_/g, ' ')}: ${v}`).join('\n');
       location.href = `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
       return 'mail';
     }
-    const r = await fetch('https://api.web3forms.com/submit', { method: 'POST', headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-      body: JSON.stringify(Object.assign({ access_key: FORM_KEY, subject, from_name: 'Pileus Ops website' }, fields)) });
+    // sent as plain text on purpose: it keeps the browser from asking the script's permission first, which the script cannot answer
+    const r = await fetch(FORM_URL, { method: 'POST', body: JSON.stringify({ kind, email, fields, code: code || '' }) });
     const j = await r.json().catch(() => ({}));
-    if (!r.ok || j.success === false) throw new Error(j.message || 'send failed');
+    if (!r.ok || !j.ok) throw new Error('send failed');
     return 'sent';
   }
 
@@ -251,6 +252,13 @@
         'A single intake that writes into your CRM, your project tracker and your billing at once, starting with the handoff that costs you the most hours.']
     ];
     const picked = new Set(); let sells = -1, size = -1, problem = -1;
+    // a visitor's answers as a short code, so their report can be reopened from a link. Each app is three characters made
+    // from its name, so adding or reordering apps never breaks an old link. Renaming an app drops it from old links
+    const KEYS = APPS.map(([name]) => { let h = 0; for (const c of name) h = (h * 31 + c.charCodeAt(0)) >>> 0; return (h % 46656).toString(36).padStart(3, '0'); });
+    const whole = (id, max, by) => Math.min(max, Math.max(0, Math.round((+el(id).value || 0) * (by || 1))));
+    const code = () => ['1', sells, size, problem, [...picked].sort((a, b) => a - b).map(i => KEYS[i]).join(''),
+      whole('cPeople', 99999), whole('cHours', 9999, 10), whole('cRate', 99999), whole('cTools', 9999999)].join('-');
+    let report = false;   // true when the page was opened from a report link
     const box = el('assess'), go = el('showMap'), hint = el('hint');
     const mk = (host, label, on) => { const b = document.createElement('button'); b.type = 'button'; b.className = 'opt'; b.textContent = label; b.setAttribute('aria-pressed', 'false'); b.addEventListener('click', () => on(b)); host.appendChild(b); return b; };
     const ready = () => { const ok = picked.size >= 3 && sells >= 0 && size >= 0 && problem >= 0; go.disabled = !ok;
@@ -388,6 +396,23 @@
           [...swap(['Resource scheduling']), ...(H('Resource scheduling') ? [] : also(['Spreadsheets'], 'the staffing plan kept in'))]],
         payroll: () => ['A payroll prep app', `Gathers hours, new starters and changes each pay period, and hands ${H('Payroll') ? 'Payroll' : 'your payroll'} a file that is ready to run.`, []]
       };
+      // what we need from them to build each one. Shown on the report, not on the first result
+      const NEEDS = {
+        dash: 'Read access to the apps it reports from, and the numbers you look at first every Monday.',
+        onboard: svc ? 'A recent project plan to model it on, your roles and rates, and access to where deals get signed.'
+          : 'Your onboarding steps as they run today, who owns each one, and access to where deals get signed.',
+        health: svc ? 'Access to your project and billing data, and what a client in trouble looks like to you.'
+          : 'Access to usage, tickets and payments, and what an account in trouble looks like to you.',
+        intake: 'The details you take from a new customer today, and access to each app they get typed into.',
+        handoff: `The steps from signed to ${svc ? 'delivered' : 'live'} as they really happen, and who owns each one.`,
+        invoice: `Your ${svc ? 'rates' : 'price list'}, your invoice template and your payment terms.`,
+        books: 'Read access to your payments and your books, and how you sort income today.',
+        feedback: 'Access to where requests arrive today, and the person who decides what gets built.',
+        release: 'Access to where the work is tracked, and a release note you were happy with.',
+        hire: 'The accounts every new hire gets, your paperwork, and a first week that went well.',
+        staff: 'Who does what, the hours each person has, and the work already booked.',
+        payroll: 'Your pay calendar, and access to where hours and changes are recorded.'
+      };
       // which steps each build fixes, and the path it belongs to
       const FIXES = { dash: ['report'], onboard: svc ? ['setup', 'bill'] : ['setup'], health: ['support'], intake: ['lead', 'sign'], handoff: ['setup'], invoice: ['bill'], books: ['books'],
         feedback: ['road', 'work'], release: ['ship'], hire: ['hire'], staff: ['staff'], payroll: ['payroll'] };
@@ -500,7 +525,7 @@
       // what we would build, and what each could replace
       el('rBuilds').innerHTML = builds.map(([title, does, reps, closes], i) => { const c = closes.filter(key => byHand.includes(key));
         const tags = (i ? [] : ['Answers the problem you picked', 'First workflow live in 2 to 3 weeks']).concat(c.map(key => 'Covers: ' + low(S[key][0])));
-        return `<div class="rb${i ? '' : ' top'}"><b>${i + 1}</b><div class="w"><h4>${title}</h4><p>${does}</p>${joins[i] ? `<p class="lk"><small>Connects</small>${joins[i]}</p>` : ''}</div><div class="x"><div class="rr"><small>${reps.length ? 'Could replace' : 'Fills a gap'}</small>${reps.length ? cap(list(reps)) : 'Nothing you picked does this today.'}</div><div class="tags">${tags.map(t => `<span class="rp t">${t}</span>`).join('')}</div></div></div>`; }).join('');
+        return `<div class="rb${i ? '' : ' top'}"><b>${i + 1}</b><div class="w"><h4>${title}</h4><p>${does}</p>${joins[i] ? `<p class="lk"><small>Connects</small>${joins[i]}</p>` : ''}${report ? `<p class="lk"><small>Needs from you</small>${NEEDS[picks[i]]}</p>` : ''}</div><div class="x"><div class="rr"><small>${reps.length ? 'Could replace' : 'Fills a gap'}</small>${reps.length ? cap(list(reps)) : 'Nothing you picked does this today.'}</div><div class="tags">${tags.map(t => `<span class="rp t">${t}</span>`).join('')}</div></div></div>`; }).join('');
       el('rSys').innerHTML = `<p class="lab">How the three fit together</p><div class="rsys3">${builds.map(([title], i) => `<span><b>${i + 1}</b>${title.replace(/^An? /, '').replace(/^./, c => c.toUpperCase())}</span>`).join('')}</div>`
         + `<div class="rsysl" aria-hidden="true"><i></i><i></i><i></i></div><div class="rsysb"><small>What all three read and write</small><b>One shared record of your company</b><ul class="cslist">${record.map(r => `<li>${r}</li>`).join('')}</ul></div>`
         + `<p class="rsysn">Each one reads and writes the same record, so the three work as one system. Whatever we build next joins it.</p>`;
@@ -512,12 +537,15 @@
       const [cHead, cDoing, cWhat, cHrs, cPpl] = COSTS[problem];
       el('cHead').textContent = cHead; el('cDoing').textContent = cDoing;
       el('cPeople').value = cPpl[size]; el('cHours').value = cHrs; el('cRate').value = 50; el('cTools').value = 0;
-      el('cNote').textContent = `These are our starting guesses for a ${kind} company of ${SIZES[size].toLowerCase()} people. Change any number to match yours.`;
-      costWhat = cWhat; cost();
+      el('cNote').textContent = report ? 'These are the numbers you gave us. Change any of them and the total updates.'
+        : `These are our starting guesses for a ${kind} company of ${SIZES[size].toLowerCase()} people. Change any number to match yours.`;
+      costWhat = cWhat; costDoing = cDoing; cost();
 
       // the close: the report by email when there is a form key, the call when there is not
       const start = byHand.length ? `we start where ${low(S[byHand[0]][0])}` : 'we walk through your map';
-      el('rCloseA').hidden = el('rCloseB').hidden = !REPORT; el('rCloseC').hidden = REPORT;
+      const mail = REPORT && !report;   // someone reading their report already has it
+      el('rCloseA').hidden = el('rCloseB').hidden = !mail; el('rCloseC').hidden = mail;
+      el('rShare').hidden = !report;
       el('rCall').innerHTML = `Or <a href="/call/">book 15 minutes</a> and ${start} with you.`;
       el('rCallOnly').textContent = `Fifteen minutes. ${cap(start)} and tell you what we would build first.`;
 
@@ -525,16 +553,24 @@
         paths_shown: paths.map(p => p[0]).join(', '), steps_worth_a_look: byHand.map(key => S[key][0]).join(' | ') || 'none', questions: qs.map(x => x.q).join(' | '),
         builds: builds.map(([t, , r], i) => `${i + 1}. ${t}${r.length ? ' (could replace ' + list(r) + ')' : ''}`).join(' | '), how_they_connect: joins.filter(Boolean).join(' | ') || 'none', shared_record: record.join(', '), still_open: open.join(', ') };
       box.classList.add('done'); el('sent').hidden = true;
-      box.scrollIntoView({ behavior: calm ? 'auto' : 'smooth', block: 'start' });
+      if (!report) box.scrollIntoView({ behavior: calm ? 'auto' : 'smooth', block: 'start' });
     });
     // what today costs, from the visitor's own numbers: hours by hand, plus any tools they want to stop paying for
     const money = n => '$' + Math.round(n).toLocaleString('en-US');
-    let costWhat = '';
+    let costWhat = '', costDoing = '';
     function cost(){ const v = id => Math.max(0, +el(id).value || 0), p = v('cPeople'), h = v('cHours'), r = v('cRate'), t = v('cTools') * 12, hrs = p * h * r * 50;
       el('cOut').textContent = money(hrs + t);
       el('cOutL').textContent = t ? 'a year in hours by hand and tools you rent' : 'a year spent ' + costWhat;
-      el('cHow').textContent = `${p} people x ${h} hours x ${money(r)} x 50 working weeks.` + (t ? ` Plus ${money(t)} a year in tools.` : ''); }
-    ['cPeople', 'cHours', 'cRate', 'cTools'].forEach(id => el(id).addEventListener('input', cost));
+      el('cHow').textContent = `${p} people x ${h} hours x ${money(r)} x 50 working weeks.` + (t ? ` Plus ${money(t)} a year in tools.` : '');
+      // the report spells out what the number rests on, so finance can check it
+      el('cAsm').hidden = !report;
+      if (report) el('cAsm').innerHTML = '<p class="lab">The assumptions behind this number</p><ul>' + [
+        `${p} people each spend ${h} hours a week ${costDoing}.`,
+        `An hour of their time costs you ${money(r)}. Use what an hour really costs you, pay and overheads together.`,
+        'A year is 50 working weeks.',
+        t ? `Tools you would like to drop cost ${money(t / 12)} a month, which is ${money(t)} a year.` : 'No tool costs are in it. Add what you would like to stop paying for and the total updates.',
+        'It counts time only. Mistakes, delays and lost deals are not in it.'].map(x => `<li>${x}</li>`).join('') + '</ul>'; }
+    ['cPeople', 'cHours', 'cRate', 'cTools'].forEach(id => el(id).addEventListener('input', () => { cost(); if (report) history.replaceState(null, '', '?r=' + code()); }));
     const say = t => { const n = el('sent'); n.textContent = t; n.hidden = false; };
     el('send').addEventListener('submit', async e => {
       e.preventDefault();
@@ -542,14 +578,35 @@
       const btn = el('sendBtn'), label = btn.textContent;
       btn.disabled = true; btn.textContent = 'Sending';
       try {
-        const how = await post('New assessment from pileusops.com', Object.assign({ email: el('email').value.trim() }, shown, { yearly_cost: el('cOut').textContent,
-          cost_inputs: `${el('cPeople').value} people, ${el('cHours').value} hours a week, $${el('cRate').value} an hour, $${el('cTools').value} a month on tools` }));
+        const how = await post('report', 'New assessment from pileusops.com', el('email').value.trim(), Object.assign({}, shown, { yearly_cost: el('cOut').textContent,
+          cost_inputs: `${el('cPeople').value} people, ${el('cHours').value} hours a week, $${el('cRate').value} an hour, $${el('cTools').value} a month on tools` }), code());
         if (how === 'mail') say('Press send in the email that just opened and we will send your report.');
-        else { say('Thanks. We have your results and will email your report shortly.'); el('send').reset(); }
+        else { say('Thanks. Your report is on its way to your inbox.'); el('send').reset(); }
       } catch (err) { say('That did not send. Please try again in a moment.'); }
       btn.disabled = false; btn.textContent = label;
     });
-    el('again').addEventListener('click', () => { box.classList.remove('done'); box.scrollIntoView({ behavior: calm ? 'auto' : 'smooth', block: 'start' }); });
+    el('again').addEventListener('click', () => { if (report){ location.href = '/assessment/'; return; }
+      box.classList.remove('done'); box.scrollIntoView({ behavior: calm ? 'auto' : 'smooth', block: 'start' }); });
+    el('rCopy').addEventListener('click', async () => { const b = el('rCopy');
+      try { await navigator.clipboard.writeText(location.href); b.textContent = 'Link copied'; } catch (err){ b.textContent = 'Copy it from the address bar'; } });
+
+    // a report link: put the answers back, show the result, and add what the emailed report promises
+    const link = /[?&]r=(1-[0-2]-[0-3]-[0-4]-(?:[0-9a-z]{3}){3,31}-\d{1,5}-\d{1,4}-\d{1,5}-\d{1,7})(?:&|$)/.exec(location.search);
+    if (link){
+      const [, s, z, p, apps, cp, ch, cr, ct] = link[1].split('-');
+      const press = (host, i) => { const b = el(host).querySelectorAll('.opt')[i]; if (b) b.click(); };
+      apps.match(/.{3}/g).forEach(key => { const i = KEYS.indexOf(key); if (i >= 0 && !picked.has(i)) press('optApps', i); });
+      press('optSells', +s); press('optSize', +z); press('optStuck', +p);
+      if (!go.disabled){
+        report = true; go.click();
+        el('cPeople').value = +cp; el('cHours').value = +ch / 10; el('cRate').value = +cr; el('cTools').value = +ct; cost();
+        el('aHead').textContent = 'Your company map.';
+        el('aSub').textContent = 'Built from the answers you gave us. Everything here is yours to share with your team.';
+        el('aAlt').hidden = true;
+        document.title = 'Your company map | Pileus Ops';
+        const m = document.createElement('meta'); m.name = 'robots'; m.content = 'noindex'; document.head.appendChild(m);
+      }
+    }
   }
 
   // ---- book a call: free times come from the hours below, shown in the visitor's own timezone
@@ -693,8 +750,8 @@
       btn.disabled = true; btn.textContent = 'Sending';
       const ours = slot.toLocaleString('en-US', { timeZone: CAL.tz, weekday: 'long', month: 'long', day: 'numeric', hour: 'numeric', minute: '2-digit', timeZoneName: 'short' });
       try {
-        const how = await post('New call request from pileusops.com', {
-          email: el('bkEmail').value.trim(), name: el('bkName').value.trim(), company: el('bkCo').value.trim(),
+        const how = await post('call', 'New call request from pileusops.com', el('bkEmail').value.trim(), {
+          name: el('bkName').value.trim(), company: el('bkCo').value.trim(),
           requested_time_your_clock: ours, requested_time_their_clock: `${dayName(slot)} at ${timeName(slot)} (${zone})`,
           starts_utc: slot.toISOString(), length_minutes: CAL.minutes, to_cover: el('bkNote').value.trim() });
         el('bkOk').textContent = `Asked for ${dayName(slot)} at ${timeName(slot)}.`;
@@ -721,7 +778,7 @@
       const btn = el('cxSend'), label = btn.textContent;
       btn.disabled = true; btn.textContent = 'Sending';
       try {
-        const how = await post('New note from pileusops.com', { email: el('cxEmail').value.trim(), name: el('cxName').value.trim(),
+        const how = await post('note', 'New note from pileusops.com', el('cxEmail').value.trim(), { name: el('cxName').value.trim(),
           company: el('cxCo').value.trim(), team_size: el('cxSize').value.trim(), message: el('cxNote').value.trim() });
         if (how === 'mail') note(`Press send in the email that just opened and we will come back within one business day. No email app? Write to ${CONTACT_EMAIL}.`);
         else { note('Thanks. We will come back within one business day.'); el('cxform').reset(); }

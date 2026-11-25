@@ -920,3 +920,13 @@ a.bpmap.peek:focus-visible{outline:2px solid var(--sales);outline-offset:3px}
   .bp-scroll svg{width:880px;max-width:none}
   .peek .bp-scroll{overflow:hidden}
 }
+
+/* the assessment report: the page a visitor's emailed link opens */
+.rshare{display:flex;flex-wrap:wrap;gap:10px 24px;align-items:center;justify-content:space-between;margin-bottom:clamp(24px,3vw,36px);padding:16px 20px;border:1px solid var(--sales);border-radius:16px;background:#fff}
+.rshare p{margin:0;font-size:16px;line-height:1.4}
+.rshare button{all:unset;cursor:pointer;font-weight:600;font-size:15.5px;text-decoration:underline;text-underline-offset:4px;white-space:nowrap}
+.rshare button:focus-visible{outline:2px solid var(--sales);outline-offset:4px}
+.rasm{flex:1 1 100%;min-width:0;padding-top:22px;border-top:1px solid var(--line)}
+.rasm ul{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:10px 32px;font-size:15.5px;line-height:1.45;color:var(--mute)}
+.rasm li{display:flex;gap:10px}
+.rasm li::before{content:"";flex:none;width:6px;height:6px;margin-top:8px;border-radius:50%;background:var(--sales)}

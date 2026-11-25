@@ -22,7 +22,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Funnel+Display:wght@500;600;700&family=Funnel+Sans:wght@400;500;600&family=Geist+Mono:wght@500&display=swap">
-<link rel="stylesheet" href="/site.css?v=202611251720">
+<link rel="stylesheet" href="/site.css?v=202611251729">
 </head>
 <body>
 <div class="bar">
@@ -37,9 +37,9 @@
 <section class="band phead">
   <div class="in">
     <p class="eyebrow">The assessment</p>
-    <h1 class="h1">Map your company in 2 minutes.</h1>
-    <p class="sub">Four questions, and your result shows on screen. Nothing to book and nobody to sit through.</p>
-    <p class="alt">Would rather talk it through? <a href="/call/">Book a 15 minute call instead</a>.</p>
+    <h1 class="h1" id="aHead">Map your company in 2 minutes.</h1>
+    <p class="sub" id="aSub">Four questions, and your result shows on screen. Nothing to book and nobody to sit through.</p>
+    <p class="alt" id="aAlt">Would rather talk it through? <a href="/call/">Book a 15 minute call instead</a>.</p>
     <div class="assess" id="assess">
       <div class="form">
         <fieldset><legend><span>01</span>What do you sell?</legend><div class="opts" id="optSells"></div></fieldset>
@@ -51,6 +51,7 @@
         <p class="hint" id="hint">Answer all four to see your map.</p>
       </div>
       <div class="result" id="result" aria-live="polite">
+        <div class="rshare" id="rShare" hidden><p><b>This page is yours to keep.</b> Share the link with your team, or come back to it any time.</p><button type="button" id="rCopy">Copy the link</button></div>
         <p class="eyebrow">Your map</p>
         <h2 class="rh" id="rHead"></h2>
         <div class="rtold" id="rTold"></div>
@@ -82,6 +83,7 @@
             <p class="note" id="cNote"></p>
           </div>
           <div class="rout"><b id="cOut"></b><p id="cOutL"></p><p class="note" id="cHow"></p></div>
+          <div class="rasm" id="cAsm" hidden></div>
         </div>
         <div class="rsec">
           <p class="eyebrow">What we would build</p>
@@ -168,7 +170,7 @@
     <small>&copy; 2026 Pileus Ops</small>
   </div>
 </footer>
-<script src="/brand.js?v=202611251720"></script>
-<script src="/app.js?v=202611251720"></script>
+<script src="/brand.js?v=202611251729"></script>
+<script src="/app.js?v=202611251729"></script>
 </body>
 </html>
