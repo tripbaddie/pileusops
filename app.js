@@ -393,8 +393,7 @@
             : `<div class="rho last"><small>Next</small><b>${after}</b>${then}</div>`;
           return `<div class="rst"><div><span class="n">0${i + 1}</span><b class="t">${name}</b></div><ul class="rapps">${a.length ? a.map(app).join('') : '<li class="none">No tool picked</li>'}</ul>${next}</div>`; }).join(''); };
       el('rTabs').hidden = paths.length < 2;
-      el('rTabs').innerHTML = paths.map(([name, , , stages]) => { const c = stages.filter(st => st[2] && !S[st[2]][1]).length;
-        return `<button type="button" role="tab" aria-label="${name}${c ? ', ' + c + ' probably done by hand' : ''}">${name}${c ? `<span class="c" aria-hidden="true">${c}</span>` : ''}</button>`; }).join('');
+      el('rTabs').innerHTML = paths.map(([name]) => `<button type="button" role="tab">${name}</button>`).join('');
       [...el('rTabs').children].forEach((b, i) => b.addEventListener('click', () => draw(i)));
       draw(0);
       el('rUnder').innerHTML = `<div><small>Underneath all of it</small><b>Reporting</b></div><p>${under.length ? list(under) + (under.length > 1 ? ' sit' : ' sits') + ' underneath every stage.' : 'Nothing you picked sits underneath the stages.'} ${S.report[1] ? '' : S.report[2]}</p><span class="rp ${S.report[1] ? 'ok' : 'hand'}">${S.report[1] ? 'Probably automatic' : 'Done by hand today'}</span>`;

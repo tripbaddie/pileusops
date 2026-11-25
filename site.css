@@ -686,7 +686,6 @@ html.js .rv.seen{opacity:1;transform:none}
 .rtabs button:hover{background:#E6E8E2}
 .rtabs button[aria-selected="true"]{background:var(--ink);color:#fff}
 .rtabs button:focus-visible{outline:2px solid var(--sales);outline-offset:2px}
-.rtabs .c{display:inline-flex;align-items:center;justify-content:center;min-width:22px;height:22px;padding:0 6px;border-radius:99px;background:#FFE0E0;color:#A31212;font-size:12.5px}
 .rmaph{display:flex;flex-wrap:wrap;gap:12px 24px;align-items:flex-end;justify-content:space-between;margin-bottom:16px}
 .result .rmaph h3{font-size:22px;max-width:none}
 .rleg{display:flex;flex-wrap:wrap;gap:8px}
