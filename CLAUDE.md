@@ -12,6 +12,7 @@ GitHub Pages serves the `main` branch as is, so every push updates the live site
 | --- | --- |
 | `index.html` | Home |
 | `how-it-works/index.html` | How it works |
+| `case-studies/index.html` | Case studies |
 | `assessment/index.html` | Assessment |
 | `about/index.html` | About |
 | `pricing/index.html` | Pricing |
@@ -27,13 +28,13 @@ GitHub Pages serves the `main` branch as is, so every push updates the live site
 | `sitemap.xml`, `robots.txt` | For search engines. Add any new page to the sitemap |
 | `CNAME`, `.nojekyll` | Domain and Pages settings. Leave both alone |
 
-The seven pages share the same `<head>` block, header and footer. They are copied into each file rather than generated, so a change to the navigation or footer means editing all seven (and `404.html`).
+The eight pages share the same `<head>` block, header and footer. They are copied into each file rather than generated, so a change to the navigation or footer means editing all eight (and `404.html`).
 
 ## How the pages work
 
-Each page is a real address: `/`, `/how-it-works/`, `/assessment/`, `/about/`, `/pricing/`, `/call/`, `/contact/`. Links between them use those paths, and the current page carries `aria-current="page"` in the header and footer navigation.
+Each page is a real address: `/`, `/how-it-works/`, `/case-studies/`, `/assessment/`, `/about/`, `/pricing/`, `/call/`, `/contact/`. Links between them use those paths, and the current page carries `aria-current="page"` in the header and footer navigation.
 
-The header navigation holds How it works, Pricing, About, Contact and the assessment button. Book a call sits in the footer, on Contact, on the assessment page and under the closing button on Home. The assessment stays the main route in. The call is the alternative to it, never the replacement.
+The header navigation holds How it works, Case studies, Pricing, About, Contact and the assessment button. Book a call sits in the footer, on Contact, on the assessment page and under the closing button on Home. The assessment stays the main route in. The call is the alternative to it, never the replacement.
 
 `app.js` runs on every page, so each interactive block is guarded by the element it needs:
 
@@ -44,7 +45,7 @@ The header navigation holds How it works, Pricing, About, Contact and the assess
 - `if (el('cxform'))` wraps the note form on Contact.
 - `if (el('est'))` wraps the first-year sum on Pricing.
 
-Add a new page by copying an existing one, changing the head and body, adding it to the navigation in all eight HTML files, and adding it to `sitemap.xml`.
+Add a new page by copying an existing one, changing the head and body, adding it to the navigation in all nine HTML files, and adding it to `sitemap.xml`.
 
 The site used to be one file with `#hash` addresses. `app.js` still redirects those old links to the right page.
 
@@ -106,6 +107,19 @@ On success the visitor gets a tentative `.ics` hold, not an invite. The copy say
 ## Contact
 
 `/contact/` is the note form on the left and the two other routes on the right: book a call, and start the assessment. The form posts through the same `post()` helper.
+
+## Case studies
+
+`/case-studies/` has two examples, each with the same parts in the same order: three numbers, the team it stands in for, the software it stands in for, what it is connected to, and what stays with the person running it. The table styles are the `.cstab` rules at the end of `site.css`.
+
+Both examples are companies the founder runs, so the page opens by saying we built this inside our own companies first. They are described, not named: "AI travel planning app" and "AI sales platform". Do not present them as outside clients, and do not name the companies, their people or their customers unless the founder asks.
+
+- The agent counts come from each company's list of scheduled tasks as of 25 Nov 2026: 16 for the travel app, 18 for the sales platform.
+- The roles and FTE figures are estimates from the work each agent carries a week, not measured hours. The note under "What both show" says so. Keep that note if the numbers change.
+- The three numbers at the top of each example, the two rows in the summary card at the top of the page and the "Together" row of each team table must agree.
+- The "kinds of software" number is the count of rows in that example's software table.
+- Each line in a team table names the agent, then says what it does, the same rule as the rest of the site.
+- "Connected to" shows integrations as proof. It is not a list of tools a client would keep, so do not copy the pattern into the assessment result.
 
 ## Pricing
 

@@ -774,3 +774,40 @@ html.js .rv.seen{opacity:1;transform:none}
 @media (max-width:860px){
   .rb .x{flex-basis:100%}
 }
+
+/* case studies: two tables per company, the roles and then the software */
+.csh{margin:clamp(44px,6vw,76px) 0 0;font-family:var(--disp);font-weight:600;font-size:clamp(1.4rem,.8vw + 1.1rem,1.75rem);letter-spacing:-.02em}
+.cstab{margin-top:20px;background:var(--bg);border:1px solid var(--line);border-radius:24px;padding:6px clamp(20px,3vw,36px)}
+.band:not(.white) .cstab{background:#fff}
+.cstab table{width:100%;border-collapse:collapse}
+.cstab th{padding:18px 0 14px;text-align:left;font-family:var(--mono);font-weight:500;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--mute);border-bottom:1px solid var(--line)}
+.cstab td{padding:22px 0;vertical-align:top;border-bottom:1px solid var(--line);color:var(--mute);font-size:16.5px}
+.cstab tbody tr:last-child td{border-bottom:0}
+.cstab td:first-child{width:29%;padding-right:28px;font-family:var(--disp);font-weight:600;font-size:19px;letter-spacing:-.015em;line-height:1.25;color:var(--ink)}
+.cstab td small{display:block;margin-top:5px;font-family:var(--sans);font-weight:400;font-size:14.5px;letter-spacing:0;color:var(--mute)}
+.cstab ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:9px}
+.cstab .fte{width:118px;padding-left:20px;text-align:right;white-space:nowrap}
+.cstab td.fte{font-family:var(--disp);font-weight:600;font-size:21px;letter-spacing:-.02em;color:var(--ink)}
+.cstab tfoot td{border-top:1px solid rgba(11,18,32,.28);border-bottom:0;font-family:var(--disp);font-weight:600;font-size:19px;color:var(--ink)}
+.cstab tfoot td.fte{color:var(--sales)}
+.cstab.two td:first-child{width:38%}
+.csfoot{margin-top:18px}
+.cslist{list-style:none;margin:16px 0 0;padding:0;display:flex;flex-wrap:wrap;gap:8px}
+.cslist li{padding:6px 12px;border:1px solid var(--line);border-radius:99px;font-size:14.5px;font-weight:500;color:var(--ink);background:#fff}
+.card a{color:var(--sales);font-weight:600;text-underline-offset:4px}
+#travel,#sales{scroll-margin-top:12px}
+@media (max-width:860px){
+  .cstab{padding:2px 20px}
+  .cstab thead{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}
+  .cstab table,.cstab tbody,.cstab tfoot,.cstab tr,.cstab td{display:block;width:auto}
+  .cstab tr{padding:20px 0;border-bottom:1px solid var(--line)}
+  .cstab tbody tr:last-child{border-bottom:0}
+  .cstab td,.cstab td:first-child,.cstab.two td:first-child{width:auto;padding:0;border:0}
+  .cstab td+td{margin-top:10px}
+  .cstab .fte{width:auto;padding:0;text-align:left}
+  .cstab td.fte{font-size:17px}
+  .cstab tbody td.fte::before{content:"Rough FTE ";font-family:var(--mono);font-weight:500;font-size:11.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--mute);margin-right:8px}
+  .cstab tfoot tr{display:flex;justify-content:space-between;align-items:baseline;border-top:1px solid rgba(11,18,32,.28);border-bottom:0}
+  .cstab tfoot td{border:0}.cstab tfoot td+td{margin-top:0}
+  .g2.csfoot{grid-template-columns:1fr}
+}
