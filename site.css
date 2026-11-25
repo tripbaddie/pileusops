@@ -811,3 +811,9 @@ html.js .rv.seen{opacity:1;transform:none}
   .cstab tfoot td{border:0}.cstab tfoot td+td{margin-top:0}
   .g2.csfoot{grid-template-columns:1fr}
 }
+.csout{margin-top:20px;border-top:1px solid rgba(11,18,32,.14)}
+.csout>div{display:grid;grid-template-columns:168px minmax(0,2fr) minmax(0,3fr);gap:6px clamp(16px,3vw,44px);padding:24px 0;border-bottom:1px solid rgba(11,18,32,.14);align-items:baseline}
+.csout small{font-family:var(--mono);font-weight:500;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--sales)}
+.csout h4{margin:0;font-family:var(--disp);font-weight:600;font-size:22px;letter-spacing:-.02em;line-height:1.2;text-wrap:balance}
+.csout p{margin:0;font-size:17px;color:var(--mute);max-width:56ch}
+@media (max-width:860px){.csout>div{grid-template-columns:1fr;gap:8px;padding:22px 0}}

@@ -110,10 +110,13 @@ On success the visitor gets a tentative `.ics` hold, not an invite. The copy say
 
 ## Case studies
 
-`/case-studies/` has two examples, each with the same parts in the same order: three numbers, the team it stands in for, the software it stands in for, what it is connected to, and what stays with the person running it. The table styles are the `.cstab` rules at the end of `site.css`.
+`/case-studies/` has two examples, each with the same parts in the same order: three numbers, what changed for the person in charge, the team it stands in for, the software it stands in for, what it is connected to, and what stays with the person running it. The table styles are the `.cstab` rules and the outcome rows are the `.csout` rules, both at the end of `site.css`.
+
+The outcomes come before the headcount on purpose. The founder's note on the first draft was that it counted roles and tools but had no outcomes. Each example answers the same five in the same order: executive function, reporting, visibility, time to decision, time to result. Every line describes how the system really runs. None is a measured before and after, so do not add hours saved or percentages unless the founder supplies them.
 
 Both examples are companies the founder runs, so the page opens by saying we built this inside our own companies first. They are described, not named: "AI travel planning app" and "AI sales platform". Do not present them as outside clients, and do not name the companies, their people or their customers unless the founder asks.
 
+- The nine in ten link scanner line comes from the travel app's daily report, which removes scanner visits from its visitor count. The same-day concert travel line is from 19 Oct 2026, when that set of agents was created.
 - The agent counts come from each company's list of scheduled tasks as of 25 Nov 2026: 16 for the travel app, 18 for the sales platform.
 - The roles and FTE figures are estimates from the work each agent carries a week, not measured hours. The note under "What both show" says so. Keep that note if the numbers change.
 - The three numbers at the top of each example, the two rows in the summary card at the top of the page and the "Together" row of each team table must agree.
