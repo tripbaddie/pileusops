@@ -110,29 +110,39 @@ On success the visitor gets a tentative `.ics` hold, not an invite. The copy say
 
 ## Case studies
 
-`/case-studies/` has two examples, each with the same parts in the same order: three numbers, a map of how it fits together, what it does, and what it stands in for. The styles are the `.csh`, `.csmap`, `.csout` and `.cslist` rules at the end of `site.css`.
+`/case-studies/` has two examples. The styles are the `.csh`, `.csmap`, `.csout` and `.cslist` rules at the end of `site.css`.
 
-The map is four boxes read left to right: what the system reads, the agents (the dark box), the person in charge (the blue outline, with their hours a week) and what it sends, with one dashed line underneath for results feeding back in. The founder asked for a visual of each example (25 Nov 2026). Keep it this calm: plain words in each box, one dark box, one blue outline, no extra colors or icons. The lanes in the agents box should match the labels of the stories under "What it does", and the agent count and hours must match the three numbers above. On a phone the boxes stack with the arrows pointing down.
+### What the page has to sell
 
-How to pitch them. The founder's ruling (25 Nov 2026): a reader should finish each one thinking "wow, this is really cool". Her first two notes still hold underneath that: it must show outcomes, not a count of roles and tools, and it must stay a case study, not an analysis.
+The founder's test (25 Nov 2026): "think about what we are selling here, and does it really convey that". She had the whole page rethought through that lens after a draft that read as a list of tasks agents do.
 
-- "What it does" is seven short stories. Each has a label for the part of the business, a headline that states the surprising thing, and two or three plain sentences. Lead with what a reader would not expect a small company to have: a report that warns of a problem before it starts, a reply drafted before anyone opens the inbox, a CRM built because renting one cost too much, session recordings nobody has to watch, a support answer waiting when the customer writes in.
-- Say what the system does and what the person in charge no longer has to do. Do not explain how it works.
-- The sales platform's stories are the founder's own account of her setup, including the vendor story (an agent read an agency's weekly reports and caught altered screenshots, a strategy not being followed and numbers that were not delivering). Change the wording, not the claims, unless she says the setup changed. Never name or describe the agency.
+We do not sell task automation or a cheaper team. We sell one connected system in place of a stack of tools and hires that never talk to each other: every function works from the same picture of the company, one person sees and controls all of it, and the company owns it. The value is in the connections. Support can answer a customer because it can see their account, their history and what sales promised.
+
+So every part of the page argues that one point, and a part that only says "an agent does X" does not belong:
+
+1. **Three numbers:** 1 system (made of N agents), the tools it stands in for, and the hours a week to run it.
+2. **Without it:** the separate tools and the separate jobs, as dashed chips. Kinds of tool and job titles only, never product names.
+3. **With it:** the map. Three layers, top to bottom: what the person in charge sees (blue outline), the agents as one system (dark box, one tile per function), and the shared picture of the company they all run on. One sentence underneath says what the sharing makes possible. Keep it this calm: words only, one dark box, one blue outline.
+4. **What one system makes possible:** seven short stories. Each has a label, a headline that states the surprising thing, two or three plain sentences, and a "Draws on" line naming the parts of the company it connects. The "Draws on" line is the point of the story, so never drop it. Prefer stories that cross functions.
+
+The closing section makes the same three claims in three cards: one picture, one person in control, theirs to keep.
+
+### Rules that still hold
+
+- A reader should finish each example thinking "wow, this is really cool". Lead with what they would not expect a small company to have.
+- It is a case study, not an analysis. Say what the system does and what the person in charge no longer has to do, not how it works. No tables, no figure against each role, no per-agent descriptions, no lists of vendors, no day-by-day numbers.
+- State every number plainly, with no "about" or "give or take". The one small line under the closing cards says the hours are our estimate. Keep it.
+- No results line on either example. The founder had the travel app's taken down. Do not add one back without asking her.
+- The sales platform's stories are the founder's own account of her setup, including the vendor story. Change the wording, not the claims, unless she says the setup changed. Never name or describe the agency.
 - The travel app's stories come from how its agents run. The founder asked for weekly learnings, competitor tracking and social listening to be among them.
-- No tables, no figure against each role, no per-agent descriptions, no vendor names, no lists of connected tools, no day-by-day numbers. A reader should not be able to read too much into a number, get confused or get lost in detail.
-- "What it stands in for" is two plain lists: job titles and kinds of software. Kinds only, never product names.
-- No results line on either example. The founder had the travel app's line taken down (25 Nov 2026). Do not add one back without asking her.
 
 Never name either company. Both are companies the founder runs, so the page opens by saying we built this inside our own companies first. They are described as "AI travel planning app" and "AI sales platform". Do not present them as outside clients. Do not name the companies, their people, their customers, their vendors, or anything narrow enough to identify them, on the page or in this file.
 
 Where the numbers come from:
 
-- Agents: each company's list of scheduled tasks as of 25 Nov 2026, 16 and 18.
-- Roles: an estimate from the work each agent carries a week, 4 and 5. The numbers in the summary card at the top of the page must match.
-- State every number plainly. The founder had "about" and "give or take" removed (25 Nov 2026): "we should be more decisive". The one line under "What both show" is where the page says these are estimates, so the numbers themselves carry no hedge.
-- Hours of attention: an estimate the founder asked for, 5 and 6 a week, from a 10 minute read of the morning report plus the daily review of what the agents prepared.
-- The note under "What both show" says roles and hours are estimates. Keep it.
+- Agents: each company's list of scheduled tasks as of 25 Nov 2026, 16 and 18. They appear in the summary card at the top, the first number and the map, and all three must agree.
+- Tools: the count of chips in that example's "separate tools" card.
+- Hours: an estimate the founder asked for, 5 and 6 a week, from a 10 minute read of the morning report plus the daily review of what the agents prepared. They appear in the third number and on the map.
 
 ## Pricing
 
