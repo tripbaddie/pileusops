@@ -487,4 +487,30 @@
     });
   }
 
+  // ---- pricing: two choices add up to a first year. Starting prices only, the quote sets the real one
+  if (el('est')){
+    // a first workflow needs no Blueprint. A function build does, and the Blueprint fee comes off it
+    const BLUEPRINT = 5000, BUILD = { wf: 10000, fn: 25000 };
+    // running it is a fifth of the build a year with a floor of $1,000 a month; building on is $4,000 a month
+    const AFTER = { self: () => 0, run: b => Math.max(12000, b * 0.2), grow: () => 48000 };
+    const usd = n => '$' + Math.round(n).toLocaleString('en-US');
+    const pick = { build: 'wf', after: 'run' };
+    const draw = () => {
+      const b = BUILD[pick.build], a = AFTER[pick.after](b), bp = pick.build === 'fn';
+      el('estBp').textContent = bp ? usd(BLUEPRINT) : 'Not needed';
+      el('estBuildL').textContent = bp ? 'Build, after the Blueprint credit' : 'Build';
+      el('estBuild').textContent = usd(bp ? b - BLUEPRINT : b);
+      el('estAfter').textContent = usd(a);
+      el('estFrom').hidden = !a;
+      el('estTotal').textContent = usd(b + a);
+    };
+    el('est').querySelectorAll('.seg button').forEach(btn => btn.addEventListener('click', () => {
+      const k = btn.dataset.build ? 'build' : 'after';
+      pick[k] = btn.dataset[k];
+      btn.parentNode.querySelectorAll('button').forEach(o => o.setAttribute('aria-pressed', o === btn));
+      draw();
+    }));
+    draw();
+  }
+
 })();

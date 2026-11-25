@@ -14,6 +14,7 @@ GitHub Pages serves the `main` branch as is, so every push updates the live site
 | `how-it-works/index.html` | How it works |
 | `assessment/index.html` | Assessment |
 | `about/index.html` | About |
+| `pricing/index.html` | Pricing |
 | `call/index.html` | Book a call |
 | `contact/index.html` | Contact |
 | `404.html` | Shown for any address that does not exist |
@@ -26,13 +27,13 @@ GitHub Pages serves the `main` branch as is, so every push updates the live site
 | `sitemap.xml`, `robots.txt` | For search engines. Add any new page to the sitemap |
 | `CNAME`, `.nojekyll` | Domain and Pages settings. Leave both alone |
 
-The six pages share the same `<head>` block, header and footer. They are copied into each file rather than generated, so a change to the navigation or footer means editing all six (and `404.html`).
+The seven pages share the same `<head>` block, header and footer. They are copied into each file rather than generated, so a change to the navigation or footer means editing all seven (and `404.html`).
 
 ## How the pages work
 
-Each page is a real address: `/`, `/how-it-works/`, `/assessment/`, `/about/`, `/call/`, `/contact/`. Links between them use those paths, and the current page carries `aria-current="page"` in the header and footer navigation.
+Each page is a real address: `/`, `/how-it-works/`, `/assessment/`, `/about/`, `/pricing/`, `/call/`, `/contact/`. Links between them use those paths, and the current page carries `aria-current="page"` in the header and footer navigation.
 
-The header navigation holds How it works, About, Contact and the assessment button. Book a call sits in the footer, on Contact, on the assessment page and under the closing button on Home. The assessment stays the main route in. The call is the alternative to it, never the replacement.
+The header navigation holds How it works, Pricing, About, Contact and the assessment button. Book a call sits in the footer, on Contact, on the assessment page and under the closing button on Home. The assessment stays the main route in. The call is the alternative to it, never the replacement.
 
 `app.js` runs on every page, so each interactive block is guarded by the element it needs:
 
@@ -41,8 +42,9 @@ The header navigation holds How it works, About, Contact and the assessment butt
 - `if (el('assess'))` wraps the assessment and its calculator.
 - `if (el('book'))` wraps the booking calendar on Book a call.
 - `if (el('cxform'))` wraps the note form on Contact.
+- `if (el('est'))` wraps the first-year sum on Pricing.
 
-Add a new page by copying an existing one, changing the head and body, adding it to the navigation in all seven HTML files, and adding it to `sitemap.xml`.
+Add a new page by copying an existing one, changing the head and body, adding it to the navigation in all eight HTML files, and adding it to `sitemap.xml`.
 
 The site used to be one file with `#hash` addresses. `app.js` still redirects those old links to the right page.
 
@@ -105,6 +107,29 @@ On success the visitor gets a tentative `.ics` hold, not an invite. The copy say
 
 `/contact/` is the note form on the left and the two other routes on the right: book a call, and start the assessment. The form posts through the same `post()` helper.
 
+## Pricing
+
+`/pricing/` is the rate card at the top, one section per stage, the first-year sum, and the pricing questions.
+
+These are launch prices, set for a first client of about 25 people. The page calls them founding prices for the first three clients, so raise them once three are signed.
+
+| Stage | Public price | Notes |
+| --- | --- | --- |
+| Assessment | Free | The form on `/assessment/` |
+| Blueprint | $5,000 fixed | 2 weeks. Credited in full toward a function build or a full rollout |
+| First workflow | from $10,000 | 2 to 3 weeks. No Blueprint needed |
+| One function | from $25,000 | 6 to 10 weeks |
+| Full rollout | No public price | Quoted in the Blueprint |
+| You run it | $0 | Training and handover are part of every build |
+| We run it | from $1,000 a month | Priced at about a fifth of the build a year, never under $1,000 a month |
+| We keep building | from $4,000 a month | Includes everything in We run it |
+
+The prices appear in three places that must agree: the HTML of `pricing/index.html`, the page's meta description, and the `BLUEPRINT`, `BUILD` and `AFTER` values in `app.js` under `if (el('est'))`. The sum covers a first workflow or one function. For a function it shows the build with the Blueprint credit already taken off.
+
+Do not put a price on the full rollout. A large number beside the entry offers makes the whole page read as expensive.
+
+Clients hold their own accounts with the model providers and pay usage at cost. We do not mark it up.
+
 ## The assessment
 
 Four questions, all in `app.js` under `if (el('assess'))`:
@@ -122,8 +147,9 @@ Question 4 names a business problem an owner would recognise, not a specific bro
 
 The options are written for B2B software and services companies. Keep them that way: no retail, manufacturing or field-service tools.
 
-## Sources for the statistics on Home
+## Sources for the statistics on Home and Pricing
 
 - 118 apps in the average company: BetterCloud, State of SaaS 2026.
-- 36% of paid licenses unused: Zylo, 2026 SaaS Management Index.
+- 46% of paid licenses unused (Home and Pricing): Zylo, 2026 SaaS Management Index, checked against zylo.com on 24 Nov 2026. Home said 36% before that check.
 - 45 handoffs between 10 apps is arithmetic: every app paired with every other.
+- $9,455 median software spend per employee a year (Pricing): Zylo, 2026 SaaS Management Index, checked against zylo.com on 24 Nov 2026.
