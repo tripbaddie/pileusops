@@ -2,6 +2,27 @@
 
 The marketing site for Pileus Ops, an AI operations consultancy. Live at https://pileusops.com through GitHub Pages.
 
+## What the site sells
+
+Read this before changing any copy. The founder's test for every page (25 Nov 2026): "think about what we are selling here, and does it really convey that".
+
+We do not sell task automation, a pile of agents or a cheaper team. We sell one connected system in place of a stack of tools and hires that never talk to each other:
+
+- every function works from the same picture of the company,
+- one person sees and controls all of it,
+- and the company owns it.
+
+The value is in the connections. Support can answer a customer because it can see their account, their history and what sales promised. Copy that only says "an agent does X" or "automate Y" is off the mark, on any page. So is anything that presents a build as a standalone tool: every workflow, function or app we build is a piece of the same system, and the copy should say so.
+
+How each page carries it:
+
+- **Home:** the apps you already run become one system you control. A Proof section links to the two case studies.
+- **How it works:** one system, seen from each team's seat. The demo switches teams, not systems.
+- **Case studies:** two companies, each run as one system. See its own section below.
+- **Pricing:** every build is a piece of the same system, from the first one.
+- **Assessment:** the three builds in the result are the start of one system, not three more tools.
+- **About:** the story of how companies ended up undesigned, and that we run our own this way first.
+
 ## How the site is built
 
 Plain HTML, CSS and JavaScript. No build step, no dependencies, nothing to install or compile.
@@ -114,11 +135,7 @@ On success the visitor gets a tentative `.ics` hold, not an invite. The copy say
 
 ### What the page has to sell
 
-The founder's test (25 Nov 2026): "think about what we are selling here, and does it really convey that". She had the whole page rethought through that lens after a draft that read as a list of tasks agents do.
-
-We do not sell task automation or a cheaper team. We sell one connected system in place of a stack of tools and hires that never talk to each other: every function works from the same picture of the company, one person sees and controls all of it, and the company owns it. The value is in the connections. Support can answer a customer because it can see their account, their history and what sales promised.
-
-So every part of the page argues that one point, and a part that only says "an agent does X" does not belong:
+This page is where "What the site sells" (top of this file) was worked out. The founder had it rethought after a draft that read as a list of tasks agents do. Every part of it argues that one point, and a part that only says "an agent does X" does not belong:
 
 1. **Three numbers:** 1 system (made of N agents), the tools it stands in for, and the hours a week to run it.
 2. **Without it:** the separate tools and the separate jobs, as dashed chips. Kinds of tool and job titles only, never product names.
