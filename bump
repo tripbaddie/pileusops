@@ -2,7 +2,7 @@
 # Stamp every page's CSS and JS links with the current time so browsers fetch the new
 # files instead of their cached copies. Run this after changing site.css or any .js.
 v=$(date +%Y%m%d%H%M)
-for f in index.html 404.html */index.html; do
+for f in index.html 404.html */index.html */*/index.html; do
   sed -i -E 's#(href="/site\.css|src="/(brand|hero|app)\.js)(\?v=[0-9]+)?"#\1?v='"$v"'"#g' "$f"
 done
 echo "assets stamped v=$v"

@@ -33,12 +33,15 @@ GitHub Pages serves the `main` branch as is, so every push updates the live site
 | --- | --- |
 | `index.html` | Home |
 | `how-it-works/index.html` | How it works |
-| `case-studies/index.html` | Case studies |
+| `case-studies/index.html` | Case studies index: a summary of each example |
+| `case-studies/ai-travel-planning-app/index.html` | The travel app case study in full |
+| `case-studies/ai-sales-platform/index.html` | The sales platform case study in full |
 | `assessment/index.html` | Assessment |
 | `about/index.html` | About |
 | `pricing/index.html` | Pricing |
 | `blueprint/index.html` | The example Blueprint. Linked from Pricing, not in the navigation |
 | `call/index.html` | Book a call |
+| `privacy/index.html` | Privacy policy. Linked from every footer and under each form |
 | `contact/index.html` | Contact |
 | `404.html` | Shown for any address that does not exist |
 | `site.css` | Every style on the site |
@@ -52,15 +55,15 @@ GitHub Pages serves the `main` branch as is, so every push updates the live site
 | `backend/forms.gs`, `backend/appsscript.json` | A reference copy of the script that sends the forms. See "Sending the forms" |
 | `CNAME`, `.nojekyll` | Domain and Pages settings. Leave both alone |
 
-The nine pages share the same `<head>` block, header and footer. They are copied into each file rather than generated, so a change to the navigation or footer means editing all nine (and `404.html`).
+The twelve pages share the same `<head>` block, header and footer. They are copied into each file rather than generated, so a change to the navigation or footer means editing all twelve (and `404.html`). The two case study pages sit one folder deeper, so search with `*/index.html */*/index.html`.
 
 ## How the pages work
 
-Each page is a real address: `/`, `/how-it-works/`, `/case-studies/`, `/assessment/`, `/about/`, `/pricing/`, `/blueprint/`, `/call/`, `/contact/`. Links between them use those paths, and the current page carries `aria-current="page"` in the header and footer navigation.
+Each page is a real address: `/`, `/how-it-works/`, `/case-studies/`, `/case-studies/ai-travel-planning-app/`, `/case-studies/ai-sales-platform/`, `/assessment/`, `/about/`, `/pricing/`, `/blueprint/`, `/call/`, `/contact/`, `/privacy/`. Links between them use those paths, and the current page carries `aria-current="page"` in the header and footer navigation.
 
 The header navigation holds How it works, Case studies, Pricing, Contact and the assessment button. About is in the footer only: the founder had it taken out of the header (25 Nov 2026), so do not add it back. Book a call sits in the footer, on Contact, on the assessment page and under the closing button on Home.
 
-The footer has three columns: the brand and its line, the page links under "Explore", and "Contact" with the email address and the line "Based in Detroit, MI". The email is styled like the page links beside it, with no underline until hover: the founder found the first version, a bold underlined address over a bare "Detroit, MI", not professional looking. The founder asked for the address and the location to be on the site (25 Nov 2026). The public address is contact@pileusops.com, which she chose over a named one. They also appear in the facts list on the Contact page. If either changes, change it in the footer of all ten HTML files and on Contact. The assessment stays the main route in. The call is the alternative to it, never the replacement.
+The footer has three columns: the brand and its line, the page links under "Explore", and "Contact" with the email address and the line "Based in Detroit, MI". The email is styled like the page links beside it, with no underline until hover: the founder found the first version, a bold underlined address over a bare "Detroit, MI", not professional looking. The founder asked for the address and the location to be on the site (25 Nov 2026). The public address is contact@pileusops.com, which she chose over a named one. They also appear in the facts list on the Contact page. If either changes, change it in the footer of every HTML file and on Contact. The footer links end with Privacy. The assessment stays the main route in. The call is the alternative to it, never the replacement.
 
 `app.js` runs on every page, so each interactive block is guarded by the element it needs:
 
@@ -72,9 +75,9 @@ The footer has three columns: the brand and its line, the page links under "Expl
 - `if (el('est'))` wraps the first-year sum on Pricing.
 - `if (el('bpdraw'))` wraps the example Blueprint map, on its own page and in the preview on Pricing.
 
-Add a new page by copying an existing one, changing the head and body, adding it to the navigation in all ten HTML files, and adding it to `sitemap.xml`.
+Add a new page by copying an existing one, changing the head and body, adding it to the navigation in every HTML file, and adding it to `sitemap.xml`.
 
-The site used to be one file with `#hash` addresses. `app.js` still redirects those old links to the right page.
+The site used to be one file with `#hash` addresses. `app.js` still redirects those old links to the right page, and sends the old `/case-studies/#travel` and `#sales` links to the case study pages.
 
 ## After changing a script or a style
 
@@ -159,7 +162,7 @@ On success the visitor gets a tentative `.ics` hold, not an invite. The copy say
 
 ## Case studies
 
-`/case-studies/` has two examples. Never count them in the copy: the founder rejected "Two companies already run this way" (25 Nov 2026) because it reads as if we have only ever worked with two companies. Headlines, descriptions and links say "companies", "examples" or "the case studies", never "two" or "both". The styles are the `.csh`, `.csmap`, `.csout` and `.cslist` rules at the end of `site.css`.
+`/case-studies/` is the index: the page heading, a list linking to each case study, then a short summary of each (heading, line and three numbers) with a link to its own page, and the closing cards. Each example in full is on its own page, `/case-studies/ai-travel-planning-app/` and `/case-studies/ai-sales-platform/`, which carry the four parts below, the closing cards in the singular, and links to the other example and back to the index. The founder approved the split on 26 Nov 2026. There are two examples. Never count them in the copy: the founder rejected "Two companies already run this way" (25 Nov 2026) because it reads as if we have only ever worked with two companies. Headlines, descriptions and links say "companies", "examples" or "the case studies", never "two" or "both". The styles are the `.csh`, `.csmap`, `.csout` and `.cslist` rules at the end of `site.css`.
 
 ### What the page has to sell
 
@@ -185,7 +188,7 @@ Never name either company. Both are companies the founder runs, so the page open
 
 Where the numbers come from:
 
-- Agents: each company's list of scheduled tasks as of 25 Nov 2026, 16 and 18. They appear in the summary card at the top, the first number and the map, and all three must agree.
+- Agents: each company's list of scheduled tasks as of 25 Nov 2026, 16 and 18. They appear in the list at the top of the index, the first number on the index and on the example's own page, that page's description and opening statement, and the map. All of them must agree.
 - Tools: the count of chips in that example's "separate tools" card.
 - Hours: an estimate the founder asked for, 5 and 6 a week, from a 10 minute read of the morning report plus the daily review of what the agents prepared. They appear in the third number and on the map.
 
@@ -289,7 +292,11 @@ Added 26 Nov 2026 from the founder's SEO implementation pack.
 - The FAQ markup on How it works and Pricing must match the visible questions and answers word for word. If you change an answer on the page, change it in the JSON-LD too. Home has no FAQ markup because its questions repeat How it works.
 - FAQ questions are `<h3>` inside each `<summary>`, so they read as headings and the accordion still works.
 - The footer line reads "Pileus Ops is an AI operations firm in Detroit, MI." on every page.
-- Not done yet: LinkedIn profiles in the JSON-LD `sameAs`, a privacy page, names for the About advisors, and a page of its own for each case study.
+- Not done yet: LinkedIn profiles in the JSON-LD `sameAs`, and names for the About advisors.
+
+## Privacy policy
+
+`/privacy/` was written 26 Nov 2026 from what the site actually does. Keep it true: it says the site sets no cookies and runs no analytics or advertising trackers, that GitHub hosts it and Google serves the fonts, what each form collects, and that we keep what people send for up to 24 months after last contact. If you add analytics, a cookie, a booking service, a chat widget or any new form, update the policy and its date in the same change. A short line with a link to it sits under the assessment's email form, the contact form and the call form.
 
 ## Sources for the statistics on Home and Pricing
 

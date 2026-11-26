@@ -935,3 +935,23 @@ a.bpmap.peek:focus-visible{outline:2px solid var(--sales);outline-offset:3px}
 .def{margin:14px 0 0;max-width:62ch;font-size:15.5px;line-height:1.55;color:var(--mute)}
 .copy .def{max-width:470px;margin:22px 0 0;font-size:14.5px}
 .faq summary h3{margin:0;font:inherit;letter-spacing:inherit}
+
+/* Privacy policy */
+.legal{margin-top:clamp(28px,4vw,48px);max-width:68ch;color:#2A3342;font-size:16.5px;line-height:1.6}
+.legal h2{margin:36px 0 10px;font-family:var(--disp);font-weight:600;font-size:clamp(1.2rem,.5vw + 1rem,1.4rem);letter-spacing:-.015em;color:var(--ink)}
+.legal h2:first-child{margin-top:0}
+.legal p{margin:0 0 12px}
+.legal ul{margin:0 0 12px;padding-left:20px}
+.legal li{margin:0 0 8px}
+.legal a,.formprivacy a{color:var(--sales);font-weight:600;text-underline-offset:4px}
+.formprivacy{margin:12px 0 0;font-size:13.5px;color:var(--mute)}
+/* Case study pages */
+.eyebrow .crumb{color:inherit;text-decoration:none}
+.eyebrow .crumb:hover{text-decoration:underline;text-underline-offset:4px}
+.phead .grid.g3{margin-top:clamp(28px,4vw,44px)}
+h2.csh{margin-bottom:0}
+.band > .in > h2.csh:first-child{margin-top:0}
+.csnext{margin-top:clamp(36px,5vw,60px)}
+a.cslink small{display:block;margin:0 0 8px;font-family:var(--mono);font-size:11.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--mute)}
+a.cstitle{color:inherit;text-decoration:none}
+a.cstitle:hover{text-decoration:underline;text-underline-offset:6px;text-decoration-thickness:2px}

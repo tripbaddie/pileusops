@@ -6,6 +6,8 @@
   const OLD = { 'how-it-works': '/how-it-works/', assessment: '/assessment/', about: '/about/' };
   const old = OLD[location.hash.slice(1)];
   if (old && location.pathname === '/'){ location.replace(old); return; }
+  const CS_OLD = { travel: '/case-studies/ai-travel-planning-app/', sales: '/case-studies/ai-sales-platform/' };
+  if (location.pathname === '/case-studies/' && CS_OLD[location.hash.slice(1)]){ location.replace(CS_OLD[location.hash.slice(1)]); return; }
   // a sixth function for the demo page
   C.prod = '#00A3BF'; GLY.prod = '#fff'; GLYPH.prod = '<path d="M10 3l6 3.4v7.2L10 17l-6-3.4V6.4z"/><path d="M4.2 6.5L10 9.9l5.8-3.4M10 9.9V17"/>';
   const action = ([text, st]) => `<small>Action</small><p>${text}</p><span class="st ${st}">${st === 'ask' ? 'You approve' : 'Done'}</span>`;
