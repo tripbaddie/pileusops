@@ -603,6 +603,7 @@
         el('aHead').textContent = 'Your company map.';
         el('aSub').textContent = 'Built from the answers you gave us. Everything here is yours to share with your team.';
         el('aAlt').hidden = true;
+        if (el('aDef')) el('aDef').hidden = true;
         document.title = 'Your company map | Pileus Ops';
         const m = document.createElement('meta'); m.name = 'robots'; m.content = 'noindex'; document.head.appendChild(m);
       }

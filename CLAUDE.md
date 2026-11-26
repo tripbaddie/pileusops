@@ -46,6 +46,7 @@ GitHub Pages serves the `main` branch as is, so every push updates the live site
 | `hero.js` | The home page hero animation. Loaded by home only |
 | `app.js` | Everything else interactive. Loaded by every page |
 | `og.png` | The image shown when a link to the site is shared |
+| `logo.png` | Square 512px mushroom mark. The logo search engines use, named in the JSON-LD |
 | `favicon.svg` | The browser tab icon |
 | `sitemap.xml`, `robots.txt` | For search engines. Add any new page to the sitemap |
 | `backend/forms.gs`, `backend/appsscript.json` | A reference copy of the script that sends the forms. See "Sending the forms" |
@@ -277,6 +278,18 @@ Each app is three characters in the code, made from its name (`KEYS`). Adding or
 Question 4 names a business problem an owner would recognise, not a specific broken process. Asking someone to diagnose the bottleneck puts the work on them, and the real problem is usually broader than one handoff. Keep any new option at that level.
 
 The options are written for B2B software and services companies. Keep them that way: no retail, manufacturing or field-service tools.
+
+## Search engines and AI answers
+
+Added 26 Nov 2026 from the founder's SEO implementation pack.
+
+- Every page has a title and meta description written for search, and `og:title` and `og:description` must match them exactly.
+- Each page has a plain `<p class="def">` statement under its heading (on Home, under the hero button). It says what the page is in words a search engine or an AI assistant can lift. Keep its facts in step with the page: prices, counts, the 10 to 100 person range.
+- Each page carries two JSON-LD blocks before `</head>`: the sitewide block (the company, Detroit, the founder) and one for that page. The sitewide block is identical on every page, so change it in all nine.
+- The FAQ markup on How it works and Pricing must match the visible questions and answers word for word. If you change an answer on the page, change it in the JSON-LD too. Home has no FAQ markup because its questions repeat How it works.
+- FAQ questions are `<h3>` inside each `<summary>`, so they read as headings and the accordion still works.
+- The footer line reads "Pileus Ops is an AI operations firm in Detroit, MI." on every page.
+- Not done yet: LinkedIn profiles in the JSON-LD `sameAs`, a privacy page, names for the About advisors, and a page of its own for each case study.
 
 ## Sources for the statistics on Home and Pricing
 
