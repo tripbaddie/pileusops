@@ -109,7 +109,7 @@ Check desktop and a phone width (390px) before pushing.
 
 ## Known gaps
 
-- **The three forms are built to send through our own script, and it is not switched on yet.** As of 25 Nov 2026 `FORM_URL` is empty: the script is saved in script.google.com and waits on the founder adding contact@pileusops.com as a "Send mail as" address and authorising the script. Once the script's address is in `FORM_URL`, delete this sentence. See "Sending the forms" below. If `FORM_URL` in `app.js` is ever emptied, the note and the call request fall back to opening the visitor's own email addressed to contact@pileusops.com, and the assessment closes on the Book a call button with no report offered. Never empty `CONTACT_EMAIL` as well.
+- **The three forms are built to send through our own script, and it is not switched on yet.** As of 25 Nov 2026 `FORM_URL` is empty: the script is saved in script.google.com and waits on the founder authorising it. Once the script's address is in `FORM_URL`, delete this sentence. See "Sending the forms" below. If `FORM_URL` in `app.js` is ever emptied, the note and the call request fall back to opening the visitor's own email addressed to contact@pileusops.com, and the assessment closes on the Book a call button with no report offered. Never empty `CONTACT_EMAIL` as well.
 - Nothing reads anyone's real calendar. A requested time is a request, not a booking. See the next section.
 - The four advisor cards on About have no names, and their descriptions are placeholders.
 - Demo data on How it works and the example answers on Home are invented for illustration.
@@ -125,7 +125,8 @@ What it does:
 
 Things to know before touching it:
 
-- It sends as contact@pileusops.com, which must stay a "Send mail as" address in that Gmail. If it is ever removed, Gmail quietly sends from the account's main address instead, which must never reach a visitor. Empty `FORM_URL` first.
+- It sends as jaclyn@pileusops.com under the name "Pileus Ops" (`FROM` in `forms.gs`), and leads and visitors' replies go to contact@pileusops.com (`TEAM`). The founder chose jaclyn@ "for now" (25 Nov 2026) because contact@ was not yet a "Send mail as" address in that Gmail. To switch, add contact@ there first, then change `FROM`.
+- Whatever `FROM` is must stay a "Send mail as" address in that Gmail. If it is ever removed, Gmail quietly sends from the account's main address instead, which must never reach a visitor. Empty `FORM_URL` first.
 - Its only permission is to send email. It cannot read the mailbox.
 - Nothing a visitor types is ever emailed to another person. The report email is fixed copy plus a link, and the link is built from a code the script checks against a strict pattern. Do not add visitor-written text to that email: it would let anyone send their own words from our address.
 - The same pattern for the code is in `forms.gs` (`CODE`) and in `app.js` (the `link` check). Change both together.
