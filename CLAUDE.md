@@ -198,14 +198,14 @@ These prices are set for a client of about 25 people. The page used to call them
 | --- | --- | --- |
 | Assessment | Free | The form on `/assessment/` |
 | Blueprint | $5,000 fixed | 2 weeks. Credited in full toward a function build or a full rollout |
-| First workflow | from $10,000 | 2 to 3 weeks. No Blueprint needed |
+| First build | from $10,000 | 2 to 3 weeks. No Blueprint needed. Called "First workflow" until 25 Nov 2026; the founder renamed it so the entry stage reads as the first piece of one system, not an automation |
 | One function | from $25,000 | 6 to 10 weeks |
 | Full rollout | No public price | Quoted in the Blueprint |
 | You run it | $0 | Training and handover are part of every build |
 | We run it | from $1,000 a month | Priced at about a fifth of the build a year, never under $1,000 a month |
 | We keep building | from $4,000 a month | Includes everything in We run it |
 
-The prices appear in three places that must agree: the HTML of `pricing/index.html`, the page's meta description, and the `BLUEPRINT`, `BUILD` and `AFTER` values in `app.js` under `if (el('est'))`. The Blueprint price is also on `/blueprint/`, in the page, its meta description and its sub line. The sum covers a first workflow or one function. For a function it shows the build with the Blueprint credit already taken off.
+The prices appear in three places that must agree: the HTML of `pricing/index.html`, the page's meta description, and the `BLUEPRINT`, `BUILD` and `AFTER` values in `app.js` under `if (el('est'))`. The Blueprint price is also on `/blueprint/`, in the page, its meta description and its sub line. The sum covers a first build or one function. For a function it shows the build with the Blueprint credit already taken off.
 
 The Blueprint section carries a short preview of the example Blueprint: the top of the map fading out, the whole card a link to `/blueprint/`. The founder liked the full figure but found it "too much for this page" (25 Nov 2026), so the full version has its own page. See "The example Blueprint" below. The Blueprint's $5,000 price is also stated on that page.
 
@@ -222,7 +222,7 @@ Clients hold their own accounts with the model providers and pay usage at cost. 
 - **Where the company is today.** The map, drawn by `app.js` under `if (el('bpdraw'))` from two lists: `LANES`, six teams of apps, and `HAND`, every handoff between two apps, marked as moving on its own, moved by hand, or stuck. The five stuck ones carry numbered pins. It is meant to look dense, since the point is how much a Blueprint covers, but it keeps the brand's calm: grey lines and one blue. Keep each pin on a handoff between neighbouring lanes or neighbouring apps, so it never lands on a label. The counts in its corner are counted from the lists. On a phone it scrolls sideways rather than shrinking. The same code draws the preview on Pricing.
 - **Where we would start.** Written in `blueprint/index.html`. The founder asked for the next step so the figure "isnt just a map of existing infrastructure", then had it checked against the lens at the top of this file and made "more of a starting point". So it does not list five fixes. It opens with the one shared record of every customer, in the blue outline, and says every stuck point is the same gap. Then one piece per pin, each built on that record. Each row names the piece, says what it can do because it sees more than its own two apps, and ends in a "Draws on" line that crosses teams. A row that only joins the two apps either side of its pin reads as an automation and fails the lens. The closing line says the pieces are one system and that the Blueprint comes with a fixed quote for the first.
 
-The pin numbers in `HAND` and the rows in the HTML must agree. Number 1 is the lead routing workflow that Pricing gives as its example of a first workflow. The top bar labels it "Example Blueprint". There is no caption saying it is an example: the founder had it removed as implied. The company on it is invented.
+The pin numbers in `HAND` and the rows in the HTML must agree. Number 1 is the lead routing workflow that Pricing gives as its example of a first build. The top bar labels it "Example Blueprint". There is no caption saying it is an example: the founder had it removed as implied. The company on it is invented.
 
 Under the figure the page repeats the three things a client leaves with and the $5,000 price from Pricing. If either changes there, change it here.
 

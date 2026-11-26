@@ -524,7 +524,7 @@
 
       // what we would build, and what each could replace
       el('rBuilds').innerHTML = builds.map(([title, does, reps, closes], i) => { const c = closes.filter(key => byHand.includes(key));
-        const tags = (i ? [] : ['Answers the problem you picked', 'First workflow live in 2 to 3 weeks']).concat(c.map(key => 'Covers: ' + low(S[key][0])));
+        const tags = (i ? [] : ['Answers the problem you picked', 'First build live in 2 to 3 weeks']).concat(c.map(key => 'Covers: ' + low(S[key][0])));
         return `<div class="rb${i ? '' : ' top'}"><b>${i + 1}</b><div class="w"><h4>${title}</h4><p>${does}</p>${joins[i] ? `<p class="lk"><small>Connects</small>${joins[i]}</p>` : ''}${report ? `<p class="lk"><small>Needs from you</small>${NEEDS[picks[i]]}</p>` : ''}</div><div class="x"><div class="rr"><small>${reps.length ? 'Could replace' : 'Fills a gap'}</small>${reps.length ? cap(list(reps)) : 'Nothing you picked does this today.'}</div><div class="tags">${tags.map(t => `<span class="rp t">${t}</span>`).join('')}</div></div></div>`; }).join('');
       el('rSys').innerHTML = `<p class="lab">How the three fit together</p><div class="rsys3">${builds.map(([title], i) => `<span><b>${i + 1}</b>${title.replace(/^An? /, '').replace(/^./, c => c.toUpperCase())}</span>`).join('')}</div>`
         + `<div class="rsysl" aria-hidden="true"><i></i><i></i><i></i></div><div class="rsysb"><small>What all three read and write</small><b>One shared record of your company</b><ul class="cslist">${record.map(r => `<li>${r}</li>`).join('')}</ul></div>`
@@ -789,7 +789,7 @@
 
   // ---- pricing: two choices add up to a first year. Starting prices only, the quote sets the real one
   if (el('est')){
-    // a first workflow needs no Blueprint. A function build does, and the Blueprint fee comes off it
+    // a first build needs no Blueprint. A function build does, and the Blueprint fee comes off it
     const BLUEPRINT = 5000, BUILD = { wf: 10000, fn: 25000 };
     // running it is a fifth of the build a year with a floor of $1,000 a month; building on is $4,000 a month
     const AFTER = { self: () => 0, run: b => Math.max(12000, b * 0.2), grow: () => 48000 };
