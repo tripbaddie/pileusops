@@ -955,3 +955,6 @@ h2.csh{margin-bottom:0}
 a.cslink small{display:block;margin:0 0 8px;font-family:var(--mono);font-size:11.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--mute)}
 a.cstitle{color:inherit;text-decoration:none}
 a.cstitle:hover{text-decoration:underline;text-underline-offset:6px;text-decoration-thickness:2px}
+
+.ptc .role a{color:inherit;text-underline-offset:3px}
+.cxfacts span a{color:var(--sales);font-weight:600}

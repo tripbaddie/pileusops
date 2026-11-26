@@ -292,7 +292,8 @@ Added 26 Nov 2026 from the founder's SEO implementation pack.
 - The FAQ markup on How it works and Pricing must match the visible questions and answers word for word. If you change an answer on the page, change it in the JSON-LD too. Home has no FAQ markup because its questions repeat How it works.
 - FAQ questions are `<h3>` inside each `<summary>`, so they read as headings and the accordion still works.
 - The footer line reads "Pileus Ops is an AI operations firm in Detroit, MI." on every page.
-- Not done yet: LinkedIn profiles in the JSON-LD `sameAs`, and names for the About advisors.
+- LinkedIn: the company page https://www.linkedin.com/company/pileusops/ is in the sitewide `sameAs` and beside the email on Contact. The founder's profile https://www.linkedin.com/in/jaclynvcurtis/ is in the About page's Person `sameAs` and on her name on the team card. Add any new profile (Crunchbase, Clutch, Google Business Profile) to the sitewide `sameAs` on every page.
+- Not done yet: names for the About advisors.
 
 ## Privacy policy
 
