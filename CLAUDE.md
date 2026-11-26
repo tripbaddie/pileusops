@@ -296,7 +296,7 @@ Added 26 Nov 2026 from the founder's SEO implementation pack.
 
 ## Privacy policy
 
-`/privacy/` was written 26 Nov 2026 from what the site actually does. Keep it true: it says the site sets no cookies and runs no analytics or advertising trackers, that GitHub hosts it and Google serves the fonts, what each form collects, and that we keep what people send for up to 24 months after last contact. If you add analytics, a cookie, a booking service, a chat widget or any new form, update the policy and its date in the same change. A short line with a link to it sits under the assessment's email form, the contact form and the call form.
+`/privacy/` was written 26 Nov 2026 from what the site actually does. Pileus Ops is a trade name of Opsmith LLC, the legal entity the policy names (founder, 26 Nov 2026); the sitewide JSON-LD carries it as `legalName`. Keep it true: it says the site sets no cookies and runs no analytics or advertising trackers, that GitHub hosts it and Google serves the fonts, what each form collects, and that we keep what people send for up to 24 months after last contact. If you add analytics, a cookie, a booking service, a chat widget or any new form, update the policy and its date in the same change. A short line with a link to it sits under the assessment's email form, the contact form and the call form.
 
 ## Sources for the statistics on Home and Pricing
 
